@@ -9,5 +9,6 @@ public static class InvoiceEndpoints
         group.MapCancelInvoice();
         group.MapRegisterPayment();
         group.MapGetPayments();
+        group.MapValuationReport();
     }
 }

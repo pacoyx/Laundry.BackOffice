@@ -50,6 +50,7 @@ public static class ServicesDiExtensions
         services.AddSingleton<PrinterRegistry>();
 
         services.AddScoped<ISalesRegisterReportService, SalesRegisterReportService>();
+        services.AddScoped<IValuationReportService, ValuationReportService>();
         services.AddScoped<IPurchaseRegisterReportService, PurchaseRegisterReportService>();
 
         services.AddScoped<ICreateAreaService, CreateAreaService>();
