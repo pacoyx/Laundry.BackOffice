@@ -6,7 +6,8 @@ public static class CreateAttachmentEndpoint
     private static readonly HashSet<PickupGuideAttachmentType> AllowedUploadTypes = new()
     {
         PickupGuideAttachmentType.Photo,
-        PickupGuideAttachmentType.Signature
+        PickupGuideAttachmentType.Signature,
+        PickupGuideAttachmentType.PhysicalGuidePhoto
     };
 
     public static void MapCreateAttachment(this IEndpointRouteBuilder app)
@@ -39,7 +40,7 @@ public static class CreateAttachmentEndpoint
 
             if (!AllowedUploadTypes.Contains(attachmentType))
             {
-                return Results.BadRequest(new[] { "Solo se pueden subir evidencias de tipo Photo o Signature. El PDF se genera automáticamente al pasar la guía a Collected." });
+                return Results.BadRequest(new[] { "Solo se pueden subir evidencias de tipo Photo, Signature o PhysicalGuidePhoto. El PDF se genera automáticamente al pasar la guía a Collected." });
             }
 
             if (file.Length == 0)
@@ -47,7 +48,13 @@ public static class CreateAttachmentEndpoint
                 return Results.BadRequest(new[] { "El archivo está vacío." });
             }
 
-            var category = attachmentType == PickupGuideAttachmentType.Photo ? "Photos" : "Signatures";
+            var category = attachmentType switch
+            {
+                PickupGuideAttachmentType.Photo => "Photos",
+                PickupGuideAttachmentType.Signature => "Signatures",
+                PickupGuideAttachmentType.PhysicalGuidePhoto => "PhysicalGuide",
+                _ => "Others"
+            };
 
             await using var stream = file.OpenReadStream();
             var uploadResult = await storage.UploadAsync("PickupGuides", category, id, file.FileName, file.ContentType, stream);
