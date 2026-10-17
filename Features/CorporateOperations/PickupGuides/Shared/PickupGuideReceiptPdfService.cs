@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 
 public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
@@ -6,12 +7,18 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
     private readonly RecepcionDbContext _db;
     private readonly IFileStorageService _storage;
     private readonly IImageCompressor _imageCompressor;
+    private readonly CompanySettings _companySettings;
 
-    public PickupGuideReceiptPdfService(RecepcionDbContext db, IFileStorageService storage, IImageCompressor imageCompressor)
+    public PickupGuideReceiptPdfService(
+        RecepcionDbContext db,
+        IFileStorageService storage,
+        IImageCompressor imageCompressor,
+        IOptions<CompanySettings> companySettings)
     {
         _db = db;
         _storage = storage;
         _imageCompressor = imageCompressor;
+        _companySettings = companySettings.Value;
     }
 
     public async Task<byte[]> GenerateAsync(long pickupGuideId, CancellationToken cancellationToken = default)
@@ -48,8 +55,56 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
             photoImages.Add(_imageCompressor.CompressToJpeg(bytes));
         }
 
-        var document = new PickupGuideReceiptPdfDocument(guide, signatureImage, photoImages);
+        var revisions = await _db.PickupGuideRevisions
+            .AsNoTracking()
+            .Where(x => x.PickupGuideId == pickupGuideId)
+            .Include(x => x.Employee)
+            .Include(x => x.DetailRevisions).ThenInclude(d => d.PickupGuideDetail).ThenInclude(d => d.ServiceItem)
+            .Include(x => x.Photos)
+            .OrderBy(x => x.RevisionDate)
+            .ToListAsync(cancellationToken);
+
+        var originalQuantityByDetailId = BuildOriginalQuantitiesByDetailId(revisions);
+        var addedItemDetailIds = revisions
+            .SelectMany(r => r.DetailRevisions)
+            .Where(d => d.ActionType == PickupGuideRevisionActionType.AddedItem)
+            .Select(d => d.PickupGuideDetailId)
+            .ToHashSet();
+
+        var revisionPdfData = new List<PickupGuideRevisionPdfData>();
+        foreach (var revision in revisions)
+        {
+            var revisionPhotoImages = new List<byte[]>();
+            foreach (var photo in revision.Photos)
+            {
+                var bytes = await ReadAllBytesAsync(photo.FilePath, cancellationToken);
+                revisionPhotoImages.Add(_imageCompressor.CompressToJpeg(bytes));
+            }
+
+            revisionPdfData.Add(new PickupGuideRevisionPdfData(revision, revisionPhotoImages));
+        }
+
+        var document = new PickupGuideReceiptPdfDocument(
+            guide, _companySettings.Name, signatureImage, photoImages, revisionPdfData, originalQuantityByDetailId, addedItemDetailIds);
         return document.GeneratePdf();
+    }
+
+    // El valor "declarado" de un detalle es la cantidad/peso antes de cualquier revisión:
+    // la primera revisión en el tiempo que lo tocó ya trae ese valor en OriginalQuantity.
+    // Si nunca fue revisado, el valor actual del detalle ya es el declarado.
+    private static Dictionary<long, decimal> BuildOriginalQuantitiesByDetailId(List<PickupGuideRevision> revisions)
+    {
+        var result = new Dictionary<long, decimal>();
+
+        foreach (var detailRevision in revisions.SelectMany(r => r.DetailRevisions))
+        {
+            if (!result.ContainsKey(detailRevision.PickupGuideDetailId))
+            {
+                result[detailRevision.PickupGuideDetailId] = detailRevision.OriginalQuantity;
+            }
+        }
+
+        return result;
     }
 
     private async Task<byte[]> ReadAllBytesAsync(string filePath, CancellationToken cancellationToken)
