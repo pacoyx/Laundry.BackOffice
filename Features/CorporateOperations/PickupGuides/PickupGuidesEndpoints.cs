@@ -22,6 +22,9 @@ public static class PickupGuidesEndpoints
 
         group.MapCreatePickupGuideRevision();
         group.MapGetPickupGuideRevisions();
+        group.MapCreatePickupGuideRevisionPhoto();
+        group.MapGetPickupGuideRevisionPhotos();
+        group.MapDownloadPickupGuideRevisionPhoto();
 
         group.MapResendPickupGuideEmail();
     }

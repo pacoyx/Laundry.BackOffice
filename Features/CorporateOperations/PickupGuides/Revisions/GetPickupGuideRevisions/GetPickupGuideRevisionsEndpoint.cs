@@ -17,6 +17,7 @@ public static class GetPickupGuideRevisionsEndpoint
                 .Where(x => x.PickupGuideId == id)
                 .Include(x => x.Employee)
                 .Include(x => x.DetailRevisions).ThenInclude(d => d.PickupGuideDetail).ThenInclude(d => d.ServiceItem)
+                .Include(x => x.Photos)
                 .OrderByDescending(x => x.RevisionDate)
                 .ToListAsync();
 

@@ -2367,6 +2367,9 @@ namespace _24dex_backend_comercial.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int>("ActionType")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("NewQuantity")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -2424,6 +2427,49 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("PickupGuideId");
 
                     b.ToTable("PickupGuideRevisions", (string)null);
+                });
+
+            modelBuilder.Entity("PickupGuideRevisionPhoto", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OriginalFileName")
+                        .HasMaxLength(260)
+                        .HasColumnType("nvarchar(260)");
+
+                    b.Property<long>("PickupGuideRevisionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PickupGuideRevisionId");
+
+                    b.ToTable("PickupGuideRevisionPhotos", (string)null);
                 });
 
             modelBuilder.Entity("Position", b =>
@@ -3970,6 +4016,17 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("PickupGuide");
                 });
 
+            modelBuilder.Entity("PickupGuideRevisionPhoto", b =>
+                {
+                    b.HasOne("PickupGuideRevision", "PickupGuideRevision")
+                        .WithMany("Photos")
+                        .HasForeignKey("PickupGuideRevisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PickupGuideRevision");
+                });
+
             modelBuilder.Entity("Printer", b =>
                 {
                     b.HasOne("WorkerNode", "WorkerNode")
@@ -4300,6 +4357,8 @@ namespace _24dex_backend_comercial.Migrations
             modelBuilder.Entity("PickupGuideRevision", b =>
                 {
                     b.Navigation("DetailRevisions");
+
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("PurchaseInvoice", b =>

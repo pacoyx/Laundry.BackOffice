@@ -104,6 +104,7 @@ public class RecepcionDbContext : DbContext
     public DbSet<PickupGuideAttachment> PickupGuideAttachments { get; set; }
     public DbSet<PickupGuideRevision> PickupGuideRevisions { get; set; }
     public DbSet<PickupGuideDetailRevision> PickupGuideDetailRevisions { get; set; }
+    public DbSet<PickupGuideRevisionPhoto> PickupGuideRevisionPhotos { get; set; }
 
     public DbSet<CustomerUser> CustomerUsers { get; set; }
     public DbSet<CustomerRole> CustomerRoles { get; set; }
@@ -194,6 +195,7 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PickupGuideAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());
+        modelBuilder.ApplyConfiguration(new PickupGuideRevisionPhotoConfiguration());
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

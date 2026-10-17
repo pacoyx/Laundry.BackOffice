@@ -18,4 +18,6 @@ public class PickupGuideRevision
     public DateTime RevisionDate { get; set; }
 
     public ICollection<PickupGuideDetailRevision> DetailRevisions { get; set; } = new List<PickupGuideDetailRevision>();
+
+    public ICollection<PickupGuideRevisionPhoto> Photos { get; set; } = new List<PickupGuideRevisionPhoto>();
 }

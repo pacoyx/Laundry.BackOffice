@@ -13,6 +13,8 @@ public class PickupGuideDetailRevision
 
     public PickupGuideDetail PickupGuideDetail { get; set; } = null!;
 
+    public PickupGuideRevisionActionType ActionType { get; set; } = PickupGuideRevisionActionType.QuantityAdjustment;
+
     [Column(TypeName = "decimal(18,2)")]
     public decimal OriginalQuantity { get; set; }
 

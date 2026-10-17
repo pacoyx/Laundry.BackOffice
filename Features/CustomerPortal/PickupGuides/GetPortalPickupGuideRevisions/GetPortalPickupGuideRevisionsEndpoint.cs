@@ -35,7 +35,7 @@ public static class GetPortalPickupGuideRevisionsEndpoint
                 $"{r.Employee.FirstName} {r.Employee.LastName}".Trim(),
                 r.Observation,
                 r.DetailRevisions.Select(dr => new PortalPickupGuideRevisionItemResponse(
-                    dr.PickupGuideDetail.ServiceItem.Name, dr.OriginalQuantity, dr.NewQuantity, dr.Reason
+                    dr.ActionType, dr.PickupGuideDetail.ServiceItem.Name, dr.OriginalQuantity, dr.NewQuantity, dr.Reason
                 )).ToList()
             )).ToList();
 

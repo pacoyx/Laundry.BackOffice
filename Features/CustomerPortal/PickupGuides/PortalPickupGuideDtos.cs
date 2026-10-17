@@ -51,6 +51,7 @@ public record PortalPickupGuideResponse(
 );
 
 public record PortalPickupGuideRevisionItemResponse(
+    PickupGuideRevisionActionType ActionType,
     string ServiceName,
     decimal OriginalQuantity,
     decimal NewQuantity,

@@ -39,11 +39,47 @@ public static class CreatePickupGuideRevisionEndpoint
                 return Results.BadRequest(new[] { "Empleado no encontrado o inactivo." });
             }
 
-            var detailIds = request.Details.Select(d => d.PickupGuideDetailId).ToList();
-            var missingDetailIds = detailIds.Except(guide.Details.Select(d => d.Id)).ToList();
+            var existingItemDetailIds = request.Details
+                .Where(d => d.ActionType is PickupGuideRevisionActionType.QuantityAdjustment or PickupGuideRevisionActionType.RemovedItem)
+                .Select(d => d.PickupGuideDetailId!.Value)
+                .ToList();
+            var missingDetailIds = existingItemDetailIds.Except(guide.Details.Select(d => d.Id)).ToList();
             if (missingDetailIds.Count > 0)
             {
                 return Results.BadRequest(new[] { $"Los siguientes detalles no pertenecen a esta guía: {string.Join(", ", missingDetailIds)}" });
+            }
+
+            var addedItemRequests = request.Details
+                .Where(d => d.ActionType == PickupGuideRevisionActionType.AddedItem)
+                .ToList();
+
+            var priceDetailsByServiceItemId = new Dictionary<int, CustomerPriceListDetail>();
+            if (addedItemRequests.Count > 0)
+            {
+                var serviceItemIds = addedItemRequests.Select(d => d.ServiceItemId!.Value).Distinct().ToList();
+
+                var serviceItems = await db.ProdServices
+                    .Where(s => serviceItemIds.Contains(s.Id) && s.Status == "A")
+                    .ToListAsync();
+                var missingServiceItemIds = serviceItemIds.Except(serviceItems.Select(s => s.Id)).ToList();
+                if (missingServiceItemIds.Count > 0)
+                {
+                    return Results.BadRequest(new[] { $"Los siguientes servicios no existen o están inactivos: {string.Join(", ", missingServiceItemIds)}" });
+                }
+
+                var priceDetails = await db.CustomerPriceListDetails
+                    .Include(x => x.ServiceItem)
+                    .Where(x => x.CustomerPriceListId == guide.CustomerPriceListId && serviceItemIds.Contains(x.ServiceItemId))
+                    .ToListAsync();
+
+                var unpricedServiceItemIds = serviceItemIds.Except(priceDetails.Select(x => x.ServiceItemId)).ToList();
+                if (unpricedServiceItemIds.Count > 0)
+                {
+                    var unpricedNames = serviceItems.Where(s => unpricedServiceItemIds.Contains(s.Id)).Select(s => s.Name);
+                    return Results.BadRequest(new[] { $"Los siguientes servicios no están tarifados para este cliente: {string.Join(", ", unpricedNames)}" });
+                }
+
+                priceDetailsByServiceItemId = priceDetails.ToDictionary(x => x.ServiceItemId);
             }
 
             DateTime fechaOperacion = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
@@ -60,28 +96,85 @@ public static class CreatePickupGuideRevisionEndpoint
 
             foreach (var detailRequest in request.Details)
             {
-                var detail = guide.Details.First(d => d.Id == detailRequest.PickupGuideDetailId);
-                var isPricedByWeight = detail.ServiceItem.IsPeso == "S";
-                var originalQuantity = isPricedByWeight ? detail.Weight ?? 0 : detail.Quantity;
+                PickupGuideDetail detail;
+                decimal originalQuantity;
+                decimal newQuantity;
+
+                switch (detailRequest.ActionType)
+                {
+                    case PickupGuideRevisionActionType.QuantityAdjustment:
+                    {
+                        detail = guide.Details.First(d => d.Id == detailRequest.PickupGuideDetailId!.Value);
+                        var isPricedByWeight = detail.ServiceItem.IsPeso == "S";
+                        originalQuantity = isPricedByWeight ? detail.Weight ?? 0 : detail.Quantity;
+                        newQuantity = detailRequest.NewQuantity!.Value;
+
+                        if (isPricedByWeight)
+                        {
+                            detail.Weight = newQuantity;
+                        }
+                        else
+                        {
+                            detail.Quantity = newQuantity;
+                        }
+
+                        detail.Total = newQuantity * detail.UnitPrice;
+                        break;
+                    }
+
+                    case PickupGuideRevisionActionType.AddedItem:
+                    {
+                        var priceDetail = priceDetailsByServiceItemId[detailRequest.ServiceItemId!.Value];
+                        var isPricedByWeight = priceDetail.ServiceItem.IsPeso == "S";
+                        newQuantity = detailRequest.NewQuantity!.Value;
+                        originalQuantity = 0;
+
+                        detail = new PickupGuideDetail
+                        {
+                            PickupGuideId = id,
+                            ServiceItemId = detailRequest.ServiceItemId!.Value,
+                            ServiceItem = priceDetail.ServiceItem,
+                            Quantity = isPricedByWeight ? 0 : newQuantity,
+                            Weight = isPricedByWeight ? newQuantity : null,
+                            UnitPrice = priceDetail.UnitPrice,
+                            Total = newQuantity * priceDetail.UnitPrice
+                        };
+                        guide.Details.Add(detail);
+                        break;
+                    }
+
+                    case PickupGuideRevisionActionType.RemovedItem:
+                    {
+                        detail = guide.Details.First(d => d.Id == detailRequest.PickupGuideDetailId!.Value);
+                        var isPricedByWeight = detail.ServiceItem.IsPeso == "S";
+                        originalQuantity = isPricedByWeight ? detail.Weight ?? 0 : detail.Quantity;
+                        newQuantity = 0;
+
+                        if (isPricedByWeight)
+                        {
+                            detail.Weight = 0;
+                        }
+                        else
+                        {
+                            detail.Quantity = 0;
+                        }
+
+                        detail.Total = 0;
+                        break;
+                    }
+
+                    default:
+                        throw new InvalidOperationException($"Tipo de acción de revisión no soportado: {detailRequest.ActionType}");
+                }
 
                 revision.DetailRevisions.Add(new PickupGuideDetailRevision
                 {
-                    PickupGuideDetailId = detail.Id,
+                    PickupGuideDetail = detail,
+                    ActionType = detailRequest.ActionType,
                     OriginalQuantity = originalQuantity,
-                    NewQuantity = detailRequest.NewQuantity,
+                    NewQuantity = newQuantity,
                     Reason = detailRequest.Reason
                 });
-
-                if (isPricedByWeight)
-                {
-                    detail.Weight = detailRequest.NewQuantity;
-                }
-                else
-                {
-                    detail.Quantity = detailRequest.NewQuantity;
-                }
-
-                detail.Total = detailRequest.NewQuantity * detail.UnitPrice;
             }
 
             guide.TotalAmount = guide.Details.Sum(d => d.Total);

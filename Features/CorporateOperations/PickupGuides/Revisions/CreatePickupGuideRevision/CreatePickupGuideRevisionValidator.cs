@@ -11,9 +11,34 @@ public class CreatePickupGuideRevisionValidator : AbstractValidator<CreatePickup
 
         RuleForEach(x => x.Details).ChildRules(detail =>
         {
-            detail.RuleFor(d => d.PickupGuideDetailId).GreaterThan(0);
-            detail.RuleFor(d => d.NewQuantity).GreaterThanOrEqualTo(0);
             detail.RuleFor(d => d.Reason).NotEmpty().MaximumLength(500);
+
+            detail.When(d => d.ActionType == PickupGuideRevisionActionType.QuantityAdjustment, () =>
+            {
+                detail.RuleFor(d => d.PickupGuideDetailId).NotNull();
+                detail.RuleFor(d => d.PickupGuideDetailId!.Value).GreaterThan(0)
+                    .When(d => d.PickupGuideDetailId.HasValue);
+                detail.RuleFor(d => d.NewQuantity).NotNull();
+                detail.RuleFor(d => d.NewQuantity!.Value).GreaterThanOrEqualTo(0)
+                    .When(d => d.NewQuantity.HasValue);
+            });
+
+            detail.When(d => d.ActionType == PickupGuideRevisionActionType.AddedItem, () =>
+            {
+                detail.RuleFor(d => d.ServiceItemId).NotNull();
+                detail.RuleFor(d => d.ServiceItemId!.Value).GreaterThan(0)
+                    .When(d => d.ServiceItemId.HasValue);
+                detail.RuleFor(d => d.NewQuantity).NotNull();
+                detail.RuleFor(d => d.NewQuantity!.Value).GreaterThan(0)
+                    .When(d => d.NewQuantity.HasValue);
+            });
+
+            detail.When(d => d.ActionType == PickupGuideRevisionActionType.RemovedItem, () =>
+            {
+                detail.RuleFor(d => d.PickupGuideDetailId).NotNull();
+                detail.RuleFor(d => d.PickupGuideDetailId!.Value).GreaterThan(0)
+                    .When(d => d.PickupGuideDetailId.HasValue);
+            });
         });
     }
 }
