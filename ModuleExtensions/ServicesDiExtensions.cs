@@ -51,6 +51,8 @@ public static class ServicesDiExtensions
 
         services.AddScoped<ISalesRegisterReportService, SalesRegisterReportService>();
         services.AddScoped<IValuationReportService, ValuationReportService>();
+        services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+        services.AddScoped<ICompanyProfileService, CompanyProfileService>();
         services.AddScoped<IPurchaseRegisterReportService, PurchaseRegisterReportService>();
 
         services.AddScoped<ICreateAreaService, CreateAreaService>();

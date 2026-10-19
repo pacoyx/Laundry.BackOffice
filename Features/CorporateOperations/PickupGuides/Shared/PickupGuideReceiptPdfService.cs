@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 
 public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
@@ -7,18 +6,18 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
     private readonly RecepcionDbContext _db;
     private readonly IFileStorageService _storage;
     private readonly IImageCompressor _imageCompressor;
-    private readonly CompanySettings _companySettings;
+    private readonly ICompanyProfileService _companyProfileService;
 
     public PickupGuideReceiptPdfService(
         RecepcionDbContext db,
         IFileStorageService storage,
         IImageCompressor imageCompressor,
-        IOptions<CompanySettings> companySettings)
+        ICompanyProfileService companyProfileService)
     {
         _db = db;
         _storage = storage;
         _imageCompressor = imageCompressor;
-        _companySettings = companySettings.Value;
+        _companyProfileService = companyProfileService;
     }
 
     public async Task<byte[]> GenerateAsync(long pickupGuideId, CancellationToken cancellationToken = default)
@@ -84,8 +83,10 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
             revisionPdfData.Add(new PickupGuideRevisionPdfData(revision, revisionPhotoImages));
         }
 
+        var company = await _companyProfileService.GetCompanyAsync(cancellationToken);
+
         var document = new PickupGuideReceiptPdfDocument(
-            guide, _companySettings.Name, signatureImage, photoImages, revisionPdfData, originalQuantityByDetailId, addedItemDetailIds);
+            guide, company?.NameComercial ?? string.Empty, signatureImage, photoImages, revisionPdfData, originalQuantityByDetailId, addedItemDetailIds);
         return document.GeneratePdf();
     }
 

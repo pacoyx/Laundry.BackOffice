@@ -48,7 +48,7 @@ public static class ServiceExtensions
         services.Configure<InvoiceSettings>(configuration.GetSection("Invoice"));
         services.Configure<SneakerSettings>(configuration.GetSection("Sneaker"));
         services.Configure<CustomerPortalSettings>(configuration.GetSection("CustomerPortal"));
-        services.Configure<CompanySettings>(configuration.GetSection("Company"));
+        services.Configure<InvoicePrintSettings>(configuration.GetSection("InvoicePrint"));
         services.Configure<FileStorageSettings>(configuration.GetSection("FileStorage"));
         services.Configure<EmailSettings>(configuration.GetSection("Email"));
         services.Configure<PickupMobileSettings>(configuration.GetSection("PickupMobile"));

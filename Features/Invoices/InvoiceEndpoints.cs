@@ -5,6 +5,7 @@ public static class InvoiceEndpoints
         var group = app.MapGroup("/api/invoices").WithTags("Invoices").RequirePermission(PermissionCodes.Invoices);
         group.MapCreateInvoice();
         group.MapGetInvoice();
+        group.MapGetInvoicePdf();
         group.MapGetInvoices();
         group.MapCancelInvoice();
         group.MapRegisterPayment();
