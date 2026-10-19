@@ -24,6 +24,7 @@ public class GetEmployeeDocumentsService : IGetEmployeeDocumentsService
                 DocumentTypeName = x.DocumentType!.Name,
                 FileName = x.FileName,
                 BlobUrl = x.BlobUrl,
+                ContentType = x.ContentType,
                 Notes = x.Notes,
                 CreatedAt = x.CreatedAt
             })

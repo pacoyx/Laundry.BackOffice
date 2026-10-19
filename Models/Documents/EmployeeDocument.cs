@@ -14,6 +14,9 @@ public class EmployeeDocument
     [MaxLength(500)]
     public string BlobUrl { get; set; } = string.Empty;
 
+    [MaxLength(100)]
+    public string ContentType { get; set; } = string.Empty;
+
     [MaxLength(500)]
     public string? Notes { get; set; }
 

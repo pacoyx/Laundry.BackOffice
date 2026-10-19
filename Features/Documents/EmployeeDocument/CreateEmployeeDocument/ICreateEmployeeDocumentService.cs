@@ -1,4 +1,9 @@
 public interface ICreateEmployeeDocumentService
 {
-    Task<EmployeeDocumentResponseDto?> CreateEmployeeDocumentAsync(long employeeId, CreateEmployeeDocumentRequestDto request);
+    Task<CreateEmployeeDocumentResult> CreateEmployeeDocumentAsync(
+        long employeeId,
+        int documentTypeId,
+        string? notes,
+        IFormFile file,
+        CancellationToken cancellationToken = default);
 }

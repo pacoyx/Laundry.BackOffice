@@ -7,6 +7,7 @@ public static class EmployeeDocumentEndpoints
         group.MapCreateEmployeeDocument();
         group.MapGetEmployeeDocuments();
         group.MapDeleteEmployeeDocument();
+        group.MapDownloadEmployeeDocument();
 
         app.MapGetEmployeeDocumentTypes();
 
