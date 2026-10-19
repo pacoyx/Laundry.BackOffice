@@ -6,12 +6,18 @@ public class ValuationReportService : IValuationReportService
     private readonly RecepcionDbContext _db;
     private readonly IFileStorageService _storage;
     private readonly IImageCompressor _imageCompressor;
+    private readonly ICompanyProfileService _companyProfileService;
 
-    public ValuationReportService(RecepcionDbContext db, IFileStorageService storage, IImageCompressor imageCompressor)
+    public ValuationReportService(
+        RecepcionDbContext db,
+        IFileStorageService storage,
+        IImageCompressor imageCompressor,
+        ICompanyProfileService companyProfileService)
     {
         _db = db;
         _storage = storage;
         _imageCompressor = imageCompressor;
+        _companyProfileService = companyProfileService;
     }
 
     public async Task<ValuationReportResponse> GetDataAsync(ValuationReportFilter filter, CancellationToken cancellationToken = default)
@@ -52,7 +58,8 @@ public class ValuationReportService : IValuationReportService
             }
         }
 
-        var document = new ValuationReportPhotosPdfDocument(photoItems, customerName, filter);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync(cancellationToken);
+        var document = new ValuationReportPhotosPdfDocument(photoItems, customerName, filter, logoImage);
         return document.GeneratePdf();
     }
 
@@ -61,8 +68,9 @@ public class ValuationReportService : IValuationReportService
         var guides = await LoadGuidesAsync(filter, cancellationToken);
         var customerName = await ResolveCustomerNameAsync(filter.CustomerId, cancellationToken);
         var pivot = BuildPivot(guides);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync(cancellationToken);
 
-        var document = new ValuationReportSummaryPdfDocument(pivot, customerName, filter);
+        var document = new ValuationReportSummaryPdfDocument(pivot, customerName, filter, logoImage);
         return document.GeneratePdf();
     }
 

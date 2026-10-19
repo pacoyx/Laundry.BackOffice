@@ -4,8 +4,6 @@ using QuestPDF.Infrastructure;
 
 public class ExpenseAggregatePdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
-
     private readonly string _title;
     private readonly string _labelHeader;
     private readonly List<ExpenseAggregateRowDto> _rows;
@@ -13,6 +11,7 @@ public class ExpenseAggregatePdfDocument : IDocument
     private readonly ExpenseReportFilter _filter;
     private readonly string? _branchName;
     private readonly string? _categoryName;
+    private readonly byte[]? _logoImage;
     private readonly DateTime _generatedAt;
 
     public ExpenseAggregatePdfDocument(
@@ -22,7 +21,8 @@ public class ExpenseAggregatePdfDocument : IDocument
         ExpenseReportTotalsDto totals,
         ExpenseReportFilter filter,
         string? branchName,
-        string? categoryName)
+        string? categoryName,
+        byte[]? logoImage = null)
     {
         _title = title;
         _labelHeader = labelHeader;
@@ -31,6 +31,7 @@ public class ExpenseAggregatePdfDocument : IDocument
         _filter = filter;
         _branchName = branchName;
         _categoryName = categoryName;
+        _logoImage = logoImage;
         _generatedAt = DateTime.Now;
     }
 
@@ -56,9 +57,9 @@ public class ExpenseAggregatePdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(60).Height(60).Image(LogoPath).FitArea();
+                    row.ConstantItem(60).Height(60).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

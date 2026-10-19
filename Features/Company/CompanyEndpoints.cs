@@ -9,5 +9,7 @@ public static class CompanyEndpoints
         group.MapGetCompanies();
         group.MapGetCompany();
         group.MapGetCompanyByUser();
+        group.MapUploadCompanyLogo();
+        group.MapDownloadCompanyLogo();
     }
 }

@@ -15,7 +15,7 @@ public class Company
     public string? Phone { get; set; }
     [MaxLength(100)]
     public string? Email { get; set; }
-    [MaxLength(50)]
+    [MaxLength(500)]
     public string? Logo { get; set; }
     [MaxLength(200)]
     public string? WebSite { get; set; }

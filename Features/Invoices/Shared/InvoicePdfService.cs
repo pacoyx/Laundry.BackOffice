@@ -37,8 +37,9 @@ public class InvoicePdfService : IInvoicePdfService
             .FirstOrDefaultAsync(cancellationToken);
 
         var company = await _companyProfileService.GetCompanyAsync(cancellationToken);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync(cancellationToken);
 
-        var document = new InvoicePdfDocument(invoice, company, _invoicePrintSettings, branchAddress);
+        var document = new InvoicePdfDocument(invoice, company, _invoicePrintSettings, branchAddress, logoImage);
         return document.GeneratePdf();
     }
 }

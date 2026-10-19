@@ -84,9 +84,10 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
         }
 
         var company = await _companyProfileService.GetCompanyAsync(cancellationToken);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync(cancellationToken);
 
         var document = new PickupGuideReceiptPdfDocument(
-            guide, company?.NameComercial ?? string.Empty, signatureImage, photoImages, revisionPdfData, originalQuantityByDetailId, addedItemDetailIds);
+            guide, company?.NameComercial ?? string.Empty, logoImage, signatureImage, photoImages, revisionPdfData, originalQuantityByDetailId, addedItemDetailIds);
         return document.GeneratePdf();
     }
 

@@ -4,10 +4,9 @@ using QuestPDF.Infrastructure;
 
 public class PickupGuideReceiptPdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
-
     private readonly PickupGuide _guide;
     private readonly string _companyName;
+    private readonly byte[]? _logoImage;
     private readonly byte[]? _signatureImage;
     private readonly List<byte[]> _photoImages;
     private readonly List<PickupGuideRevisionPdfData> _revisions;
@@ -18,6 +17,7 @@ public class PickupGuideReceiptPdfDocument : IDocument
     public PickupGuideReceiptPdfDocument(
         PickupGuide guide,
         string companyName,
+        byte[]? logoImage,
         byte[]? signatureImage,
         List<byte[]> photoImages,
         List<PickupGuideRevisionPdfData> revisions,
@@ -26,6 +26,7 @@ public class PickupGuideReceiptPdfDocument : IDocument
     {
         _guide = guide;
         _companyName = companyName;
+        _logoImage = logoImage;
         _signatureImage = signatureImage;
         _photoImages = photoImages;
         _revisions = revisions;
@@ -56,9 +57,9 @@ public class PickupGuideReceiptPdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(60).Height(60).Image(LogoPath).FitArea();
+                    row.ConstantItem(60).Height(60).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

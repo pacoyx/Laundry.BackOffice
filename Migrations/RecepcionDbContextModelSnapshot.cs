@@ -644,8 +644,8 @@ namespace _24dex_backend_comercial.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Logo")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("NameComercial")
                         .IsRequired()

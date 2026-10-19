@@ -4,19 +4,20 @@ using QuestPDF.Infrastructure;
 
 public class ValuationReportPhotosPdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
     private const int PhotosPerPage = 2;
 
     private readonly List<ValuationReportPhotoItem> _photos;
     private readonly string _customerName;
     private readonly ValuationReportFilter _filter;
+    private readonly byte[]? _logoImage;
     private readonly DateTime _generatedAt;
 
-    public ValuationReportPhotosPdfDocument(List<ValuationReportPhotoItem> photos, string customerName, ValuationReportFilter filter)
+    public ValuationReportPhotosPdfDocument(List<ValuationReportPhotoItem> photos, string customerName, ValuationReportFilter filter, byte[]? logoImage = null)
     {
         _photos = photos;
         _customerName = customerName;
         _filter = filter;
+        _logoImage = logoImage;
         _generatedAt = DateTime.Now;
     }
 
@@ -42,9 +43,9 @@ public class ValuationReportPhotosPdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(60).Height(60).Image(LogoPath).FitArea();
+                    row.ConstantItem(60).Height(60).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

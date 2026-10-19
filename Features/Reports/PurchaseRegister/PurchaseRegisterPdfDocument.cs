@@ -4,24 +4,25 @@ using QuestPDF.Infrastructure;
 
 public class PurchaseRegisterPdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
-
     private readonly List<PurchaseRegisterRowDto> _rows;
     private readonly PurchaseRegisterTotalsDto _totals;
     private readonly PurchaseRegisterFilter _filter;
     private readonly string? _supplierName;
+    private readonly byte[]? _logoImage;
     private readonly DateTime _generatedAt;
 
     public PurchaseRegisterPdfDocument(
         List<PurchaseRegisterRowDto> rows,
         PurchaseRegisterTotalsDto totals,
         PurchaseRegisterFilter filter,
-        string? supplierName)
+        string? supplierName,
+        byte[]? logoImage = null)
     {
         _rows = rows;
         _totals = totals;
         _filter = filter;
         _supplierName = supplierName;
+        _logoImage = logoImage;
         _generatedAt = DateTime.Now;
     }
 
@@ -47,9 +48,9 @@ public class PurchaseRegisterPdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(60).Height(60).Image(LogoPath).FitArea();
+                    row.ConstantItem(60).Height(60).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

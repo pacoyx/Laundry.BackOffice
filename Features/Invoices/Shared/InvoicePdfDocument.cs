@@ -4,19 +4,19 @@ using QuestPDF.Infrastructure;
 
 public class InvoicePdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
-
     private readonly Invoice _invoice;
     private readonly Company? _company;
     private readonly InvoicePrintSettings _invoicePrint;
     private readonly string? _branchAddress;
+    private readonly byte[]? _logoImage;
 
-    public InvoicePdfDocument(Invoice invoice, Company? company, InvoicePrintSettings invoicePrint, string? branchAddress)
+    public InvoicePdfDocument(Invoice invoice, Company? company, InvoicePrintSettings invoicePrint, string? branchAddress, byte[]? logoImage = null)
     {
         _invoice = invoice;
         _company = company;
         _invoicePrint = invoicePrint;
         _branchAddress = branchAddress;
+        _logoImage = logoImage;
     }
 
     public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -41,9 +41,9 @@ public class InvoicePdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(55).Height(55).Image(LogoPath).FitArea();
+                    row.ConstantItem(55).Height(55).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

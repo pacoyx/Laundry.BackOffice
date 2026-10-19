@@ -4,18 +4,18 @@ using QuestPDF.Infrastructure;
 
 public class ValuationReportSummaryPdfDocument : IDocument
 {
-    private const string LogoPath = "wwwroot/images/logo.png";
-
     private readonly ValuationReportPivotDto _pivot;
     private readonly string _customerName;
     private readonly ValuationReportFilter _filter;
+    private readonly byte[]? _logoImage;
     private readonly DateTime _generatedAt;
 
-    public ValuationReportSummaryPdfDocument(ValuationReportPivotDto pivot, string customerName, ValuationReportFilter filter)
+    public ValuationReportSummaryPdfDocument(ValuationReportPivotDto pivot, string customerName, ValuationReportFilter filter, byte[]? logoImage = null)
     {
         _pivot = pivot;
         _customerName = customerName;
         _filter = filter;
+        _logoImage = logoImage;
         _generatedAt = DateTime.Now;
     }
 
@@ -41,9 +41,9 @@ public class ValuationReportSummaryPdfDocument : IDocument
         {
             column.Item().Row(row =>
             {
-                if (File.Exists(LogoPath))
+                if (_logoImage is not null)
                 {
-                    row.ConstantItem(60).Height(60).Image(LogoPath).FitArea();
+                    row.ConstantItem(60).Height(60).Image(_logoImage).FitArea();
                 }
 
                 row.RelativeItem().Column(col =>

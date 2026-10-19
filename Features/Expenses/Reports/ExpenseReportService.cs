@@ -4,10 +4,12 @@ using QuestPDF.Fluent;
 public class ExpenseReportService : IExpenseReportService
 {
     private readonly RecepcionDbContext _db;
+    private readonly ICompanyProfileService _companyProfileService;
 
-    public ExpenseReportService(RecepcionDbContext db)
+    public ExpenseReportService(RecepcionDbContext db, ICompanyProfileService companyProfileService)
     {
         _db = db;
+        _companyProfileService = companyProfileService;
     }
 
     public Task<List<ExpenseDetailRowDto>> GetByPeriodAsync(ExpenseReportFilter filter)
@@ -52,8 +54,9 @@ public class ExpenseReportService : IExpenseReportService
     {
         var totals = CalculateTotals(rows);
         var (branchName, categoryName) = await ResolveFilterNamesAsync(filter);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync();
 
-        var document = new ExpenseDetailPdfDocument(title, rows, totals, filter, branchName, categoryName);
+        var document = new ExpenseDetailPdfDocument(title, rows, totals, filter, branchName, categoryName, logoImage);
         return document.GeneratePdf();
     }
 
@@ -67,8 +70,9 @@ public class ExpenseReportService : IExpenseReportService
     {
         var totals = CalculateAggregateTotals(rows);
         var (branchName, categoryName) = await ResolveFilterNamesAsync(filter);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync();
 
-        var document = new ExpenseAggregatePdfDocument(title, labelHeader, rows, totals, filter, branchName, categoryName);
+        var document = new ExpenseAggregatePdfDocument(title, labelHeader, rows, totals, filter, branchName, categoryName, logoImage);
         return document.GeneratePdf();
     }
 

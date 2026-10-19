@@ -4,10 +4,12 @@ using QuestPDF.Fluent;
 public class SalesRegisterReportService : ISalesRegisterReportService
 {
     private readonly RecepcionDbContext _db;
+    private readonly ICompanyProfileService _companyProfileService;
 
-    public SalesRegisterReportService(RecepcionDbContext db)
+    public SalesRegisterReportService(RecepcionDbContext db, ICompanyProfileService companyProfileService)
     {
         _db = db;
+        _companyProfileService = companyProfileService;
     }
 
     public async Task<List<SalesRegisterRowDto>> GetDataAsync(SalesRegisterFilter filter)
@@ -20,8 +22,9 @@ public class SalesRegisterReportService : ISalesRegisterReportService
         var rows = await GetDataAsync(filter);
         var totals = CalculateTotals(rows);
         var (branchName, customerName) = await ResolveFilterNamesAsync(filter);
+        var logoImage = await _companyProfileService.GetCompanyLogoBytesAsync();
 
-        var document = new SalesRegisterPdfDocument(rows, totals, filter, branchName, customerName);
+        var document = new SalesRegisterPdfDocument(rows, totals, filter, branchName, customerName, logoImage);
         return document.GeneratePdf();
     }
 
