@@ -2121,6 +2121,9 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("FechaEntregaAprox")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsSystem")
                         .HasColumnType("bit");
 

@@ -70,7 +70,8 @@ public static class RegisterLocationClothesEndpoint
                         WorkGuideDetailId = workGuideDetailId.Id,
                         Comments = request.Comments,
                         NumeroGuia = item.NumeroGuia,
-                        IsSystem = isSystem
+                        IsSystem = isSystem,
+                        CreatedDate = DateTime.Now
                     };
 
                     var ubicacion = context.LocationClothes
@@ -98,9 +99,10 @@ public static class RegisterLocationClothesEndpoint
                         WorkGuideDetailId = null,
                         Comments = item.Referencia,
                         NumeroGuia = item.NumeroGuia,
-                        IsSystem = isSystem
+                        IsSystem = isSystem,
+                        CreatedDate = DateTime.Now
                     };
- 
+
                     context.LocationWorkGuides.Add(location);
                     await context.SaveChangesAsync();
                 }

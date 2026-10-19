@@ -29,6 +29,13 @@ public static class GetWorkGuideByDocumentEndpoint
                 return Results.NotFound(responseValidation);
             }
 
+            var detailIds = workGuideMain.WorkGuideDetails.Select(d => d.Id).ToList();
+            var latestLocations = await db.LocationWorkGuides
+                .Where(x => x.WorkGuideDetailId != null && detailIds.Contains(x.WorkGuideDetailId.Value))
+                .GroupBy(x => x.WorkGuideDetailId!.Value)
+                .Select(g => g.OrderByDescending(x => x.Id).First())
+                .ToDictionaryAsync(x => x.WorkGuideDetailId!.Value);
+
             var responseWgmDto = new ResponseGuiaByDocumentDto(
                 workGuideMain.Id,
                 workGuideMain.SerieGuia,
@@ -70,7 +77,9 @@ public static class GetWorkGuideByDocumentEndpoint
                     d.EstadoPago,
                     d.FechaRecojo,
                     d.FechaDevolucion,
-                    d.Identificador
+                    d.Identificador,
+                    latestLocations.TryGetValue(d.Id, out var loc1) ? loc1.CreatedDate : null,
+                    latestLocations.TryGetValue(d.Id, out var loc2) ? loc2.FechaEntregaAprox : null
                 ))
             );
 

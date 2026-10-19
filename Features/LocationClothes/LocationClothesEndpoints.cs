@@ -6,6 +6,7 @@ public static class LocationClothesEndpoints
         group.MapCreateLocation();
         group.MapGetLocations();
         group.MapRegisterLocationWorkGuide();
+        group.MapAssignWorkGuideDetailLocation();
         group.MapUpdateLocation();
         group.MapDeleteLocation();
     }

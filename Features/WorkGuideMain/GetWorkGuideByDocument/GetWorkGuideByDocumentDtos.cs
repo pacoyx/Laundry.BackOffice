@@ -46,5 +46,7 @@ public record ResponseGuiaByDocumentDtoDet(
     string EstadoPago,
     DateTime? FechaRecojo ,
     DateTime? FechaDevolucion ,
-    string Identificador
+    string Identificador,
+    DateTime? FechaEnvioUbicacion,
+    DateTime? FechaEntregaAproxUbicacion
 );

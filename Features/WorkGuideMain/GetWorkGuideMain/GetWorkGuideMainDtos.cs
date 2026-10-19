@@ -41,5 +41,7 @@ public record ResponseWgdDto(
     ProdService Product,
     string EstadoRegistro,
     string EstadoSituacion,
-    string EstadoPago
+    string EstadoPago,
+    DateTime? FechaEnvioUbicacion,
+    DateTime? FechaEntregaAproxUbicacion
 );

@@ -22,6 +22,13 @@ public static class GetWorkGuideMainEndpoint
                 return Results.NotFound();
             }
 
+            var detailIds = workGuideMain.WorkGuideDetails.Select(d => d.Id).ToList();
+            var latestLocations = await db.LocationWorkGuides
+                .Where(x => x.WorkGuideDetailId != null && detailIds.Contains(x.WorkGuideDetailId.Value))
+                .GroupBy(x => x.WorkGuideDetailId!.Value)
+                .Select(g => g.OrderByDescending(x => x.Id).First())
+                .ToDictionaryAsync(x => x.WorkGuideDetailId!.Value);
+
             var responseWgmDto = new ResponseWgmDto(
                 workGuideMain.SerieGuia,
                 workGuideMain.NumeroGuia,
@@ -58,7 +65,9 @@ public static class GetWorkGuideMainEndpoint
                     d.Product!,
                     d.EstadoRegistro,
                     d.EstadoSituacion,
-                    d.EstadoPago
+                    d.EstadoPago,
+                    latestLocations.TryGetValue(d.Id, out var loc1) ? loc1.CreatedDate : null,
+                    latestLocations.TryGetValue(d.Id, out var loc2) ? loc2.FechaEntregaAprox : null
                 ))
             );           
             var response = new ApiResponse<ResponseWgmDto>(){
