@@ -4,5 +4,5 @@ public record EmailMessage(IEnumerable<string> To, string Subject, string HtmlBo
 
 public interface IEmailService
 {
-    Task SendAsync(EmailMessage message, CancellationToken cancellationToken = default);
+    Task SendAsync(EmailMessage message, string operacion, CancellationToken cancellationToken = default);
 }

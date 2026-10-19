@@ -32,7 +32,7 @@ internal static class PickupGuideEmailDispatcher
                 new[] { new EmailAttachment(attachmentFileName, pdfBytes, "application/pdf") }
             );
 
-            await emailService.SendAsync(message);
+            await emailService.SendAsync(message, EmailOperationCodes.CorporateOperations);
 
             guide.EmailDeliveryStatus = PickupGuideEmailStatus.Sent;
             guide.EmailSentAt = now;

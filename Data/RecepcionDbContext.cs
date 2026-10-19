@@ -31,6 +31,7 @@ public class RecepcionDbContext : DbContext
     public DbSet<LocationWorkGuide> LocationWorkGuides { get; set; }
     public DbSet<ServiceAccessFast> ServiceAccessFasts { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<EmailAccount> EmailAccounts { get; set; }
 
     public DbSet<ClothingItem>  ClothingItems { get; set; }
     public DbSet<ClothingObservations>  ClothingObservations { get; set; }
@@ -196,6 +197,7 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionPhotoConfiguration());
+        modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

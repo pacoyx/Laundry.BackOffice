@@ -1,21 +1,39 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
 
 public class SmtpEmailService : IEmailService
 {
-    private readonly EmailSettings _settings;
+    private readonly RecepcionDbContext _db;
+    private readonly ISymmetricEncryptionService _encryptionService;
 
-    public SmtpEmailService(IOptions<EmailSettings> settings)
+    public SmtpEmailService(RecepcionDbContext db, ISymmetricEncryptionService encryptionService)
     {
-        _settings = settings.Value;
+        _db = db;
+        _encryptionService = encryptionService;
     }
 
-    public async Task SendAsync(EmailMessage message, CancellationToken cancellationToken = default)
+    public async Task SendAsync(EmailMessage message, string operacion, CancellationToken cancellationToken = default)
     {
+        var account = await _db.EmailAccounts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Operacion == operacion && x.IsActive, cancellationToken);
+
+        if (account is null)
+        {
+            throw new InvalidOperationException($"No hay una cuenta de correo activa configurada para la operación '{operacion}'.");
+        }
+
+        if (string.IsNullOrEmpty(account.Password))
+        {
+            throw new InvalidOperationException($"La cuenta de correo '{operacion}' no tiene una contraseña configurada.");
+        }
+
+        var password = _encryptionService.Decrypt(account.Password);
+
         var mimeMessage = new MimeMessage();
-        mimeMessage.From.Add(MailboxAddress.Parse(_settings.UserName));
+        mimeMessage.From.Add(MailboxAddress.Parse(account.UserName));
 
         foreach (var recipient in message.To)
         {
@@ -33,10 +51,10 @@ public class SmtpEmailService : IEmailService
         mimeMessage.Body = builder.ToMessageBody();
 
         using var client = new SmtpClient();
-        var secureSocketOptions = _settings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
+        var secureSocketOptions = account.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
 
-        await client.ConnectAsync(_settings.Host, _settings.Port, secureSocketOptions, cancellationToken);
-        await client.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
+        await client.ConnectAsync(account.Host, account.Port, secureSocketOptions, cancellationToken);
+        await client.AuthenticateAsync(account.UserName, password, cancellationToken);
         await client.SendAsync(mimeMessage, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);
     }

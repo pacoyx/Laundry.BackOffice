@@ -21,6 +21,7 @@ public static class RouteExtensions
         app.MapLocationClothes();
         app.MapUser();
         app.MapCompany();
+        app.MapEmailAccounts();
         app.MapTicket();
         app.MapCollectionGuide();
         app.MapClothingWorkerEndpoints();

@@ -50,7 +50,7 @@ public static class ServiceExtensions
         services.Configure<CustomerPortalSettings>(configuration.GetSection("CustomerPortal"));
         services.Configure<InvoicePrintSettings>(configuration.GetSection("InvoicePrint"));
         services.Configure<FileStorageSettings>(configuration.GetSection("FileStorage"));
-        services.Configure<EmailSettings>(configuration.GetSection("Email"));
+        services.Configure<EncryptionSettings>(configuration.GetSection("Encryption"));
         services.Configure<PickupMobileSettings>(configuration.GetSection("PickupMobile"));
 
         var fileStorageProvider = configuration["FileStorage:Provider"];

@@ -99,6 +99,7 @@ public static class ServicesDiExtensions
 
         services.AddScoped<IImageCompressor, SkiaImageCompressor>();
         services.AddScoped<IEmailService, SmtpEmailService>();
+        services.AddSingleton<ISymmetricEncryptionService, AesSymmetricEncryptionService>();
         services.AddScoped<IPickupGuideReceiptPdfService, PickupGuideReceiptPdfService>();
 
         services.AddScoped<IApplicationSeeder, AreaSeeder>();
@@ -107,6 +108,7 @@ public static class ServicesDiExtensions
         services.AddScoped<IApplicationSeeder, SneakerBrandSeeder>();
         services.AddScoped<IApplicationSeeder, ExpenseCategorySeeder>();
         services.AddScoped<IApplicationSeeder, PaymentMethodSeeder>();
+        services.AddScoped<IApplicationSeeder, EmailAccountSeeder>();
 
         services.AddScoped<IApplicationSeeder, PermissionSeeder>();
         services.AddScoped<IApplicationSeeder, RoleSeeder>();
