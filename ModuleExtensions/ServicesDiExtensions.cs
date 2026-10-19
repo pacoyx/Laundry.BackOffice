@@ -109,6 +109,7 @@ public static class ServicesDiExtensions
         services.AddScoped<IApplicationSeeder, ExpenseCategorySeeder>();
         services.AddScoped<IApplicationSeeder, PaymentMethodSeeder>();
         services.AddScoped<IApplicationSeeder, EmailAccountSeeder>();
+        services.AddScoped<IApplicationSeeder, BankAccountTypeSeeder>();
 
         services.AddScoped<IApplicationSeeder, PermissionSeeder>();
         services.AddScoped<IApplicationSeeder, RoleSeeder>();

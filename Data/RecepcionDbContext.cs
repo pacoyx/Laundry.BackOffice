@@ -32,6 +32,9 @@ public class RecepcionDbContext : DbContext
     public DbSet<ServiceAccessFast> ServiceAccessFasts { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<EmailAccount> EmailAccounts { get; set; }
+    public DbSet<Bank> Banks { get; set; }
+    public DbSet<BankAccountType> BankAccountTypes { get; set; }
+    public DbSet<CompanyBankAccount> CompanyBankAccounts { get; set; }
 
     public DbSet<ClothingItem>  ClothingItems { get; set; }
     public DbSet<ClothingObservations>  ClothingObservations { get; set; }
@@ -156,6 +159,9 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerBillingProfileConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerContactConfiguration());
+        modelBuilder.ApplyConfiguration(new BankConfiguration());
+        modelBuilder.ApplyConfiguration(new BankAccountTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanyBankAccountConfiguration());
 
         modelBuilder.ApplyConfiguration(new AreaConfiguration());
         modelBuilder.ApplyConfiguration(new PositionConfiguration());

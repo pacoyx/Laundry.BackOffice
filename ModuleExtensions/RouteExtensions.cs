@@ -22,6 +22,9 @@ public static class RouteExtensions
         app.MapUser();
         app.MapCompany();
         app.MapEmailAccounts();
+        app.MapBanks();
+        app.MapBankAccountTypes();
+        app.MapCompanyBankAccounts();
         app.MapTicket();
         app.MapCollectionGuide();
         app.MapClothingWorkerEndpoints();
