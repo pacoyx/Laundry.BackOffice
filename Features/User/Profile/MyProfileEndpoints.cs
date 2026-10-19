@@ -1,9 +1,25 @@
 using System.Security.Claims;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 public static class MyProfileEndpoints
 {
+    private static readonly HashSet<string> AllowedPhotoContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "image/jpeg", "image/png", "image/webp"
+    };
+
+    private const long MaxPhotoSizeBytes = 5 * 1024 * 1024;
+
+    private static readonly HashSet<string> AllowedDocumentContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "image/jpeg", "image/png", "image/webp", "application/pdf"
+    };
+
+    private const long MaxDocumentSizeBytes = 10 * 1024 * 1024;
+
     public static void MapMyProfile(this IEndpointRouteBuilder app)
     {
         app.MapGet("/me", async (ClaimsPrincipal principal, RecepcionDbContext db) =>
@@ -151,9 +167,10 @@ public static class MyProfileEndpoints
 
         app.MapPost("/me/photo", async (
             ClaimsPrincipal principal,
-            UpdateMyPhotoRequestDto request,
-            IValidator<UpdateMyPhotoRequestDto> validator,
-            RecepcionDbContext db) =>
+            IFormFile file,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
         {
             var userId = principal.GetUserId();
             if (userId is null)
@@ -161,20 +178,39 @@ public static class MyProfileEndpoints
                 return Results.Unauthorized();
             }
 
-            var validation = await validator.ValidateAsync(request);
-            if (!validation.IsValid)
+            if (file.Length == 0)
             {
-                return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+                return Results.BadRequest(new[] { "El archivo está vacío." });
             }
 
-            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (!AllowedPhotoContentTypes.Contains(file.ContentType))
+            {
+                return Results.BadRequest(new[] { "Tipo de archivo no permitido. Formatos aceptados: JPG, PNG y WEBP." });
+            }
+
+            if (file.Length > MaxPhotoSizeBytes)
+            {
+                return Results.BadRequest(new[] { "El archivo supera el tamaño máximo permitido de 5 MB." });
+            }
+
+            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
             if (user is null)
             {
                 return Results.NotFound();
             }
 
-            user.PhotoUrl = request.BlobUrl;
-            await db.SaveChangesAsync();
+            var previousPhotoUrl = user.PhotoUrl;
+
+            await using var stream = file.OpenReadStream();
+            var uploadResult = await storage.UploadAsync("Users", "Photos", userId.Value, file.FileName, file.ContentType, stream, cancellationToken);
+
+            user.PhotoUrl = uploadResult.FilePath;
+            await db.SaveChangesAsync(cancellationToken);
+
+            if (!string.IsNullOrEmpty(previousPhotoUrl))
+            {
+                await storage.DeleteAsync(previousPhotoUrl, cancellationToken);
+            }
 
             var response = new ApiResponse<MyPhotoResponseDto>
             {
@@ -186,13 +222,18 @@ public static class MyProfileEndpoints
 
             return Results.Ok(response);
         })
+        .DisableAntiforgery()
         .WithName("UpdateMyPhoto")
         .Produces<ApiResponse<MyPhotoResponseDto>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest)
         .WithTags("UserProfile")
         .RequireAuthorization();
 
-        app.MapDelete("/me/photo", async (ClaimsPrincipal principal, RecepcionDbContext db) =>
+        app.MapGet("/me/photo", async (
+            ClaimsPrincipal principal,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
         {
             var userId = principal.GetUserId();
             if (userId is null)
@@ -200,14 +241,52 @@ public static class MyProfileEndpoints
                 return Results.Unauthorized();
             }
 
-            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+            if (user is null || string.IsNullOrEmpty(user.PhotoUrl))
+            {
+                return Results.NotFound();
+            }
+
+            var contentTypeProvider = new FileExtensionContentTypeProvider();
+            if (!contentTypeProvider.TryGetContentType(user.PhotoUrl, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            var stream = await storage.OpenReadAsync(user.PhotoUrl, cancellationToken);
+            return Results.File(stream, contentType, enableRangeProcessing: true);
+        })
+        .WithName("GetMyPhoto")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .WithTags("UserProfile")
+        .RequireAuthorization();
+
+        app.MapDelete("/me/photo", async (
+            ClaimsPrincipal principal,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
+        {
+            var userId = principal.GetUserId();
+            if (userId is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var user = await db.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
             if (user is null)
             {
                 return Results.NotFound();
             }
 
+            if (!string.IsNullOrEmpty(user.PhotoUrl))
+            {
+                await storage.DeleteAsync(user.PhotoUrl, cancellationToken);
+            }
+
             user.PhotoUrl = "";
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(cancellationToken);
 
             return Results.Ok(new ApiResponse<object>
             {
@@ -223,9 +302,12 @@ public static class MyProfileEndpoints
 
         app.MapPost("/me/documents", async (
             ClaimsPrincipal principal,
-            CreateMyDocumentRequestDto request,
-            IValidator<CreateMyDocumentRequestDto> validator,
-            RecepcionDbContext db) =>
+            [FromForm] string documentName,
+            [FromForm] string? notes,
+            IFormFile file,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
         {
             var userId = principal.GetUserId();
             if (userId is null)
@@ -233,30 +315,48 @@ public static class MyProfileEndpoints
                 return Results.Unauthorized();
             }
 
-            var validation = await validator.ValidateAsync(request);
-            if (!validation.IsValid)
+            if (string.IsNullOrWhiteSpace(documentName) || documentName.Length > 100)
             {
-                return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+                return Results.BadRequest(new[] { "El nombre del documento es obligatorio y debe tener máximo 100 caracteres." });
             }
 
-            var userExists = await db.Users.AnyAsync(x => x.Id == userId);
+            if (file.Length == 0)
+            {
+                return Results.BadRequest(new[] { "El archivo está vacío." });
+            }
+
+            if (!AllowedDocumentContentTypes.Contains(file.ContentType))
+            {
+                return Results.BadRequest(new[] { "Tipo de archivo no permitido. Formatos aceptados: JPG, PNG, WEBP y PDF." });
+            }
+
+            if (file.Length > MaxDocumentSizeBytes)
+            {
+                return Results.BadRequest(new[] { "El archivo supera el tamaño máximo permitido de 10 MB." });
+            }
+
+            var userExists = await db.Users.AnyAsync(x => x.Id == userId, cancellationToken);
             if (!userExists)
             {
                 return Results.NotFound();
             }
 
+            await using var stream = file.OpenReadStream();
+            var uploadResult = await storage.UploadAsync("Users", "Documents", userId.Value, file.FileName, file.ContentType, stream, cancellationToken);
+
             var document = new UserDocument
             {
                 UserId = userId.Value,
-                DocumentName = request.DocumentName,
-                FileName = request.FileName,
-                BlobUrl = request.BlobUrl,
-                Notes = request.Notes,
+                DocumentName = documentName,
+                FileName = file.FileName,
+                BlobUrl = uploadResult.FilePath,
+                ContentType = file.ContentType,
+                Notes = notes,
                 CreatedAt = DateTime.Now
             };
 
             await db.UserDocuments.AddAsync(document);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(cancellationToken);
 
             var response = new ApiResponse<MyDocumentResponseDto>
             {
@@ -268,12 +368,14 @@ public static class MyProfileEndpoints
                     document.DocumentName,
                     document.FileName,
                     document.BlobUrl,
+                    document.ContentType,
                     document.Notes,
                     document.CreatedAt)
             };
 
             return Results.Created($"/api/user/me/documents/{document.Id}", response);
         })
+        .DisableAntiforgery()
         .WithName("CreateMyDocument")
         .Produces<ApiResponse<MyDocumentResponseDto>>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest)
@@ -293,7 +395,7 @@ public static class MyProfileEndpoints
                 .Where(x => x.UserId == userId)
                 .OrderByDescending(x => x.CreatedAt)
                 .Select(x => new MyDocumentResponseDto(
-                    x.Id, x.DocumentName, x.FileName, x.BlobUrl, x.Notes, x.CreatedAt))
+                    x.Id, x.DocumentName, x.FileName, x.BlobUrl, x.ContentType, x.Notes, x.CreatedAt))
                 .ToListAsync();
 
             return Results.Ok(new ApiResponse<List<MyDocumentResponseDto>>
@@ -309,7 +411,12 @@ public static class MyProfileEndpoints
         .WithTags("UserProfile")
         .RequireAuthorization();
 
-        app.MapDelete("/me/documents/{id:long}", async (long id, ClaimsPrincipal principal, RecepcionDbContext db) =>
+        app.MapGet("/me/documents/{id:long}/download", async (
+            long id,
+            ClaimsPrincipal principal,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
         {
             var userId = principal.GetUserId();
             if (userId is null)
@@ -317,14 +424,46 @@ public static class MyProfileEndpoints
                 return Results.Unauthorized();
             }
 
-            var document = await db.UserDocuments.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+            var document = await db.UserDocuments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, cancellationToken);
+            if (document is null)
+            {
+                return Results.NotFound();
+            }
+
+            var stream = await storage.OpenReadAsync(document.BlobUrl, cancellationToken);
+            return Results.File(stream, document.ContentType, document.FileName, enableRangeProcessing: true);
+        })
+        .WithName("DownloadMyDocument")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .WithTags("UserProfile")
+        .RequireAuthorization();
+
+        app.MapDelete("/me/documents/{id:long}", async (
+            long id,
+            ClaimsPrincipal principal,
+            RecepcionDbContext db,
+            IFileStorageService storage,
+            CancellationToken cancellationToken) =>
+        {
+            var userId = principal.GetUserId();
+            if (userId is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var document = await db.UserDocuments.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId, cancellationToken);
             if (document is null)
             {
                 return Results.NotFound();
             }
 
             db.UserDocuments.Remove(document);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(cancellationToken);
+
+            await storage.DeleteAsync(document.BlobUrl, cancellationToken);
 
             return Results.Ok(new ApiResponse<object>
             {

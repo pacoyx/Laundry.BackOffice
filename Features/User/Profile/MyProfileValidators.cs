@@ -10,26 +10,6 @@ public class UpdateMyProfileValidator : AbstractValidator<UpdateMyProfileRequest
     }
 }
 
-public class UpdateMyPhotoValidator : AbstractValidator<UpdateMyPhotoRequestDto>
-{
-    public UpdateMyPhotoValidator()
-    {
-        RuleFor(x => x.FileName).NotEmpty().MaximumLength(255);
-        RuleFor(x => x.BlobUrl).NotEmpty().MaximumLength(500);
-    }
-}
-
-public class CreateMyDocumentValidator : AbstractValidator<CreateMyDocumentRequestDto>
-{
-    public CreateMyDocumentValidator()
-    {
-        RuleFor(x => x.DocumentName).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.FileName).NotEmpty().MaximumLength(255);
-        RuleFor(x => x.BlobUrl).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.Notes).MaximumLength(500);
-    }
-}
-
 public class ChangeMyPasswordValidator : AbstractValidator<ChangeMyPasswordRequestDto>
 {
     public ChangeMyPasswordValidator()

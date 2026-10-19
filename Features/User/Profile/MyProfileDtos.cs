@@ -15,20 +15,8 @@ public record UpdateMyProfileRequestDto(
     string Phone
 );
 
-public record UpdateMyPhotoRequestDto(
-    string FileName,
-    string BlobUrl
-);
-
 public record MyPhotoResponseDto(
     string PhotoUrl
-);
-
-public record CreateMyDocumentRequestDto(
-    string DocumentName,
-    string FileName,
-    string BlobUrl,
-    string? Notes
 );
 
 public record MyDocumentResponseDto(
@@ -36,6 +24,7 @@ public record MyDocumentResponseDto(
     string DocumentName,
     string FileName,
     string BlobUrl,
+    string ContentType,
     string? Notes,
     DateTime CreatedAt
 );

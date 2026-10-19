@@ -11,6 +11,7 @@ public class UserDocumentConfiguration : IEntityTypeConfiguration<UserDocument>
         builder.Property(x => x.DocumentName).IsRequired().HasMaxLength(100);
         builder.Property(x => x.FileName).IsRequired().HasMaxLength(255);
         builder.Property(x => x.BlobUrl).IsRequired().HasMaxLength(500);
+        builder.Property(x => x.ContentType).IsRequired().HasMaxLength(100);
         builder.Property(x => x.Notes).HasMaxLength(500);
 
         builder.HasOne(x => x.User)
