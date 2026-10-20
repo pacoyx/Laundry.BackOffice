@@ -14,6 +14,7 @@ public static class GetPickupGuideRevisionsEndpoint
 
             var revisions = await db.PickupGuideRevisions
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Where(x => x.PickupGuideId == id)
                 .Include(x => x.Employee)
                 .Include(x => x.DetailRevisions).ThenInclude(d => d.PickupGuideDetail).ThenInclude(d => d.ServiceItem)

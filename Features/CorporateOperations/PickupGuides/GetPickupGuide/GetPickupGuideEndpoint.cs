@@ -8,6 +8,7 @@ public static class GetPickupGuideEndpoint
         {
             var guide = await db.PickupGuides
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(x => x.Customer).ThenInclude(c => c.BillingProfile)
                 .Include(x => x.Details).ThenInclude(d => d.ServiceItem)
                 .Include(x => x.Employee)

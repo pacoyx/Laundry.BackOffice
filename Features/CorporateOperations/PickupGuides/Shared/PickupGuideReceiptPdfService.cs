@@ -56,6 +56,7 @@ public class PickupGuideReceiptPdfService : IPickupGuideReceiptPdfService
 
         var revisions = await _db.PickupGuideRevisions
             .AsNoTracking()
+            .AsSplitQuery()
             .Where(x => x.PickupGuideId == pickupGuideId)
             .Include(x => x.Employee)
             .Include(x => x.DetailRevisions).ThenInclude(d => d.PickupGuideDetail).ThenInclude(d => d.ServiceItem)

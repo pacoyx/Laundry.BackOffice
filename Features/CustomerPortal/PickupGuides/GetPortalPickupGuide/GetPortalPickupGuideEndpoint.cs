@@ -16,6 +16,7 @@ public static class GetPortalPickupGuideEndpoint
             // Filtrado obligatorio por CustomerId del token: nunca por el request.
             var guide = await db.PickupGuides
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(x => x.Details).ThenInclude(d => d.ServiceItem)
                 .Include(x => x.Employee)
                 .Include(x => x.Vehicle)
