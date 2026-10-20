@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
@@ -38,12 +39,13 @@ public static class ResetCustomerUserPasswordEndpoint
             }
 
             var newPassword = GenerateRandomPassword();
+            var safeFullName = WebUtility.HtmlEncode(user.FullName);
 
             var message = new EmailMessage(
                 new[] { user.Email },
                 "Restablecimiento de contraseña - Portal de Clientes",
                 $"""
-                <p>Hola {user.FullName},</p>
+                <p>Hola {safeFullName},</p>
                 <p>Se generó una nueva contraseña para tu cuenta del portal de clientes:</p>
                 <p style="font-size:18px;font-weight:bold;letter-spacing:1px;">{newPassword}</p>
                 <p>Por seguridad, te recomendamos iniciar sesión y cambiarla en cuanto puedas.</p>
