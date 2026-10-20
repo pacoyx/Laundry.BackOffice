@@ -27,6 +27,7 @@ public static class GetPortalPickupGuideRevisionsEndpoint
                 .Where(x => x.PickupGuideId == id)
                 .Include(x => x.Employee)
                 .Include(x => x.DetailRevisions).ThenInclude(d => d.PickupGuideDetail).ThenInclude(d => d.ServiceItem)
+                .Include(x => x.Photos)
                 .OrderByDescending(x => x.RevisionDate)
                 .ToListAsync();
 
@@ -36,6 +37,9 @@ public static class GetPortalPickupGuideRevisionsEndpoint
                 r.Observation,
                 r.DetailRevisions.Select(dr => new PortalPickupGuideRevisionItemResponse(
                     dr.ActionType, dr.PickupGuideDetail.ServiceItem.Name, dr.OriginalQuantity, dr.NewQuantity, dr.Reason
+                )).ToList(),
+                r.Photos.Select(p => new PortalPickupGuideRevisionPhotoResponse(
+                    p.Id, p.OriginalFileName ?? p.FileName, p.ContentType, p.FileSize, p.CreatedAt
                 )).ToList()
             )).ToList();
 

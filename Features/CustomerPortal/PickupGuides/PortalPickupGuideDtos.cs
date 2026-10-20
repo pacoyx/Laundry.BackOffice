@@ -58,11 +58,20 @@ public record PortalPickupGuideRevisionItemResponse(
     string Reason
 );
 
+public record PortalPickupGuideRevisionPhotoResponse(
+    long Id,
+    string OriginalFileName,
+    string ContentType,
+    long FileSize,
+    DateTime CreatedAt
+);
+
 public record PortalPickupGuideRevisionResponse(
     DateTime RevisionDate,
     string EmployeeName,
     string Observation,
-    List<PortalPickupGuideRevisionItemResponse> Items
+    List<PortalPickupGuideRevisionItemResponse> Items,
+    List<PortalPickupGuideRevisionPhotoResponse> Photos
 );
 
 public record PortalPickupGuideAttachmentResponse(
