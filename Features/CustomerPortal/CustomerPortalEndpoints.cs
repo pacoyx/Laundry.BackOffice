@@ -15,11 +15,13 @@ public static class CustomerPortalEndpoints
 
         portalGroup.MapGetMe();
 
+        portalGroup.MapGetCustomerRoles();
         portalGroup.MapGetCustomerUsers();
         portalGroup.MapCreateCustomerUser();
         portalGroup.MapUpdateCustomerUser();
         portalGroup.MapDeactivateCustomerUser();
         portalGroup.MapGenerateActivationLink();
+        portalGroup.MapResetCustomerUserPassword();
 
         portalGroup.MapGetPortalPickupGuides();
         portalGroup.MapGetPortalPickupGuide();

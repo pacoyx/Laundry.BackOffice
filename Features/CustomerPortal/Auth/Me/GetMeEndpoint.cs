@@ -16,7 +16,7 @@ public static class GetMeEndpoint
             var user = await db.CustomerUsers
                 .AsNoTracking()
                 .Include(x => x.Customer).ThenInclude(c => c.BillingProfile)
-                .Include(x => x.CustomerRole)
+                .Include(x => x.CustomerRole).ThenInclude(r => r.Permissions).ThenInclude(p => p.CustomerPermission)
                 .FirstOrDefaultAsync(x => x.Id == customerUserId);
 
             if (user is null)
@@ -24,9 +24,11 @@ public static class GetMeEndpoint
                 return Results.NotFound();
             }
 
+            var permissions = user.CustomerRole.Permissions.Select(p => p.CustomerPermission.Code).ToList();
+
             var response = new CustomerMeResponse(
                 user.CustomerId, user.Id, user.CustomerRole.Name,
-                PickupGuidesEndpoints.GetCustomerDisplayName(user.Customer));
+                PickupGuidesEndpoints.GetCustomerDisplayName(user.Customer), permissions);
 
             return Results.Ok(new ApiResponse<CustomerMeResponse>
             {

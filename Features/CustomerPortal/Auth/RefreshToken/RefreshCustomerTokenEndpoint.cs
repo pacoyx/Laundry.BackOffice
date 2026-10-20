@@ -52,7 +52,7 @@ public static class RefreshCustomerTokenEndpoint
                 Data = new LoginCustomerResponse(
                     newToken,
                     newRefreshToken,
-                    new CustomerMeResponse(user.CustomerId, user.Id, user.CustomerRole.Name, companyName))
+                    new CustomerMeResponse(user.CustomerId, user.Id, user.CustomerRole.Name, companyName, permissions))
             });
         })
         .WithName("RefreshCustomerPortalToken")

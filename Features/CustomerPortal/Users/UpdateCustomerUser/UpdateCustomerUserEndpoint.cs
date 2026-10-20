@@ -47,9 +47,19 @@ public static class UpdateCustomerUserEndpoint
                 return Results.BadRequest(new[] { "El correo ya está registrado." });
             }
 
+            var roleChanged = user.CustomerRoleId != request.CustomerRoleId;
+
             user.FullName = request.FullName;
             user.Email = request.Email;
             user.CustomerRoleId = request.CustomerRoleId;
+
+            // Si cambia el rol, se invalida la sesión activa para que los nuevos permisos
+            // apliquen de inmediato en el siguiente login en vez de esperar a que expire el token.
+            if (roleChanged)
+            {
+                user.RefreshToken = null;
+            }
+
             await db.SaveChangesAsync();
 
             await db.Entry(user).Reference(x => x.CustomerRole).LoadAsync();

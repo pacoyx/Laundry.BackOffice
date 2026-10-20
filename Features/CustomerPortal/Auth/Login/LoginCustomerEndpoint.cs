@@ -48,7 +48,7 @@ public static class LoginCustomerEndpoint
                 Data = new LoginCustomerResponse(
                     token,
                     refreshToken,
-                    new CustomerMeResponse(user.CustomerId, user.Id, user.CustomerRole.Name, companyName))
+                    new CustomerMeResponse(user.CustomerId, user.Id, user.CustomerRole.Name, companyName, permissions))
             };
 
             return Results.Ok(response);
