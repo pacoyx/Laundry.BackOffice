@@ -22,6 +22,7 @@ public static class GetCustomerGarmentHistoryEndpoint
                     h.Id,
                     h.ProductId,
                     h.Product!.Name,
+                    h.Product!.Price,
                     h.Detail,
                     h.UsageCount,
                     h.LastUsedAt
