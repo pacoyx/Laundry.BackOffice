@@ -3,6 +3,7 @@ public record CreatePickupGuideRequest(
     int BranchSalesId,
     DateTime PickupDate,
     string? Observation,
+    string? PhysicalGuideNumber,
     long? EmployeeId,
     int? VehicleId,
     List<PickupGuideDetailRequest> Details

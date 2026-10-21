@@ -40,7 +40,7 @@ public static class PickupGuidesEndpoints
     );
 
     internal static PickupGuideResponse ToResponse(PickupGuide guide) => new(
-        guide.Id, guide.GuideNumber, guide.CustomerId, GetCustomerDisplayName(guide.Customer),
+        guide.Id, guide.GuideNumber, guide.PhysicalGuideNumber, guide.CustomerId, GetCustomerDisplayName(guide.Customer),
         guide.BranchSalesId, guide.PickupDate, guide.Status, guide.Observation,
         guide.CustomerPriceListId, guide.TotalAmount, guide.CreatedAt, guide.UpdatedAt,
         guide.EmployeeId, guide.Employee is null ? null : $"{guide.Employee.FirstName} {guide.Employee.LastName}".Trim(),
@@ -52,7 +52,7 @@ public static class PickupGuidesEndpoints
     );
 
     internal static PickupGuideSummaryResponse ToSummaryResponse(PickupGuide guide) => new(
-        guide.Id, guide.GuideNumber, guide.CustomerId, GetCustomerDisplayName(guide.Customer),
+        guide.Id, guide.GuideNumber, guide.PhysicalGuideNumber, guide.CustomerId, GetCustomerDisplayName(guide.Customer),
         guide.BranchSalesId, guide.PickupDate, guide.Status, guide.TotalAmount, guide.CreatedAt
     );
 }

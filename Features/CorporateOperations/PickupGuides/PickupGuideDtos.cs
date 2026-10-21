@@ -14,6 +14,7 @@ public record PickupGuideDetailResponse(
 public record PickupGuideResponse(
     long Id,
     string GuideNumber,
+    string? PhysicalGuideNumber,
     int CustomerId,
     string CustomerName,
     int BranchSalesId,
@@ -39,6 +40,7 @@ public record PickupGuideResponse(
 public record PickupGuideSummaryResponse(
     long Id,
     string GuideNumber,
+    string? PhysicalGuideNumber,
     int CustomerId,
     string CustomerName,
     int BranchSalesId,

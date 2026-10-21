@@ -14,6 +14,7 @@ public record PortalPickupGuideDetailResponse(
 public record PortalPickupGuideSummaryResponse(
     long Id,
     string GuideNumber,
+    string? PhysicalGuideNumber,
     int BranchSalesId,
     DateTime PickupDate,
     PickupGuideStatus Status,
@@ -39,6 +40,7 @@ public record PortalVehicleSummaryResponse(
 public record PortalPickupGuideResponse(
     long Id,
     string GuideNumber,
+    string? PhysicalGuideNumber,
     int BranchSalesId,
     DateTime PickupDate,
     PickupGuideStatus Status,

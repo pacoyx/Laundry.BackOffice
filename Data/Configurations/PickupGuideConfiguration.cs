@@ -9,6 +9,7 @@ public class PickupGuideConfiguration : IEntityTypeConfiguration<PickupGuide>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.GuideNumber).IsRequired().HasMaxLength(40);
+        builder.Property(x => x.PhysicalGuideNumber).HasMaxLength(50);
         builder.Property(x => x.Observation).HasMaxLength(500);
         builder.Property(x => x.TotalAmount).HasPrecision(18, 2);
         builder.Property(x => x.Status).HasDefaultValue(PickupGuideStatus.Draft);

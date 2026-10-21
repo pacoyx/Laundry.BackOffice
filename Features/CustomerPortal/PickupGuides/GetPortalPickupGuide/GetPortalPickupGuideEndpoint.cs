@@ -35,7 +35,7 @@ public static class GetPortalPickupGuideEndpoint
                 .ToDictionary(g => g.Key, g => g.First());
 
             var response = new PortalPickupGuideResponse(
-                guide.Id, guide.GuideNumber, guide.BranchSalesId, guide.PickupDate, guide.Status,
+                guide.Id, guide.GuideNumber, guide.PhysicalGuideNumber, guide.BranchSalesId, guide.PickupDate, guide.Status,
                 guide.Observation, guide.TotalAmount, guide.CreatedAt,
                 guide.Details.Select(d =>
                 {

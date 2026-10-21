@@ -8,6 +8,9 @@ public class PickupGuide
     [MaxLength(40)]
     public string GuideNumber { get; set; } = string.Empty;
 
+    [MaxLength(50)]
+    public string? PhysicalGuideNumber { get; set; }
+
     public int CustomerId { get; set; }
 
     public Customer Customer { get; set; } = null!;

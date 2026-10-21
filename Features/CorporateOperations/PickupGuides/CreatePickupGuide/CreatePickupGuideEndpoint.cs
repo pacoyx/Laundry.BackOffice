@@ -111,6 +111,7 @@ public static class CreatePickupGuideEndpoint
                 PickupDate = request.PickupDate,
                 Status = PickupGuideStatus.Draft,
                 Observation = request.Observation,
+                PhysicalGuideNumber = request.PhysicalGuideNumber,
                 CustomerPriceListId = activePriceList.Id,
                 TotalAmount = details.Sum(d => d.Total),
                 CreatedAt = fechaOperacion,
