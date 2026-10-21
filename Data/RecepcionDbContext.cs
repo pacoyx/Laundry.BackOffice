@@ -21,6 +21,7 @@ public class RecepcionDbContext : DbContext
     public DbSet<CustomerContact> CustomerContacts { get; set; }
     public DbSet<WorkGuideMain> WorkGuideMains { get; set; }
     public DbSet<WorkGuideDetail> WorkGuideDetails { get; set; }
+    public DbSet<CustomerGarmentHistory> CustomerGarmentHistories { get; set; }
     public DbSet<ExpenseBox> ExpenseBoxMains { get; set; }
     public DbSet<WorkShift> WorkShifts { get; set; }
     public DbSet<CashBoxMain> CashBoxMains { get; set; }
@@ -204,6 +205,7 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionPhotoConfiguration());
         modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new CustomerGarmentHistoryConfiguration());
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

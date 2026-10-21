@@ -16,6 +16,7 @@ public static class RouteExtensions
         app.MapNumbersDocument();
         app.MapWorkShift();
         app.MapWorkGuideMain();
+        app.MapCustomerGarmentHistory();
         app.MapCashBox();
         app.MapReport();
         app.MapLocationClothes();

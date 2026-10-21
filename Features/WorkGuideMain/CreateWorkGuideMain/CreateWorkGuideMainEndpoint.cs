@@ -1,5 +1,8 @@
 
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using _24dex_backend_comercial.Features.WorkGuideMain.CreateWorkGuideMain;
 using DexterCompany.Models;
 using Microsoft.EntityFrameworkCore;
@@ -167,9 +170,10 @@ public static class CreateWorkGuideMainEndpoint
             db.PrintQueues.Add(printQueue);
             await db.SaveChangesAsync();
             await printNotifier.NotifyAsync(branch.DefaultPrinterId, printQueue.Id);
-            
-            
-            
+
+            // Actualiza el historial de prendas frecuentes del cliente. No debe romper el flujo de registro/impresion ya realizado.
+            await UpsertGarmentHistoryAsync(db, logger, workGuideMain.CustomerId, workGuideMain.WorkGuideDetails);
+
             var resp = new WgmCreateResponseDto(
                  workGuideMain.Id,
                  numbersDocument!.TypeDoc,
@@ -211,5 +215,99 @@ public static class CreateWorkGuideMainEndpoint
 
             return Results.Ok(response);
         });
+    }
+
+    private static async Task UpsertGarmentHistoryAsync(RecepcionDbContext db, IAppLogger<string> logger, int customerId, IEnumerable<WorkGuideDetail> details)
+    {
+        try
+        {
+            var productIds = details.Select(d => d.ProductId).Distinct().ToList();
+            if (productIds.Count == 0)
+            {
+                return;
+            }
+
+            // Los servicios por peso (ej. "Lavado por Kilo") no representan una prenda individual, se excluyen del historial.
+            var pesoProductIds = await db.ProdServices
+                .Where(p => productIds.Contains(p.Id) && p.IsPeso == "S")
+                .Select(p => p.Id)
+                .ToListAsync();
+
+            var eligibleGroups = details
+                .Where(d => !pesoProductIds.Contains(d.ProductId))
+                .GroupBy(d => new { d.ProductId, Normalized = NormalizeDetail(d.Observaciones) })
+                .Select(g => new
+                {
+                    g.Key.ProductId,
+                    g.Key.Normalized,
+                    Detail = g.First().Observaciones ?? "",
+                    Count = g.Count()
+                })
+                .ToList();
+
+            if (eligibleGroups.Count == 0)
+            {
+                return;
+            }
+
+            DateTime now = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
+
+            foreach (var group in eligibleGroups)
+            {
+                var existing = await db.CustomerGarmentHistories.FirstOrDefaultAsync(h =>
+                    h.CustomerId == customerId &&
+                    h.ProductId == group.ProductId &&
+                    h.NormalizedDetail == group.Normalized);
+
+                if (existing != null)
+                {
+                    existing.UsageCount += group.Count;
+                    existing.LastUsedAt = now;
+                    existing.Status = "A"; // revive si estaba depurado
+                }
+                else
+                {
+                    db.CustomerGarmentHistories.Add(new CustomerGarmentHistory
+                    {
+                        CustomerId = customerId,
+                        ProductId = group.ProductId,
+                        Detail = group.Detail,
+                        NormalizedDetail = group.Normalized,
+                        UsageCount = group.Count,
+                        LastUsedAt = now,
+                        CreatedAt = now,
+                        Status = "A"
+                    });
+                }
+            }
+
+            await db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning($"No se pudo actualizar el historial de prendas del cliente {customerId}: {ex.Message}", "CreateWorkGuideMainEndpoint");
+        }
+    }
+
+    private static string NormalizeDetail(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "";
+        }
+
+        var normalized = Regex.Replace(value.Trim().ToLowerInvariant(), @"\s+", " ");
+
+        var formD = normalized.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+        foreach (var c in formD)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 }
