@@ -9,6 +9,7 @@ public record PickupMobileServiceItemLookupDto(int Id, string Name, decimal Unit
 public record PickupMobileGuideDto(
     long Id,
     string GuideNumber,
+    string? PhysicalGuideNumber,
     string Customer,
     DateTime Date,
     PickupGuideStatus Status,

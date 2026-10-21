@@ -44,7 +44,7 @@ public static class PickupMobileEndpoints
     );
 
     internal static PickupMobileGuideDto ToGuideDto(PickupGuide guide) => new(
-        guide.Id, guide.GuideNumber, PickupGuidesEndpoints.GetCustomerDisplayName(guide.Customer), guide.PickupDate, guide.Status,
+        guide.Id, guide.GuideNumber, guide.PhysicalGuideNumber, PickupGuidesEndpoints.GetCustomerDisplayName(guide.Customer), guide.PickupDate, guide.Status,
         guide.Attachments.Any(a => a.IsCurrent && a.AttachmentType == PickupGuideAttachmentType.Photo),
         guide.Attachments.Any(a => a.IsCurrent && a.AttachmentType == PickupGuideAttachmentType.Signature)
     );
