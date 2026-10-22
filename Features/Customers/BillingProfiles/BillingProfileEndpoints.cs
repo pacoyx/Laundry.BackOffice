@@ -137,6 +137,8 @@ public static class BillingProfileEndpoints
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status404NotFound)
         .RequireAuthorization();
+
+        app.MapUpdateBillingProfileReminders();
     }
 
     private static CustomerBillingProfileResponseDto ToResponse(CustomerBillingProfile profile) => new(
@@ -148,5 +150,7 @@ public static class BillingProfileEndpoints
         profile.BillingEmail,
         profile.PaymentTermDays,
         profile.CreditLimit,
-        profile.IsCreditEnabled);
+        profile.IsCreditEnabled,
+        profile.RemindersEnabled,
+        profile.RemindersSuppressedReason);
 }

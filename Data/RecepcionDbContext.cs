@@ -120,6 +120,8 @@ public class RecepcionDbContext : DbContext
     public DbSet<ScheduledEmailNotification> ScheduledEmailNotifications { get; set; }
     public DbSet<ScheduledEmailRecipient> ScheduledEmailRecipients { get; set; }
     public DbSet<ScheduledEmailExecution> ScheduledEmailExecutions { get; set; }
+    public DbSet<InvoiceReminderLog> InvoiceReminderLogs { get; set; }
+    public DbSet<InvoiceReminderLogDetail> InvoiceReminderLogDetails { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -213,6 +215,8 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ScheduledEmailNotificationConfiguration());
         modelBuilder.ApplyConfiguration(new ScheduledEmailRecipientConfiguration());
         modelBuilder.ApplyConfiguration(new ScheduledEmailExecutionConfiguration());
+        modelBuilder.ApplyConfiguration(new InvoiceReminderLogConfiguration());
+        modelBuilder.ApplyConfiguration(new InvoiceReminderLogDetailConfiguration());
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

@@ -19,6 +19,7 @@ public class ScheduledEmailNotificationConfiguration : IEntityTypeConfiguration<
         builder.Property(x => x.SignaturePosition).HasMaxLength(100);
         builder.Property(x => x.SignaturePhone).HasMaxLength(30);
         builder.Property(x => x.IsEnabled).HasDefaultValue(false);
+        builder.Property(x => x.RecipientMode).HasDefaultValue(ScheduledEmailRecipientMode.Fixed);
         builder.Property(x => x.CreatedBy).HasMaxLength(100);
         builder.Property(x => x.UpdatedBy).HasMaxLength(100);
 

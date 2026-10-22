@@ -11,5 +11,6 @@ public static class InvoiceEndpoints
         group.MapRegisterPayment();
         group.MapGetPayments();
         group.MapValuationReport();
+        group.MapUpdateInvoiceReminderSuppression();
     }
 }

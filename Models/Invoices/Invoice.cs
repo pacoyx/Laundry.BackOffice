@@ -41,6 +41,10 @@ public class Invoice
 
     public string? Notes { get; set; }
 
+    public bool ReminderSuppressed { get; set; } = false;
+
+    public string? ReminderSuppressedReason { get; set; }
+
     public Customer Customer { get; set; } = null!;
 
     public ICollection<InvoiceDetail> Details { get; set; }

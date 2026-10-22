@@ -18,5 +18,7 @@ public record CustomerBillingProfileResponseDto(
     string? BillingEmail,
     int PaymentTermDays,
     decimal CreditLimit,
-    bool IsCreditEnabled
+    bool IsCreditEnabled,
+    bool RemindersEnabled,
+    string? RemindersSuppressedReason
 );

@@ -126,8 +126,8 @@ public class ScheduledEmailService : IScheduledEmailService
         return template
             .Replace("{Date}", now.ToString("dd/MM/yyyy"))
             .Replace("{DayName}", dayName)
-            .Replace("{DriverName}", config.DriverName)
-            .Replace("{DriverDocument}", config.DriverDocument)
+            .Replace("{DriverName}", config.DriverName ?? string.Empty)
+            .Replace("{DriverDocument}", config.DriverDocument ?? string.Empty)
             .Replace("{SignatureName}", config.SignatureName)
             .Replace("{SignaturePosition}", config.SignaturePosition)
             .Replace("{SignaturePhone}", config.SignaturePhone);

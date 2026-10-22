@@ -32,6 +32,7 @@ public static class CreateScheduledEmailNotificationEndpoint
             {
                 Code = request.Code,
                 Name = request.Name,
+                RecipientMode = request.RecipientMode,
                 CronExpression = CronScheduleHelper.BuildCronExpression(request.Hour, request.Minute, request.DaysOfWeek),
                 SubjectTemplate = request.SubjectTemplate,
                 BodyTemplate = request.BodyTemplate,

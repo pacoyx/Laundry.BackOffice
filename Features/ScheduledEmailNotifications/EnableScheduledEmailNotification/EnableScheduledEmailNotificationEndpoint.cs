@@ -17,10 +17,15 @@ public static class EnableScheduledEmailNotificationEndpoint
                 return Results.NotFound("Configuración no encontrada.");
             }
 
-            var hasToRecipient = config.Recipients.Any(r => r.RecipientType == ScheduledEmailRecipientType.To);
-            if (!hasToRecipient)
+            // En modo Dynamic los destinatarios se resuelven en tiempo de ejecucion
+            // (ej. por cliente), no hay nada que validar aqui en ScheduledEmailRecipients.
+            if (config.RecipientMode == ScheduledEmailRecipientMode.Fixed)
             {
-                return Results.BadRequest(new[] { "No se puede habilitar: debe tener al menos un destinatario TO configurado." });
+                var hasToRecipient = config.Recipients.Any(r => r.RecipientType == ScheduledEmailRecipientType.To);
+                if (!hasToRecipient)
+                {
+                    return Results.BadRequest(new[] { "No se puede habilitar: debe tener al menos un destinatario TO configurado." });
+                }
             }
 
             config.IsEnabled = true;

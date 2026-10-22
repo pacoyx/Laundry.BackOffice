@@ -841,6 +841,15 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<int>("PaymentTermDays")
                         .HasColumnType("int");
 
+                    b.Property<bool>("RemindersEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("RemindersSuppressedReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("TaxId")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -1937,6 +1946,15 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("ReminderSuppressed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("ReminderSuppressedReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<string>("Serie")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -2051,6 +2069,88 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("PaymentMethodId");
 
                     b.ToTable("InvoicePayments", (string)null);
+                });
+
+            modelBuilder.Entity("InvoiceReminderLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("InvoiceCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Recipients")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("RunAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ScheduledEmailNotificationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SkipReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduledEmailNotificationId");
+
+                    b.HasIndex("CustomerId", "RunAt");
+
+                    b.ToTable("InvoiceReminderLogs", (string)null);
+                });
+
+            modelBuilder.Entity("InvoiceReminderLogDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("DaysOverdue")
+                        .HasColumnType("int");
+
+                    b.Property<long>("InvoiceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("InvoiceReminderLogId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("InvoiceReminderLogId");
+
+                    b.ToTable("InvoiceReminderLogDetails", (string)null);
                 });
 
             modelBuilder.Entity("ItemInspection", b =>
@@ -3097,12 +3197,10 @@ namespace _24dex_backend_comercial.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DriverDocument")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("DriverName")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
@@ -3115,6 +3213,11 @@ namespace _24dex_backend_comercial.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("RecipientMode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("SignatureName")
                         .IsRequired()
@@ -4288,6 +4391,44 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
+            modelBuilder.Entity("InvoiceReminderLog", b =>
+                {
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ScheduledEmailNotification", "ScheduledEmailNotification")
+                        .WithMany()
+                        .HasForeignKey("ScheduledEmailNotificationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ScheduledEmailNotification");
+                });
+
+            modelBuilder.Entity("InvoiceReminderLogDetail", b =>
+                {
+                    b.HasOne("Invoice", "Invoice")
+                        .WithMany()
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("InvoiceReminderLog", "InvoiceReminderLog")
+                        .WithMany("Details")
+                        .HasForeignKey("InvoiceReminderLogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("InvoiceReminderLog");
+                });
+
             modelBuilder.Entity("ItemInspection", b =>
                 {
                     b.HasOne("WorkGuideDetail", "WorkGuideDetail")
@@ -4794,6 +4935,11 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Details");
 
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("InvoiceReminderLog", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("LocationClothes", b =>

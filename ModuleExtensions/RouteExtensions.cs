@@ -88,5 +88,6 @@ public static class RouteExtensions
         app.MapCustomerUsersAdmin();
         app.MapPickupMobile();
         app.MapScheduledEmailNotifications();
+        app.MapInvoiceReminders();
     }
 }

@@ -14,5 +14,7 @@ public class CustomerBillingProfileConfiguration : IEntityTypeConfiguration<Cust
         builder.Property(x => x.FiscalAddress).IsRequired().HasMaxLength(300);
         builder.Property(x => x.BillingEmail).HasMaxLength(200);
         builder.Property(x => x.CreditLimit).HasPrecision(18, 2);
+        builder.Property(x => x.RemindersEnabled).HasDefaultValue(true);
+        builder.Property(x => x.RemindersSuppressedReason).HasMaxLength(300);
     }
 }

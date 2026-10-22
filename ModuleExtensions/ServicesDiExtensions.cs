@@ -8,6 +8,8 @@ public static class ServicesDiExtensions
     {
         services.AddScoped<IScheduledEmailService, ScheduledEmailService>();
         services.AddScoped<IApplicationSeeder, ScheduledEmailNotificationSeeder>();
+        services.AddScoped<IOverdueInvoiceReminderService, OverdueInvoiceReminderService>();
+        services.AddScoped<IApplicationSeeder, InvoiceReminderNotificationSeeder>();
 
         services.AddScoped<IGetServicesAccessFastService, GetServicesAccessFastService>();
         services.AddScoped<ICreateUserService, CreateUserService>();

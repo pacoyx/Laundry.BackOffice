@@ -29,7 +29,7 @@ public static class ScheduledEmailNotificationsEndpoints
         var (hour, minute, daysOfWeek) = CronScheduleHelper.ParseCronExpression(config.CronExpression);
 
         return new ScheduledEmailNotificationSummaryResponse(
-            config.Id, config.Code, config.Name, hour, minute, daysOfWeek, config.CronExpression,
+            config.Id, config.Code, config.Name, config.RecipientMode, hour, minute, daysOfWeek, config.CronExpression,
             config.IsEnabled, config.Recipients.Count,
             lastExecutionAt, ComputeNextExecutionAt(config), executionCount,
             config.CreatedAt, config.UpdatedAt
@@ -41,7 +41,7 @@ public static class ScheduledEmailNotificationsEndpoints
         var (hour, minute, daysOfWeek) = CronScheduleHelper.ParseCronExpression(config.CronExpression);
 
         return new ScheduledEmailNotificationResponse(
-            config.Id, config.Code, config.Name, hour, minute, daysOfWeek, config.CronExpression,
+            config.Id, config.Code, config.Name, config.RecipientMode, hour, minute, daysOfWeek, config.CronExpression,
             config.SubjectTemplate, config.BodyTemplate,
             config.DriverName, config.DriverDocument,
             config.SignatureName, config.SignaturePosition, config.SignaturePhone,

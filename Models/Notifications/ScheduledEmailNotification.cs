@@ -18,11 +18,12 @@ public class ScheduledEmailNotification
 
     public string BodyTemplate { get; set; } = string.Empty;
 
+    // Solo aplica a configuraciones tipo chofer; otros casos (ej. cobranza) lo dejan vacio.
     [MaxLength(150)]
-    public string DriverName { get; set; } = string.Empty;
+    public string? DriverName { get; set; }
 
     [MaxLength(20)]
-    public string DriverDocument { get; set; } = string.Empty;
+    public string? DriverDocument { get; set; }
 
     [MaxLength(150)]
     public string SignatureName { get; set; } = string.Empty;
@@ -34,6 +35,10 @@ public class ScheduledEmailNotification
     public string SignaturePhone { get; set; } = string.Empty;
 
     public bool IsEnabled { get; set; }
+
+    // Fixed: usa ScheduledEmailRecipients. Dynamic: el job resuelve destinatarios
+    // por su cuenta (ej. facturas vencidas, uno por cliente). No editable tras crear.
+    public ScheduledEmailRecipientMode RecipientMode { get; set; } = ScheduledEmailRecipientMode.Fixed;
 
     public DateTime CreatedAt { get; set; }
 

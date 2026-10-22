@@ -11,17 +11,32 @@ public static class ScheduledEmailNotificationJobScheduler
 
     public static void SyncJob(this IRecurringJobManager recurringJobManager, ScheduledEmailNotification config)
     {
-        if (config.IsEnabled)
+        if (!config.IsEnabled)
+        {
+            recurringJobManager.RemoveIfExists(config.Code);
+            return;
+        }
+
+        var options = new RecurringJobOptions { TimeZone = BusinessTimeZone };
+
+        // RecipientMode decide que clase de job ejecuta esta configuracion: Fixed usa el
+        // job generico (lista fija de destinatarios); Dynamic usa el job especifico del
+        // caso (hoy solo facturas vencidas, cada uno resuelve sus propios destinatarios).
+        if (config.RecipientMode == ScheduledEmailRecipientMode.Dynamic)
+        {
+            recurringJobManager.AddOrUpdate<OverdueInvoiceReminderJob>(
+                config.Code,
+                job => job.ExecuteAsync(config.Id, CancellationToken.None),
+                config.CronExpression,
+                options);
+        }
+        else
         {
             recurringJobManager.AddOrUpdate<ScheduledEmailNotificationJob>(
                 config.Code,
                 job => job.ExecuteAsync(config.Id, CancellationToken.None),
                 config.CronExpression,
-                new RecurringJobOptions { TimeZone = BusinessTimeZone });
-        }
-        else
-        {
-            recurringJobManager.RemoveIfExists(config.Code);
+                options);
         }
     }
 

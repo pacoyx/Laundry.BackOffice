@@ -11,6 +11,8 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.Property(x => x.Serie).IsRequired().HasMaxLength(10);
         builder.Property(x => x.Numero).IsRequired().HasMaxLength(20);
         builder.Property(x => x.Notes).HasMaxLength(500);
+        builder.Property(x => x.ReminderSuppressed).HasDefaultValue(false);
+        builder.Property(x => x.ReminderSuppressedReason).HasMaxLength(300);
 
         builder.Property(x => x.PaymentMethod).IsRequired().HasMaxLength(100);
         builder.Property(x => x.TypePayment).IsRequired().HasMaxLength(10);

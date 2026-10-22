@@ -27,5 +27,10 @@ public class CustomerBillingProfile
 
     public bool IsCreditEnabled { get; set; }
 
+    public bool RemindersEnabled { get; set; } = true;
+
+    [MaxLength(300)]
+    public string? RemindersSuppressedReason { get; set; }
+
     public Customer Customer { get; set; } = null!;
 }
