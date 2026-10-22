@@ -1,4 +1,5 @@
 using _24dex_backend_comercial.Features.PrinterHub;
+using Hangfire;
 using HealthChecks.UI.Client;
 using FluentValidation.AspNetCore;
 using FluentValidation;
@@ -32,6 +33,7 @@ builder.Services
 var app = builder.Build();
 
 await app.Services.RunSeedersAsync();
+await app.Services.RegisterScheduledEmailJobsAsync();
 
 if (app.Environment.IsDevelopment())
 {
@@ -44,6 +46,11 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireDashboardAuthorizationFilter() }
+});
 
 // OutputCache debe estar ANTES de los endpoints
 app.UseOutputCache();

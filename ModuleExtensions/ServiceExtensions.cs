@@ -2,6 +2,7 @@
 
 using System.Text;
 using _24dex_backend_comercial;
+using Hangfire;
 using _24dex_backend_comercial.Features.PrinterHub;
 using Dls.Erp.Transversal.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -129,6 +130,14 @@ public static class ServiceExtensions
         services.AddDbContext<RecepcionDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+        // Reutiliza la misma Azure SQL Database de la app (sin BD ni worker separado).
+        services.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection")));
+        services.AddHangfireServer();
+
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAngularApp",
@@ -164,6 +173,23 @@ public static class ServiceExtensions
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+            };
+
+            // El navegador no puede enviar un header Authorization al navegar directo a una URL.
+            // Para /hangfire (y solo esa ruta) se acepta el JWT como query string "access_token",
+            // igual que hace SignalR para WebSockets. No afecta la autenticacion del resto de la API.
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    if (context.Request.Path.StartsWithSegments("/hangfire") &&
+                        context.Request.Query.TryGetValue("access_token", out var token))
+                    {
+                        context.Token = token;
+                    }
+
+                    return Task.CompletedTask;
+                }
             };
         });
 

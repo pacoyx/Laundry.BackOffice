@@ -1,0 +1,1 @@
+public record SendTestScheduledEmailNotificationRequest(string TestEmail);

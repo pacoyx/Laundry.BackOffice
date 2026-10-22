@@ -117,6 +117,10 @@ public class RecepcionDbContext : DbContext
     public DbSet<CustomerRolePermission> CustomerRolePermissions { get; set; }
     public DbSet<CustomerUserToken> CustomerUserTokens { get; set; }
 
+    public DbSet<ScheduledEmailNotification> ScheduledEmailNotifications { get; set; }
+    public DbSet<ScheduledEmailRecipient> ScheduledEmailRecipients { get; set; }
+    public DbSet<ScheduledEmailExecution> ScheduledEmailExecutions { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -206,6 +210,9 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionPhotoConfiguration());
         modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerGarmentHistoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ScheduledEmailNotificationConfiguration());
+        modelBuilder.ApplyConfiguration(new ScheduledEmailRecipientConfiguration());
+        modelBuilder.ApplyConfiguration(new ScheduledEmailExecutionConfiguration());
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

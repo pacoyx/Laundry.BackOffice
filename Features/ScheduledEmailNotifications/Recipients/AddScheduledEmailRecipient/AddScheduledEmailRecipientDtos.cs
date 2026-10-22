@@ -1,0 +1,1 @@
+public record AddScheduledEmailRecipientRequest(string Email, ScheduledEmailRecipientType RecipientType);

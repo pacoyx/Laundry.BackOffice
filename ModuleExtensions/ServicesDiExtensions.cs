@@ -6,6 +6,9 @@ public static class ServicesDiExtensions
 
     public static void AddServicesDi(this IServiceCollection services)
     {
+        services.AddScoped<IScheduledEmailService, ScheduledEmailService>();
+        services.AddScoped<IApplicationSeeder, ScheduledEmailNotificationSeeder>();
+
         services.AddScoped<IGetServicesAccessFastService, GetServicesAccessFastService>();
         services.AddScoped<ICreateUserService, CreateUserService>();
         services.AddScoped<IDeleteUserService, DeleteUserService>();

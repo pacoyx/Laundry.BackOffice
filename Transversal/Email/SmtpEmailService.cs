@@ -40,6 +40,14 @@ public class SmtpEmailService : IEmailService
             mimeMessage.To.Add(MailboxAddress.Parse(recipient));
         }
 
+        if (message.Bcc is not null)
+        {
+            foreach (var bcc in message.Bcc)
+            {
+                mimeMessage.Bcc.Add(MailboxAddress.Parse(bcc));
+            }
+        }
+
         mimeMessage.Subject = message.Subject;
 
         var builder = new BodyBuilder { HtmlBody = message.HtmlBody };
