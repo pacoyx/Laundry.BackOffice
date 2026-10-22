@@ -70,7 +70,17 @@ public class PickupGuideReceiptPdfDocument : IDocument
                     }
 
                     col.Item().AlignCenter().Text("CONSTANCIA DE RECOJO").FontSize(16).Bold();
-                    col.Item().AlignCenter().Text($"Guía: {_guide.GuideNumber}").FontSize(11).Bold();
+
+                    if (!string.IsNullOrWhiteSpace(_guide.PhysicalGuideNumber))
+                    {
+                        col.Item().AlignCenter().Text($"Guía: {_guide.PhysicalGuideNumber}").FontSize(14).Bold();
+                        col.Item().AlignCenter().Text($"{_guide.GuideNumber} (Interno)").FontSize(7).FontColor(Colors.Grey.Darken1).Italic();
+                    }
+                    else
+                    {
+                        col.Item().AlignCenter().Text($"Guía: {_guide.GuideNumber}").FontSize(11).Bold();
+                    }
+
                     col.Item().AlignCenter().Text($"Generado el: {_generatedAt:dd/MM/yyyy HH:mm}").FontSize(8);
                 });
             });
