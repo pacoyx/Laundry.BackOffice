@@ -725,6 +725,11 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<bool>("IsDetractionAccount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
@@ -1915,6 +1920,14 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<int>("DaysCredit")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("DetractionAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("DetractionPercent")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<int>("DocumentTypeId")
                         .HasColumnType("int");
 
@@ -1924,6 +1937,9 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<decimal>("ExchangeRate")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
+
+                    b.Property<bool>("HasDetraction")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Igv")
                         .HasPrecision(18, 2)

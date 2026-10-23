@@ -5,7 +5,8 @@ public record CreateCompanyBankAccountRequest(
     string AccountNumber,
     string? InterbankAccountNumber,
     string? Description,
-    string? Notes
+    string? Notes,
+    bool IsDetractionAccount
 );
 
 public record UpdateCompanyBankAccountRequest(
@@ -15,7 +16,8 @@ public record UpdateCompanyBankAccountRequest(
     string AccountNumber,
     string? InterbankAccountNumber,
     string? Description,
-    string? Notes
+    string? Notes,
+    bool IsDetractionAccount
 );
 
 public record CompanyBankAccountResponse(
@@ -30,6 +32,7 @@ public record CompanyBankAccountResponse(
     string? InterbankAccountNumber,
     string? Description,
     bool IsEnabled,
+    bool IsDetractionAccount,
     string? Notes,
     DateTime CreatedAt,
     DateTime? UpdatedAt

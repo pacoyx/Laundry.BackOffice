@@ -13,6 +13,7 @@ public class CompanyBankAccountConfiguration : IEntityTypeConfiguration<CompanyB
         builder.Property(x => x.InterbankAccountNumber).HasMaxLength(30);
         builder.Property(x => x.Description).HasMaxLength(200);
         builder.Property(x => x.Notes).HasMaxLength(500);
+        builder.Property(x => x.IsDetractionAccount).HasDefaultValue(false);
 
         builder.HasOne(x => x.Company)
             .WithMany()

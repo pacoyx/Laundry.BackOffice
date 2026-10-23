@@ -24,6 +24,10 @@ public class CompanyBankAccount
 
     public bool IsEnabled { get; set; } = true;
 
+    // Marca la cuenta destino de las detracciones SUNAT de la empresa. Se usa para validar
+    // (no duplicar) el numero de cuenta que traen las facturas importadas desde XML.
+    public bool IsDetractionAccount { get; set; } = false;
+
     [MaxLength(500)]
     public string? Notes { get; set; }
 

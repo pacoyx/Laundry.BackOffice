@@ -13,6 +13,8 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.Property(x => x.Notes).HasMaxLength(500);
         builder.Property(x => x.ReminderSuppressed).HasDefaultValue(false);
         builder.Property(x => x.ReminderSuppressedReason).HasMaxLength(300);
+        builder.Property(x => x.DetractionPercent).HasPrecision(5, 2);
+        builder.Property(x => x.DetractionAmount).HasPrecision(18, 2);
 
         builder.Property(x => x.PaymentMethod).IsRequired().HasMaxLength(100);
         builder.Property(x => x.TypePayment).IsRequired().HasMaxLength(10);

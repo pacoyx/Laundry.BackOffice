@@ -24,6 +24,7 @@ public static class CompanyBankAccountEndpoints
         account.InterbankAccountNumber,
         account.Description,
         account.IsEnabled,
+        account.IsDetractionAccount,
         account.Notes,
         account.CreatedAt,
         account.UpdatedAt

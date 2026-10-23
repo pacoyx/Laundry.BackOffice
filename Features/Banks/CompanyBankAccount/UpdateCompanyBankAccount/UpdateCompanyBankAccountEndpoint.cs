@@ -41,6 +41,14 @@ public static class UpdateCompanyBankAccountEndpoint
                 return Results.BadRequest(new[] { $"Tipo de cuenta con ID {request.BankAccountTypeId} no encontrado." });
             }
 
+            if (request.IsDetractionAccount)
+            {
+                // Como mucho una cuenta de detraccion por empresa: desmarca cualquier otra.
+                await db.CompanyBankAccounts
+                    .Where(x => x.CompanyId == companyId && x.Id != id && x.IsDetractionAccount)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsDetractionAccount, false));
+            }
+
             account.BankId = request.BankId;
             account.BankAccountTypeId = request.BankAccountTypeId;
             account.CurrencyId = request.CurrencyId;
@@ -48,6 +56,7 @@ public static class UpdateCompanyBankAccountEndpoint
             account.InterbankAccountNumber = request.InterbankAccountNumber;
             account.Description = request.Description;
             account.Notes = request.Notes;
+            account.IsDetractionAccount = request.IsDetractionAccount;
             account.UpdatedAt = DateTime.UtcNow;
 
             await db.SaveChangesAsync();

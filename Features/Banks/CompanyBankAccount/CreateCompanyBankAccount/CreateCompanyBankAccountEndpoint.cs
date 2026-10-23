@@ -40,6 +40,14 @@ public static class CreateCompanyBankAccountEndpoint
                 return Results.BadRequest(new[] { $"Tipo de cuenta con ID {request.BankAccountTypeId} no encontrado." });
             }
 
+            if (request.IsDetractionAccount)
+            {
+                // Como mucho una cuenta de detraccion por empresa: desmarca la anterior.
+                await db.CompanyBankAccounts
+                    .Where(x => x.CompanyId == companyId && x.IsDetractionAccount)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.IsDetractionAccount, false));
+            }
+
             var account = new CompanyBankAccount
             {
                 CompanyId = companyId,
@@ -51,6 +59,7 @@ public static class CreateCompanyBankAccountEndpoint
                 Description = request.Description,
                 Notes = request.Notes,
                 IsEnabled = true,
+                IsDetractionAccount = request.IsDetractionAccount,
                 CreatedAt = DateTime.UtcNow
             };
 

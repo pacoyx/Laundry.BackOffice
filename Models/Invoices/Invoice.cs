@@ -45,6 +45,12 @@ public class Invoice
 
     public string? ReminderSuppressedReason { get; set; }
 
+    public bool HasDetraction { get; set; }
+
+    public decimal? DetractionPercent { get; set; }
+
+    public decimal? DetractionAmount { get; set; }
+
     public Customer Customer { get; set; } = null!;
 
     public ICollection<InvoiceDetail> Details { get; set; }
