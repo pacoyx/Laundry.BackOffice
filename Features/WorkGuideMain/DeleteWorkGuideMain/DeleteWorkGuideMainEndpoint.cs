@@ -9,6 +9,6 @@ public static class DeleteWorkGuideMainEndpoint{
             await db.SaveChangesAsync();
             logger.LogInformacion("guia eliminada con exito" + id.ToString(), "DeleteWorkGuideMainEndpoint");
             return Results.Ok(workGuideMain);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionEmision);
     }
 }

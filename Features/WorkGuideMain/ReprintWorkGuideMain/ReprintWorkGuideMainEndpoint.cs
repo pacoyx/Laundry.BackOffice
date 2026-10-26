@@ -98,6 +98,6 @@ public static class ReprintWorkGuideMainEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionEmision);
     }
 }

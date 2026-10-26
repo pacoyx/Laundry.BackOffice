@@ -91,6 +91,6 @@ public static class GetWorkGuideByDocumentEndpoint
                 Success = true
             };
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionConsultas);
     }
 }

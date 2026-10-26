@@ -44,6 +44,6 @@ public static class UpdateWorkGuidePickupDateEndpoint
 
             return Results.Ok(response);
 
-        });
+        }).RequirePermission(PermissionCodes.ReceptionRetiro);
     }
 }

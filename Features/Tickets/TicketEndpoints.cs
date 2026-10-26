@@ -2,7 +2,7 @@ public static class TicketEndpoints
 {
     public static void MapTicket(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/ticket").RequirePermission(PermissionCodes.Reception);
+        var group = app.MapGroup("/api/ticket").RequirePermission(PermissionCodes.ReceptionConsultas);
         group.MapCreateTicket();        
         group.MapGetTicketsToCollect();
         // group.MapGetTicket();

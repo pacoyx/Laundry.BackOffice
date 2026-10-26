@@ -6,6 +6,12 @@ public class PermissionSeeder : IApplicationSeeder
     {
         (PermissionCodes.Dashboard, "Acceso al dashboard general"),
         (PermissionCodes.Reception, "Acceso al modulo de Recepcion"),
+        (PermissionCodes.ReceptionEmision, "Acceso a Emision de guias en Recepcion"),
+        (PermissionCodes.ReceptionRetiro, "Acceso a Retiro de prendas en Recepcion"),
+        (PermissionCodes.ReceptionConsultas, "Acceso a Consultas en Recepcion"),
+        (PermissionCodes.ReceptionCaja, "Acceso a Caja en Recepcion"),
+        (PermissionCodes.ReceptionGastos, "Acceso a Gastos en Recepcion"),
+        (PermissionCodes.ReceptionMaestros, "Acceso a Maestros en Recepcion"),
         (PermissionCodes.Customers, "Acceso al modulo de Clientes"),
         (PermissionCodes.Invoices, "Acceso al modulo de Facturacion"),
         (PermissionCodes.Purchases, "Acceso al modulo de Compras"),

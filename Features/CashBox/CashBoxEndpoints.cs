@@ -1,6 +1,6 @@
 public static class CashBoxEndpoints{
     public static void MapCashBox(this IEndpointRouteBuilder app){
-        var group = app.MapGroup("/api/cashBox").RequirePermission(PermissionCodes.Reception);
+        var group = app.MapGroup("/api/cashBox").RequirePermission(PermissionCodes.ReceptionCaja);
         group.MapCreateCashBox();
         group.MapCreateCashBoxDetail();
         group.MapGetCashBox();

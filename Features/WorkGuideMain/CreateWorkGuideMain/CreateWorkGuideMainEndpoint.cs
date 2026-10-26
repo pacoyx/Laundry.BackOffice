@@ -214,7 +214,7 @@ public static class CreateWorkGuideMainEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionEmision);
     }
 
     private static async Task UpsertGarmentHistoryAsync(RecepcionDbContext db, IAppLogger<string> logger, int customerId, IEnumerable<WorkGuideDetail> details)

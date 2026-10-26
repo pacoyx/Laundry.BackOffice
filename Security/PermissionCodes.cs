@@ -2,6 +2,12 @@ public static class PermissionCodes
 {
     public const string Dashboard = "dashboard.access";
     public const string Reception = "reception.access";
+    public const string ReceptionEmision = "reception.emision.access";
+    public const string ReceptionRetiro = "reception.retiro.access";
+    public const string ReceptionConsultas = "reception.consultas.access";
+    public const string ReceptionCaja = "reception.caja.access";
+    public const string ReceptionGastos = "reception.gastos.access";
+    public const string ReceptionMaestros = "reception.maestros.access";
     public const string Customers = "customers.access";
     public const string Invoices = "invoices.access";
     public const string Purchases = "purchases.access";
@@ -16,7 +22,8 @@ public static class PermissionCodes
 
     public static readonly string[] All =
     {
-        Dashboard, Reception, Customers, Invoices, Purchases,
+        Dashboard, Reception, ReceptionEmision, ReceptionRetiro, ReceptionConsultas,
+        ReceptionCaja, ReceptionGastos, ReceptionMaestros, Customers, Invoices, Purchases,
         Expenses, Employees, Payroll, Suppliers, Reports, Settings,
         CorporateOperations, PickupMobile
     };

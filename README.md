@@ -8,7 +8,7 @@ Backend comercial de **Lavandería Kyo**, construido en **.NET 9 (ASP.NET Core)*
 - **Entity Framework Core 9** + SQL Server
 - **MediatR** (CQRS: commands/queries) y **AutoMapper**
 - **FluentValidation** para validación de requests
-- **JWT Bearer** para autenticación y RBAC (roles y permisos) para autorización
+- **JWT Bearer** para autenticación y RBAC (roles y permisos) para autorización, con soporte de horario de acceso por usuario (restricción opcional de días/horas, independiente del rol)
 - **SignalR** (`/printhub`) para impresión en tiempo real sobre nodos de impresión (worker nodes)
 - **QuestPDF** para generación de PDFs (guías, comprobantes)
 - **Serilog** (consola, archivo, Application Insights, Seq) para logging estructurado
@@ -75,6 +75,10 @@ Scripts/          Scripts SQL de datos de ejemplo (seed)
 docker build -t 24dex-backend-comercial .
 docker run -p 8080:80 24dex-backend-comercial
 ```
+
+## Documentación adicional
+
+- [Roles y permisos (RBAC)](./docs/roles-permisos.md) — catálogo de permisos, matriz rol → permisos, cómo restringir el acceso de un usuario a submenús específicos, y el horario de acceso por usuario (independiente de roles).
 
 ## Licencia
 

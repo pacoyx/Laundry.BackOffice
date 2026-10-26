@@ -131,6 +131,6 @@ public static class ReturnUnwashedClothesEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionRetiro);
     }
 }

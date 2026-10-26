@@ -6,6 +6,7 @@ public class RoleSeeder : IApplicationSeeder
     {
         (RoleNames.Administrador, "Acceso total al sistema"),
         (RoleNames.Recepcion, "Personal de recepcion"),
+        (RoleNames.RecepcionBasico, "Personal de recepcion con acceso solo a Emision y Retiro"),
         (RoleNames.Compras, "Personal de compras y proveedores"),
         (RoleNames.Rrhh, "Personal de Recursos Humanos"),
         (RoleNames.Gerencia, "Gerencia con vision transversal del negocio"),

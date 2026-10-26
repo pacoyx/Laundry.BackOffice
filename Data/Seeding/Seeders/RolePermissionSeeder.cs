@@ -8,8 +8,16 @@ public class RolePermissionSeeder : IApplicationSeeder
         [RoleNames.Recepcion] = new[]
         {
             PermissionCodes.Dashboard, PermissionCodes.Reception,
+            PermissionCodes.ReceptionEmision, PermissionCodes.ReceptionRetiro,
+            PermissionCodes.ReceptionConsultas, PermissionCodes.ReceptionCaja,
+            PermissionCodes.ReceptionGastos, PermissionCodes.ReceptionMaestros,
             PermissionCodes.Customers, PermissionCodes.Invoices,
             PermissionCodes.CorporateOperations
+        },
+        [RoleNames.RecepcionBasico] = new[]
+        {
+            PermissionCodes.Dashboard, PermissionCodes.ReceptionEmision,
+            PermissionCodes.ReceptionRetiro
         },
         [RoleNames.Compras] = new[]
         {

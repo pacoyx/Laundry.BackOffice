@@ -79,6 +79,7 @@ public static class RouteExtensions
         app.MapRoles();
         app.MapPermissions();
         app.MapUserRoles();
+        app.MapUserAccessSchedule();
         app.MapAuth();
 
         app.MapCustomerPriceLists();

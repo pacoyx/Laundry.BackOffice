@@ -45,6 +45,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAngularApp");
 app.UseAuthentication();
+app.UseAccessSchedule();
 app.UseAuthorization();
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions

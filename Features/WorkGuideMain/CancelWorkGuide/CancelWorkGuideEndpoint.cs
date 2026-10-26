@@ -44,6 +44,6 @@ public static class CancelWorkGuideEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionEmision);
     }
 }

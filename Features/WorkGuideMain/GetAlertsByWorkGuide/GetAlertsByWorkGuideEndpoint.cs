@@ -48,6 +48,6 @@ public static class GetAlertsByWorkGuideEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionConsultas);
     }
 }

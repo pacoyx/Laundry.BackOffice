@@ -77,6 +77,6 @@ public static class GetWorkGuideMainEndpoint
                 Success = true
             };
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionConsultas);
     }
 }

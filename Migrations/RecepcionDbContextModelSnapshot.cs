@@ -3651,6 +3651,36 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("UserAccessSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "DayOfWeek");
+
+                    b.ToTable("UserAccessSchedules", (string)null);
+                });
+
             modelBuilder.Entity("UserDocument", b =>
                 {
                     b.Property<long>("Id")
@@ -4798,6 +4828,17 @@ namespace _24dex_backend_comercial.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("UserAccessSchedule", b =>
+                {
+                    b.HasOne("User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserDocument", b =>

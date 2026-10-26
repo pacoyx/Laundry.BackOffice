@@ -71,6 +71,6 @@ public static class UpdateWorkGuideInfoPayEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionCaja);
     }
 }

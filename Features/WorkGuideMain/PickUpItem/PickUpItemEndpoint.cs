@@ -155,6 +155,6 @@ public static class PickUpItemEndpoint
             };
 
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionRetiro);
     }
 }

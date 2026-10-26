@@ -68,7 +68,24 @@ public static class LoginUserEndpoint
                 .Distinct()
                 .ToListAsync();
 
-            var token = jwtService.GenerateToken(user.Id.ToString(), loginDto.Username, roles, permissions, user.EmployeeId);
+            var accessWindows = await context.UserAccessSchedules
+                .Where(x => x.UserId == user.Id && x.IsActive)
+                .Select(x => new AccessScheduleWindow(x.DayOfWeek, x.StartTime, x.EndTime))
+                .ToListAsync();
+
+            if (!AccessScheduleEvaluator.IsWithinSchedule(accessWindows, PeruClock.Now))
+            {
+                logger.LogWarning("Usuario fuera de su horario de acceso permitido: " + loginDto.Username);
+                return Results.Json(new ApiResponse<string>
+                {
+                    Success = false,
+                    Message = "Fuera de su horario de acceso permitido.",
+                    StatusCode = StatusCodes.Status403Forbidden,
+                    Data = ""
+                }, statusCode: StatusCodes.Status403Forbidden);
+            }
+
+            var token = jwtService.GenerateToken(user.Id.ToString(), loginDto.Username, roles, permissions, user.EmployeeId, accessWindows);
             var refreshToken = jwtService.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -147,7 +164,24 @@ public static class LoginUserEndpoint
                 .Distinct()
                 .ToListAsync();
 
-            var newJwtToken = jwtService.GenerateToken(user.Id.ToString(), user.UserName, roles, permissions, user.EmployeeId);
+            var accessWindows = await context.UserAccessSchedules
+                .Where(x => x.UserId == user.Id && x.IsActive)
+                .Select(x => new AccessScheduleWindow(x.DayOfWeek, x.StartTime, x.EndTime))
+                .ToListAsync();
+
+            if (!AccessScheduleEvaluator.IsWithinSchedule(accessWindows, PeruClock.Now))
+            {
+                logger.LogWarning("RefreshToken: Usuario fuera de su horario de acceso permitido: " + user.UserName);
+                return Results.Json(new ApiResponse<string>
+                {
+                    Success = false,
+                    Message = "Fuera de su horario de acceso permitido.",
+                    StatusCode = StatusCodes.Status403Forbidden,
+                    Data = ""
+                }, statusCode: StatusCodes.Status403Forbidden);
+            }
+
+            var newJwtToken = jwtService.GenerateToken(user.Id.ToString(), user.UserName, roles, permissions, user.EmployeeId, accessWindows);
             var newRefreshToken = jwtService.GenerateRefreshToken();
 
             user.RefreshToken = newRefreshToken;

@@ -21,6 +21,6 @@ public static class CreateAlertWorkGuideEndpoint{
                 StatusCode = 200
             };
             return Results.Ok(response);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionEmision);
     }
 }

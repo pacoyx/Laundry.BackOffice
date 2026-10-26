@@ -23,6 +23,6 @@ public static class GetWorkGuidesMainEndpoint{
             )).ToListAsync();
 
             return Results.Ok(guias);
-        });
+        }).RequirePermission(PermissionCodes.ReceptionConsultas);
     }
 }
