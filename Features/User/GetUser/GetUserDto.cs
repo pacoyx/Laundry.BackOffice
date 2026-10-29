@@ -4,5 +4,6 @@ public record GetUserResponseDto(
     string UserName,
     string Email,
     string Role,
-    string Status
+    string Status,
+    long? EmployeeId
 );

@@ -23,8 +23,9 @@ public class CreateUserService : ICreateUserService
             Role = userDto.Role,
             Status = "A",
             HashPassword = hashPassword,
-            Email = userDto.Email
-        };     
+            Email = userDto.Email,
+            EmployeeId = userDto.EmployeeId
+        };
 
         await _context.Users.AddAsync(user);
         _context.SaveChanges();

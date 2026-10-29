@@ -12,7 +12,8 @@ public static class GetUsersEndpoint
                 user.UserName,
                 user.Email,
                 user.Role,
-                user.Status
+                user.Status,
+                user.EmployeeId
             )).ToList();
 
             var response = new ApiResponse<List<GetUsersResponseDto>>()

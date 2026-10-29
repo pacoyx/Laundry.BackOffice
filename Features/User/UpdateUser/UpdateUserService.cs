@@ -22,6 +22,7 @@ public class UpdateUserService : IUpdateUserService
         user.Email = updateUserRequestDto.Email;
         user.Role = updateUserRequestDto.Role;
         user.Status = updateUserRequestDto.Status;
+        user.EmployeeId = updateUserRequestDto.EmployeeId;
 
         if (updateUserRequestDto.Password.Length > 0)
         {

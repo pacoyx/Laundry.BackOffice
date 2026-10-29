@@ -5,5 +5,6 @@ public record UpdateUserRequestDto(
     string Password,
     string Email,
     string Role,
-    string Status
+    string Status,
+    long? EmployeeId = null
 );

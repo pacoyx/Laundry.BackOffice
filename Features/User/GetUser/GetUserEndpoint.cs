@@ -27,7 +27,8 @@ public static class GetUserEndpoint
                     user.UserName,
                     user.Email,
                     user.Role,
-                    user.Status
+                    user.Status,
+                    user.EmployeeId
                 ),
                 Message = "User found",
                 StatusCode = 200,
