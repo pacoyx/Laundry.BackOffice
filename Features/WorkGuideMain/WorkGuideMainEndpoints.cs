@@ -12,6 +12,8 @@ public static class WorkGuideMainEndpoints{
         group.MapCreateAlertWorkGuide();
         group.MapGetAlertsByWorkGuide();
         group.MapCancelItemWorkGuide();
+        group.MapAddWorkGuideItem();
+        group.MapAdjustWorkGuideItemQuantity();
         group.MapReturnUnwashedClothes();
         group.MapPickUpItem();
         group.MapReprintWorkGuideMain();

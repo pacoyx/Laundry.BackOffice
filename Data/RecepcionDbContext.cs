@@ -124,6 +124,16 @@ public class RecepcionDbContext : DbContext
     public DbSet<InvoiceReminderLog> InvoiceReminderLogs { get; set; }
     public DbSet<InvoiceReminderLogDetail> InvoiceReminderLogDetails { get; set; }
 
+    public DbSet<Zone> Zones { get; set; }
+    public DbSet<District> Districts { get; set; }
+    public DbSet<ZonePriceList> ZonePriceLists { get; set; }
+    public DbSet<ZonePriceListDetail> ZonePriceListDetails { get; set; }
+    public DbSet<WebCustomerAccount> WebCustomerAccounts { get; set; }
+    public DbSet<WebCustomerOtp> WebCustomerOtps { get; set; }
+    public DbSet<WebOrder> WebOrders { get; set; }
+    public DbSet<WebOrderDetail> WebOrderDetails { get; set; }
+    public DbSet<WorkGuideDetailChangeLog> WorkGuideDetailChangeLogs { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -219,6 +229,22 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ScheduledEmailExecutionConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceReminderLogConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceReminderLogDetailConfiguration());
+
+        modelBuilder.ApplyConfiguration(new ZoneConfiguration());
+        modelBuilder.ApplyConfiguration(new DistrictConfiguration());
+        modelBuilder.ApplyConfiguration(new ZonePriceListConfiguration());
+        modelBuilder.ApplyConfiguration(new ZonePriceListDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new WebCustomerAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new WebCustomerOtpConfiguration());
+        modelBuilder.ApplyConfiguration(new WebOrderConfiguration());
+        modelBuilder.ApplyConfiguration(new WebOrderDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new WorkGuideDetailChangeLogConfiguration());
+
+        modelBuilder.Entity<BranchSales>()
+            .HasIndex(x => x.IsCentral)
+            .IsUnique()
+            .HasFilter("[IsCentral] = 1")
+            .HasDatabaseName("IX_BranchSales_IsCentral_Single");
 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Employee)

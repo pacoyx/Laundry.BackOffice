@@ -85,6 +85,31 @@ public class JwtService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public string GenerateWebCustomerToken(long webCustomerAccountId, int customerId, string phone)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, webCustomerAccountId.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, phone),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("userType", "WebCustomer"),
+            new Claim("webCustomerAccountId", webCustomerAccountId.ToString()),
+            new Claim("customerId", customerId.ToString())
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiresInMinutes),
+            signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters

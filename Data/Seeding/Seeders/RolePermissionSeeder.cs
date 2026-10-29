@@ -11,6 +11,7 @@ public class RolePermissionSeeder : IApplicationSeeder
             PermissionCodes.ReceptionEmision, PermissionCodes.ReceptionRetiro,
             PermissionCodes.ReceptionConsultas, PermissionCodes.ReceptionCaja,
             PermissionCodes.ReceptionGastos, PermissionCodes.ReceptionMaestros,
+            PermissionCodes.ReceptionPedidosWeb,
             PermissionCodes.Customers, PermissionCodes.Invoices,
             PermissionCodes.CorporateOperations
         },

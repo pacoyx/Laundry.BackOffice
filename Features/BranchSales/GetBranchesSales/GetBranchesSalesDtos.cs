@@ -5,5 +5,6 @@ public record BranchSalesComboResponse(
      string Status,
      string Code,
      int DefaultPrinterId,
-     string? PrinterName
+     string? PrinterName,
+     bool IsCentral
 );

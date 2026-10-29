@@ -12,6 +12,7 @@ public class PermissionSeeder : IApplicationSeeder
         (PermissionCodes.ReceptionCaja, "Acceso a Caja en Recepcion"),
         (PermissionCodes.ReceptionGastos, "Acceso a Gastos en Recepcion"),
         (PermissionCodes.ReceptionMaestros, "Acceso a Maestros en Recepcion"),
+        (PermissionCodes.ReceptionPedidosWeb, "Acceso a Pedidos Web en Recepcion"),
         (PermissionCodes.Customers, "Acceso al modulo de Clientes"),
         (PermissionCodes.Invoices, "Acceso al modulo de Facturacion"),
         (PermissionCodes.Purchases, "Acceso al modulo de Compras"),

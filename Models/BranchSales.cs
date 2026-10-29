@@ -9,7 +9,8 @@ public class BranchSales
     public List<BrachSalesUser> BrachSalesUsers { get; set; } = [];
     public string Code { get; set; } = null!;
     public bool IsActive { get; set; } = true;
-    public DateTime CreatedAt { get; set; } 
+    public bool IsCentral { get; set; } = false;
+    public DateTime CreatedAt { get; set; }
     public int DefaultPrinterId { get; set; }
     public ICollection<WorkerNode> WorkerNodes { get; set; } = new List<WorkerNode>();
 }

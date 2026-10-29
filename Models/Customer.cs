@@ -26,6 +26,11 @@ public class Customer
 
     public bool IsActive { get; set; } = true;
 
+    public CustomerOrigin Origin { get; set; } = CustomerOrigin.Recepcion;
+
+    public int? DistrictId { get; set; }
+    public District? District { get; set; }
+
     public bool PortalEnabled { get; set; } = false;
 
     public CustomerBillingProfile? BillingProfile { get; set; }

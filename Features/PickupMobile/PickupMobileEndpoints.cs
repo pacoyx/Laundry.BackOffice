@@ -36,6 +36,13 @@ public static class PickupMobileEndpoints
         group.MapCreatePickupMobileAttachment();
         group.MapDeletePickupMobileAttachment();
         group.MapDownloadPickupMobileAttachment();
+
+        // Pedidos del canal web (landing), asignados a este chofer para recojo a domicilio.
+        // No crean ni usan PickupGuide: la guia operativa es un WorkGuideMain generado desde Recepcion.
+        group.MapGetMyWebOrdersPickupMobile();
+        group.MapGetWebOrderByDocumentPickupMobile();
+        group.MapCreateWebOrderPickupPhoto();
+        group.MapCompletePickupMobileWebOrder();
     }
 
     internal static PickupMobileAttachmentDto ToAttachmentDto(PickupGuideAttachment attachment) => new(

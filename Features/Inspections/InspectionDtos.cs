@@ -16,5 +16,7 @@ public record ItemPhotoResponse(
     string? OriginalFileName,
     string ContentType,
     long FileSize,
+    WorkGuideEvidenceStage Stage,
+    long? EmployeeId,
     DateTime CreatedAt
 );

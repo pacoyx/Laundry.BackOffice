@@ -125,5 +125,8 @@ public static class ServicesDiExtensions
         services.AddScoped<IApplicationSeeder, CustomerPermissionSeeder>();
         services.AddScoped<IApplicationSeeder, CustomerRoleSeeder>();
         services.AddScoped<IApplicationSeeder, CustomerRolePermissionSeeder>();
+
+        services.AddScoped<IApplicationSeeder, ZoneSeeder>();
+        services.AddScoped<IApplicationSeeder, SampleWebOrdersDataSeeder>();
     }
 }

@@ -250,11 +250,19 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsCentral")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsCentral")
+                        .IsUnique()
+                        .HasDatabaseName("IX_BranchSales_IsCentral_Single")
+                        .HasFilter("[IsCentral] = 1");
 
                     b.ToTable("BranchSales");
                 });
@@ -768,6 +776,9 @@ namespace _24dex_backend_comercial.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(1);
 
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
+
                     b.Property<string>("DocPersonal")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -794,6 +805,11 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("Origin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
@@ -809,6 +825,8 @@ namespace _24dex_backend_comercial.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
 
                     b.ToTable("Customers");
                 });
@@ -1362,6 +1380,35 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TypeDocuments");
+                });
+
+            modelBuilder.Entity("District", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ZoneId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("ZoneId");
+
+                    b.ToTable("Districts", (string)null);
                 });
 
             modelBuilder.Entity("EmailAccount", b =>
@@ -2228,6 +2275,9 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<long?>("EmployeeId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(260)
@@ -2240,10 +2290,17 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(260)
                         .HasColumnType("nvarchar(260)");
 
+                    b.Property<int>("Stage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2);
+
                     b.Property<int>("WorkGuideMainId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("WorkGuideMainId");
 
@@ -3770,6 +3827,207 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("Vehicles", (string)null);
                 });
 
+            modelBuilder.Entity("WebCustomerAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPhoneVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
+                    b.ToTable("WebCustomerAccounts", (string)null);
+                });
+
+            modelBuilder.Entity("WebCustomerOtp", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Phone", "IsUsed");
+
+                    b.ToTable("WebCustomerOtps", (string)null);
+                });
+
+            modelBuilder.Entity("WebOrder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("ConfirmedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ConfirmedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactPhone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeliveryAddress")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("PickupObservation")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("RequestedPickupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ScheduledPickupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WorkGuideMainId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ZonePriceListId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConfirmedByUserId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("OrderNumber")
+                        .IsUnique();
+
+                    b.HasIndex("VehicleId");
+
+                    b.HasIndex("WorkGuideMainId");
+
+                    b.HasIndex("ZonePriceListId");
+
+                    b.HasIndex("CustomerId", "Status");
+
+                    b.HasIndex("EmployeeId", "Status");
+
+                    b.ToTable("WebOrders", (string)null);
+                });
+
+            modelBuilder.Entity("WebOrderDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("WebOrderId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceItemId");
+
+                    b.HasIndex("WebOrderId");
+
+                    b.ToTable("WebOrderDetails", (string)null);
+                });
+
             modelBuilder.Entity("WorkGuideDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -3848,6 +4106,55 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("WorkGuideMainId");
 
                     b.ToTable("WorkGuideDetails");
+                });
+
+            modelBuilder.Entity("WorkGuideDetailChangeLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ChangeType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("NewQuantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Observation")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal?>("OldQuantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WorkGuideDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkGuideMainId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkGuideDetailId");
+
+                    b.HasIndex("WorkGuideMainId");
+
+                    b.ToTable("WorkGuideDetailChangeLogs", (string)null);
                 });
 
             modelBuilder.Entity("WorkGuideMain", b =>
@@ -4026,6 +4333,101 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("WorkerNodes");
                 });
 
+            modelBuilder.Entity("Zone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Zones", (string)null);
+                });
+
+            modelBuilder.Entity("ZonePriceList", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EffectiveFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EffectiveTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ZoneId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ZoneId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ZonePriceLists_ZoneId_ActiveOnly")
+                        .HasFilter("[IsActive] = 1");
+
+                    b.HasIndex("ZoneId", "Version")
+                        .IsUnique();
+
+                    b.ToTable("ZonePriceLists", (string)null);
+                });
+
+            modelBuilder.Entity("ZonePriceListDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("ZonePriceListId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceItemId");
+
+                    b.HasIndex("ZonePriceListId", "ServiceItemId")
+                        .IsUnique();
+
+                    b.ToTable("ZonePriceListDetails", (string)null);
+                });
+
             modelBuilder.Entity("Attendance", b =>
                 {
                     b.HasOne("Employee", "Employee")
@@ -4127,6 +4529,16 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("BankAccountType");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Customer", b =>
+                {
+                    b.HasOne("District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("District");
                 });
 
             modelBuilder.Entity("CustomerBillingProfile", b =>
@@ -4264,6 +4676,17 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Printer");
 
                     b.Navigation("WorkGuideMain");
+                });
+
+            modelBuilder.Entity("District", b =>
+                {
+                    b.HasOne("Zone", "Zone")
+                        .WithMany("Districts")
+                        .HasForeignKey("ZoneId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("Employee", b =>
@@ -4488,11 +4911,18 @@ namespace _24dex_backend_comercial.Migrations
 
             modelBuilder.Entity("ItemPhoto", b =>
                 {
+                    b.HasOne("Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("WorkGuideMain", "WorkGuideMain")
                         .WithMany()
                         .HasForeignKey("WorkGuideMainId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Employee");
 
                     b.Navigation("WorkGuideMain");
                 });
@@ -4871,6 +5301,91 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebCustomerAccount", b =>
+                {
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("WebOrder", b =>
+                {
+                    b.HasOne("User", "ConfirmedByUser")
+                        .WithMany()
+                        .HasForeignKey("ConfirmedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WorkGuideMain", "WorkGuideMain")
+                        .WithMany()
+                        .HasForeignKey("WorkGuideMainId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ZonePriceList", "ZonePriceList")
+                        .WithMany()
+                        .HasForeignKey("ZonePriceListId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ConfirmedByUser");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Vehicle");
+
+                    b.Navigation("WorkGuideMain");
+
+                    b.Navigation("ZonePriceList");
+                });
+
+            modelBuilder.Entity("WebOrderDetail", b =>
+                {
+                    b.HasOne("DexterCompany.Models.ProdService", "ServiceItem")
+                        .WithMany()
+                        .HasForeignKey("ServiceItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebOrder", "WebOrder")
+                        .WithMany("Details")
+                        .HasForeignKey("WebOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceItem");
+
+                    b.Navigation("WebOrder");
+                });
+
             modelBuilder.Entity("WorkGuideDetail", b =>
                 {
                     b.HasOne("DexterCompany.Models.ProdService", "Product")
@@ -4886,6 +5401,40 @@ namespace _24dex_backend_comercial.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+
+                    b.Navigation("WorkGuideMain");
+                });
+
+            modelBuilder.Entity("WorkGuideDetailChangeLog", b =>
+                {
+                    b.HasOne("DexterCompany.Models.ProdService", "ServiceItem")
+                        .WithMany()
+                        .HasForeignKey("ServiceItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WorkGuideDetail", "WorkGuideDetail")
+                        .WithMany()
+                        .HasForeignKey("WorkGuideDetailId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WorkGuideMain", "WorkGuideMain")
+                        .WithMany()
+                        .HasForeignKey("WorkGuideMainId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ServiceItem");
+
+                    b.Navigation("User");
+
+                    b.Navigation("WorkGuideDetail");
 
                     b.Navigation("WorkGuideMain");
                 });
@@ -4929,6 +5478,36 @@ namespace _24dex_backend_comercial.Migrations
                         .IsRequired();
 
                     b.Navigation("Branch");
+                });
+
+            modelBuilder.Entity("ZonePriceList", b =>
+                {
+                    b.HasOne("Zone", "Zone")
+                        .WithMany()
+                        .HasForeignKey("ZoneId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Zone");
+                });
+
+            modelBuilder.Entity("ZonePriceListDetail", b =>
+                {
+                    b.HasOne("DexterCompany.Models.ProdService", "ServiceItem")
+                        .WithMany()
+                        .HasForeignKey("ServiceItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ZonePriceList", "ZonePriceList")
+                        .WithMany("Details")
+                        .HasForeignKey("ZonePriceListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceItem");
+
+                    b.Navigation("ZonePriceList");
                 });
 
             modelBuilder.Entity("BranchSales", b =>
@@ -5076,6 +5655,11 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("BrachSalesUsers");
                 });
 
+            modelBuilder.Entity("WebOrder", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("WorkGuideDetail", b =>
                 {
                     b.Navigation("ItemInspection");
@@ -5093,6 +5677,16 @@ namespace _24dex_backend_comercial.Migrations
             modelBuilder.Entity("WorkerNode", b =>
                 {
                     b.Navigation("Printers");
+                });
+
+            modelBuilder.Entity("Zone", b =>
+                {
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("ZonePriceList", b =>
+                {
+                    b.Navigation("Details");
                 });
 #pragma warning restore 612, 618
         }

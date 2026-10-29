@@ -15,7 +15,7 @@ public static class GetWorkGuidePhotosEndpoint
                 .Where(p => p.WorkGuideMainId == id)
                 .OrderBy(p => p.CreatedAt)
                 .Select(p => new WorkGuidePhotoResponse(
-                    p.Id, p.FileName, p.OriginalFileName, p.ContentType, p.FileSize, p.CreatedAt))
+                    p.Id, p.FileName, p.OriginalFileName, p.ContentType, p.FileSize, p.Stage, p.EmployeeId, p.CreatedAt))
                 .ToListAsync();
 
             var response = new WorkGuidePhotosResponse(id, photos);

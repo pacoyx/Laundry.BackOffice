@@ -91,5 +91,6 @@ public static class RouteExtensions
         app.MapScheduledEmailNotifications();
         app.MapInvoiceReminders();
         app.MapManagementDashboard();
+        app.MapWebOrders();
     }
 }

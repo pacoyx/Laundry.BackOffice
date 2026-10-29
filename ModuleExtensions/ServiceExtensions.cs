@@ -53,6 +53,8 @@ public static class ServiceExtensions
         services.Configure<FileStorageSettings>(configuration.GetSection("FileStorage"));
         services.Configure<EncryptionSettings>(configuration.GetSection("Encryption"));
         services.Configure<PickupMobileSettings>(configuration.GetSection("PickupMobile"));
+        services.Configure<WebOrdersSettings>(configuration.GetSection("WebOrders"));
+        services.AddScoped<ISmsService, LoggingSmsService>();
 
         var fileStorageProvider = configuration["FileStorage:Provider"];
         if (string.Equals(fileStorageProvider, "AzureBlob", StringComparison.OrdinalIgnoreCase))
@@ -201,6 +203,7 @@ public static class ServiceExtensions
             }
 
             options.AddPolicy("CustomerPortalAccess", policy => policy.RequireClaim("userType", "Customer"));
+            options.AddPolicy("WebCustomerPortalAccess", policy => policy.RequireClaim("userType", "WebCustomer"));
 
             foreach (var permissionCode in CustomerPermissionCodes.All)
             {

@@ -22,7 +22,8 @@ public static class GetBranchesSalesEndpoint
                         x.bs.Status,
                         x.bs.Code,
                         x.bs.DefaultPrinterId,
-                        printer != null ? printer.WindowsPrinterName : null
+                        printer != null ? printer.WindowsPrinterName : null,
+                        x.bs.IsCentral
                     ))
                 .ToListAsync();
 

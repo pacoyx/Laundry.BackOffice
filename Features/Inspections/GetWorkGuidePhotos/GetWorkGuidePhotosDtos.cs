@@ -4,6 +4,8 @@ public record WorkGuidePhotoResponse(
     string? OriginalFileName,
     string ContentType,
     long FileSize,
+    WorkGuideEvidenceStage Stage,
+    long? EmployeeId,
     DateTime CreatedAt
 );
 

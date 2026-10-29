@@ -20,6 +20,19 @@ public static class UpdateBranchSalesEndpoint
             branchSale.Code = request.Code;
             branchSale.DefaultPrinterId = request.DefaultPrinterId;
 
+            if (request.IsCentral && !branchSale.IsCentral)
+            {
+                var currentCentral = await context.BranchSales
+                    .Where(x => x.IsCentral && x.Id != id)
+                    .ToListAsync();
+                foreach (var other in currentCentral)
+                {
+                    other.IsCentral = false;
+                }
+            }
+
+            branchSale.IsCentral = request.IsCentral;
+
             await context.SaveChangesAsync();
 
             var response = new ApiResponse<string>

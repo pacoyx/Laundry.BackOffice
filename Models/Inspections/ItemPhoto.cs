@@ -15,6 +15,11 @@ public class ItemPhoto
 
     public long FileSize { get; set; }
 
+    public WorkGuideEvidenceStage Stage { get; set; } = WorkGuideEvidenceStage.Revision;
+
+    public long? EmployeeId { get; set; }
+    public Employee? Employee { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public WorkGuideMain WorkGuideMain { get; set; } = null!;
