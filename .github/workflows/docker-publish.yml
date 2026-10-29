@@ -37,12 +37,16 @@ jobs:
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
 
+      - name: Restaurar dependencias
+        run: dotnet restore 24dex-backend-comercial.csproj
+
       # Crea el esquema (tablas) en la BD desechable. Sin esto, los seeders
       # truenan al iniciar porque las tablas no existen.
       - name: Aplicar migraciones a la BD de prueba
         run: |
           export PATH="$PATH:$HOME/.dotnet/tools"
           dotnet ef database update \
+            --project 24dex-backend-comercial.csproj \
             --connection "Server=localhost,1433;Database=SmokeTestDb;User Id=sa;Password=Test_Password_123!;TrustServerCertificate=True;"
 
       - name: Set up Docker Buildx
@@ -85,11 +89,11 @@ jobs:
 
       - name: Logs del contenedor (util si fallo el paso anterior)
         if: always()
-        run: docker logs smoke-test
+        run: docker logs smoke-test || true
 
       - name: Detener contenedor de prueba
         if: always()
-        run: docker rm -f smoke-test
+        run: docker rm -f smoke-test || true
 
   # Job 2: solo corre si "smoke-test" paso correctamente.
   build-and-push:
