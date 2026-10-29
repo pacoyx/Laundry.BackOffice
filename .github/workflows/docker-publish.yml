@@ -68,6 +68,7 @@ jobs:
         run: |
           docker run -d --name smoke-test \
             --network host \
+            -e ASPNETCORE_URLS="http://+:8080" \
             -e ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=SmokeTestDb;User Id=sa;Password=Test_Password_123!;TrustServerCertificate=True;" \
             -e Encryption__Key="MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=" \
             -e Jwt__Key="smoke-test-only-key-not-for-real-use-32chars" \
@@ -75,10 +76,13 @@ jobs:
             -e Jwt__Audience="smoke-test" \
             smoke-test-image:ci
 
+      # Usamos 8080 (no 80) porque con --network host el usuario sin privilegios
+      # del contenedor no puede bindear puertos <1024. En produccion (red bridge
+      # normal via docker-compose) el puerto 80 si funciona sin este problema.
       - name: Esperar a que /health responda
         run: |
           for i in $(seq 1 20); do
-            if curl -sf http://localhost:80/health; then
+            if curl -sf http://localhost:8080/health; then
               echo "Backend respondio OK"
               exit 0
             fi
