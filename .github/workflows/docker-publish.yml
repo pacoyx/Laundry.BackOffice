@@ -47,6 +47,7 @@ jobs:
           export PATH="$PATH:$HOME/.dotnet/tools"
           dotnet ef database update \
             --project 24dex-backend-comercial.csproj \
+            --context RecepcionDbContext \
             --connection "Server=localhost,1433;Database=SmokeTestDb;User Id=sa;Password=Test_Password_123!;TrustServerCertificate=True;"
 
       - name: Set up Docker Buildx
