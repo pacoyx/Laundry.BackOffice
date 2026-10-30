@@ -165,7 +165,7 @@ public static class VerifyOtpEndpoint
                 Data = new VerifyOtpResponse(
                     token,
                     refreshToken,
-                    new WebCustomerMeResponse(customer.Id, customer.FirtsName, customer.DistrictId))
+                    new WebCustomerMeResponse(customer.Id, customer.FirtsName, customer.Phone, customer.DistrictId))
             });
         })
         .WithName("VerifyWebCustomerOtp")

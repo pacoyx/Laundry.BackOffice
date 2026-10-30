@@ -48,7 +48,7 @@ public static class RefreshWebCustomerTokenEndpoint
                 Data = new VerifyOtpResponse(
                     newToken,
                     newRefreshToken,
-                    new WebCustomerMeResponse(account.Customer.Id, account.Customer.FirtsName, account.Customer.DistrictId))
+                    new WebCustomerMeResponse(account.Customer.Id, account.Customer.FirtsName, account.Customer.Phone, account.Customer.DistrictId))
             });
         })
         .WithName("RefreshWebCustomerToken")
