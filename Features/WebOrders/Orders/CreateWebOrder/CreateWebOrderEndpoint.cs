@@ -54,6 +54,20 @@ public static class CreateWebOrderEndpoint
 
             var now = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"));
 
+            // El front manda un Date de JS, que se serializa como UTC. Si llega con Kind=Utc, se
+            // convierte a hora Peru antes de guardar; si llega sin offset, ya se asume hora Peru.
+            DateTime? NormalizePeruDate(DateTime? value)
+            {
+                if (value is null)
+                {
+                    return null;
+                }
+
+                return value.Value.Kind == DateTimeKind.Utc
+                    ? TimeZoneInfo.ConvertTimeFromUtc(value.Value, TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"))
+                    : DateTime.SpecifyKind(value.Value, DateTimeKind.Unspecified);
+            }
+
             var webCustomerId = principal.GetWebCustomerCustomerId();
             Customer customer;
 
@@ -149,7 +163,7 @@ public static class CreateWebOrderEndpoint
                 DistrictId = request.DistrictId,
                 ContactPhone = request.ContactPhone,
                 ZonePriceListId = priceList.Id,
-                RequestedPickupDate = request.RequestedPickupDate,
+                RequestedPickupDate = NormalizePeruDate(request.RequestedPickupDate),
                 Total = total,
                 CreatedAt = now,
                 Details = details

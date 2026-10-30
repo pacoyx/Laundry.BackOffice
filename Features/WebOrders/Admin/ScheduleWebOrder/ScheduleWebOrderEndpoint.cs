@@ -44,9 +44,15 @@ public static class ScheduleWebOrderEndpoint
                 });
             }
 
+            // El front manda un Date de JS, que se serializa como UTC. Si llega con Kind=Utc, se
+            // convierte a hora Peru antes de guardar; si llega sin offset, ya se asume hora Peru.
+            var scheduledPickupDate = request.ScheduledPickupDate.Kind == DateTimeKind.Utc
+                ? TimeZoneInfo.ConvertTimeFromUtc(request.ScheduledPickupDate, TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time"))
+                : DateTime.SpecifyKind(request.ScheduledPickupDate, DateTimeKind.Unspecified);
+
             webOrder.VehicleId = request.VehicleId;
             webOrder.EmployeeId = request.EmployeeId;
-            webOrder.ScheduledPickupDate = request.ScheduledPickupDate;
+            webOrder.ScheduledPickupDate = scheduledPickupDate;
             webOrder.Status = WebOrderStatus.Programado;
 
             await db.SaveChangesAsync();
