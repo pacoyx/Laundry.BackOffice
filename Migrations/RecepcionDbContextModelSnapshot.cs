@@ -3914,6 +3914,10 @@ namespace _24dex_backend_comercial.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AdditionalItemsNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime?>("ConfirmedAt")
                         .HasColumnType("datetime2");
 

@@ -29,6 +29,11 @@ public class WebOrder
 
     public DateTime? ScheduledPickupDate { get; set; }
 
+    // Texto libre del cliente describiendo prendas que no encontro en el listado de servicios,
+    // para que el personal coordine con el antes de aprobar el pedido.
+    [MaxLength(500)]
+    public string? AdditionalItemsNote { get; set; }
+
     public int? VehicleId { get; set; }
     public Vehicle? Vehicle { get; set; }
 

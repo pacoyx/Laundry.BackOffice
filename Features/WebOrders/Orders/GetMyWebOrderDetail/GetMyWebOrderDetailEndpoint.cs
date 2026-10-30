@@ -54,6 +54,7 @@ public static class GetMyWebOrderDetailEndpoint
                 webOrder.ContactPhone,
                 webOrder.RequestedPickupDate,
                 webOrder.ScheduledPickupDate,
+                webOrder.AdditionalItemsNote,
                 total,
                 webOrder.CreatedAt,
                 webOrder.WorkGuideMain?.SerieGuia,

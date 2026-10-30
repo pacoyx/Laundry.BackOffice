@@ -7,6 +7,7 @@ public record CreateWebOrderRequest(
     int DistrictId,
     string ContactPhone,
     DateTime? RequestedPickupDate,
+    string? AdditionalItemsNote,
     List<CreateWebOrderItemRequest> Items);
 
 public record WebOrderDetailResponse(int ServiceItemId, string Name, decimal Quantity, decimal UnitPrice, decimal Total);
@@ -20,6 +21,7 @@ public record WebOrderResponse(
     string ContactPhone,
     DateTime? RequestedPickupDate,
     DateTime? ScheduledPickupDate,
+    string? AdditionalItemsNote,
     decimal Total,
     DateTime CreatedAt,
     string? WorkGuideSerie,

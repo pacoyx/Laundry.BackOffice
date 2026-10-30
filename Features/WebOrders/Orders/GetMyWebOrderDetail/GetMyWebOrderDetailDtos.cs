@@ -8,6 +8,7 @@ public record WebOrderDetailFullResponse(
     string ContactPhone,
     DateTime? RequestedPickupDate,
     DateTime? ScheduledPickupDate,
+    string? AdditionalItemsNote,
     decimal Total,
     DateTime CreatedAt,
     string? WorkGuideSerie,

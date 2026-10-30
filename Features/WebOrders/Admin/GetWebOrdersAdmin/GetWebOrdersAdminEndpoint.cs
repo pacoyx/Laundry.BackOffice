@@ -28,7 +28,8 @@ public static class GetWebOrdersAdminEndpoint
                     x.Total,
                     x.CreatedAt,
                     x.RequestedPickupDate,
-                    x.ScheduledPickupDate))
+                    x.ScheduledPickupDate,
+                    x.AdditionalItemsNote))
                 .ToListAsync();
 
             return Results.Ok(new ApiResponse<List<WebOrderAdminSummaryResponse>>

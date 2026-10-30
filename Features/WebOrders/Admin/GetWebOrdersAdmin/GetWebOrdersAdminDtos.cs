@@ -8,4 +8,5 @@ public record WebOrderAdminSummaryResponse(
     decimal Total,
     DateTime CreatedAt,
     DateTime? RequestedPickupDate,
-    DateTime? ScheduledPickupDate);
+    DateTime? ScheduledPickupDate,
+    string? AdditionalItemsNote);

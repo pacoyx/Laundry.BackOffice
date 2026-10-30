@@ -164,6 +164,7 @@ public static class CreateWebOrderEndpoint
                 ContactPhone = request.ContactPhone,
                 ZonePriceListId = priceList.Id,
                 RequestedPickupDate = NormalizePeruDate(request.RequestedPickupDate),
+                AdditionalItemsNote = request.AdditionalItemsNote,
                 Total = total,
                 CreatedAt = now,
                 Details = details
@@ -184,6 +185,7 @@ public static class CreateWebOrderEndpoint
                 webOrder.ContactPhone,
                 webOrder.RequestedPickupDate,
                 webOrder.ScheduledPickupDate,
+                webOrder.AdditionalItemsNote,
                 webOrder.Total,
                 webOrder.CreatedAt,
                 null,
