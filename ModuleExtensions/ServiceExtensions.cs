@@ -54,7 +54,20 @@ public static class ServiceExtensions
         services.Configure<EncryptionSettings>(configuration.GetSection("Encryption"));
         services.Configure<PickupMobileSettings>(configuration.GetSection("PickupMobile"));
         services.Configure<WebOrdersSettings>(configuration.GetSection("WebOrders"));
-        services.AddScoped<ISmsService, LoggingSmsService>();
+        services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
+
+        // Switch de encendido/apagado: mientras no se contrate Twilio, Sms:Provider queda vacio
+        // o en "Logging" y el OTP solo se escribe en el log. Para activarlo de verdad, poner
+        // Sms:Provider = "Twilio" y completar la seccion Twilio con los datos de la cuenta.
+        var smsProvider = configuration["Sms:Provider"];
+        if (string.Equals(smsProvider, "Twilio", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<ISmsService, TwilioSmsService>();
+        }
+        else
+        {
+            services.AddScoped<ISmsService, LoggingSmsService>();
+        }
 
         var fileStorageProvider = configuration["FileStorage:Provider"];
         if (string.Equals(fileStorageProvider, "AzureBlob", StringComparison.OrdinalIgnoreCase))
