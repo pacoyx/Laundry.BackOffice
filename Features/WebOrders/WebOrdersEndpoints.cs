@@ -20,6 +20,7 @@ public static class WebOrdersEndpoints
 
         meGroup.MapGetMyWebOrders();
         meGroup.MapGetMyWebOrderDetail();
+        meGroup.MapDownloadMyWebOrderPhoto();
 
         var adminGroup = app.MapGroup("/api/web-orders/admin").WithTags("WebOrders");
 
