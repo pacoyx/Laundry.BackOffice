@@ -16,7 +16,7 @@ public static class GetMyWebOrderDetailEndpoint
             var webOrder = await db.WebOrders
                 .AsNoTracking()
                 .Include(x => x.Details).ThenInclude(d => d.ServiceItem)
-                .Include(x => x.WorkGuideMain)
+                .Include(x => x.WorkGuideMain).ThenInclude(g => g!.WorkGuideDetails).ThenInclude(d => d.Product)
                 .FirstOrDefaultAsync(x => x.Id == id && x.CustomerId == customerId.Value);
 
             if (webOrder is null)
@@ -35,6 +35,17 @@ public static class GetMyWebOrderDetailEndpoint
                     .ToListAsync();
             }
 
+            // Una vez generada la guia, el personal puede cambiar items, cantidades/pesos o precios
+            // directamente en ella; se refleja esa version vigente en vez del snapshot original del pedido.
+            var details = webOrder.WorkGuideMain is not null
+                ? webOrder.WorkGuideMain.WorkGuideDetails
+                    .Where(d => d.EstadoRegistro == "A")
+                    .Select(d => new WebOrderDetailResponse(d.ProductId, d.Product!.Name, d.Cant, d.Precio, d.Total))
+                    .ToList()
+                : webOrder.Details.Select(d => new WebOrderDetailResponse(d.ServiceItemId, d.ServiceItem.Name, d.Quantity, d.UnitPrice, d.Total)).ToList();
+
+            var total = webOrder.WorkGuideMain?.Total ?? webOrder.Total;
+
             var response = new WebOrderDetailFullResponse(
                 webOrder.Id,
                 webOrder.OrderNumber,
@@ -43,11 +54,11 @@ public static class GetMyWebOrderDetailEndpoint
                 webOrder.ContactPhone,
                 webOrder.RequestedPickupDate,
                 webOrder.ScheduledPickupDate,
-                webOrder.Total,
+                total,
                 webOrder.CreatedAt,
                 webOrder.WorkGuideMain?.SerieGuia,
                 webOrder.WorkGuideMain?.NumeroGuia,
-                webOrder.Details.Select(d => new WebOrderDetailResponse(d.ServiceItemId, d.ServiceItem.Name, d.Quantity, d.UnitPrice, d.Total)).ToList(),
+                details,
                 photos);
 
             return Results.Ok(new ApiResponse<WebOrderDetailFullResponse>

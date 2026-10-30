@@ -15,9 +15,18 @@ public static class GetMyWebOrdersEndpoint
 
             var orders = await db.WebOrders
                 .AsNoTracking()
+                .Include(x => x.WorkGuideMain)
                 .Where(x => x.CustomerId == customerId.Value)
                 .OrderByDescending(x => x.CreatedAt)
-                .Select(x => new WebOrderSummaryResponse(x.Id, x.OrderNumber, x.Status, x.Total, x.CreatedAt, x.ScheduledPickupDate))
+                .Select(x => new WebOrderSummaryResponse(
+                    x.Id,
+                    x.OrderNumber,
+                    x.Status,
+                    // Una vez generada la guia, el total real puede cambiar (items/pesos ajustados
+                    // por el personal); se refleja aqui en vez de quedar con el total original del pedido.
+                    x.WorkGuideMain != null ? x.WorkGuideMain.Total : x.Total,
+                    x.CreatedAt,
+                    x.ScheduledPickupDate))
                 .ToListAsync();
 
             return Results.Ok(new ApiResponse<List<WebOrderSummaryResponse>>
