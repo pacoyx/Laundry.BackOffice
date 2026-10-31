@@ -23,7 +23,8 @@ public class PermissionSeeder : IApplicationSeeder
         (PermissionCodes.Reports, "Acceso al modulo de Reportes"),
         (PermissionCodes.Settings, "Acceso a la configuracion del sistema"),
         (PermissionCodes.CorporateOperations, "Acceso al modulo de Operaciones Corporativas"),
-        (PermissionCodes.PickupMobile, "Acceso al modulo movil de recojos")
+        (PermissionCodes.PickupMobile, "Acceso al modulo movil de recojos"),
+        (PermissionCodes.GuiaRemision, "Acceso a Guias de Remision en Facturacion")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

@@ -10,6 +10,7 @@ public static class GetInvoicesEndpoint
             [FromQuery] DateTime? dateFrom,
             [FromQuery] DateTime? dateTo,
             [FromQuery] InvoiceStatus? status,
+            [FromQuery] string? numero,
             RecepcionDbContext db) =>
         {
             var query = db.Invoices
@@ -20,6 +21,11 @@ public static class GetInvoicesEndpoint
             if (customerId.HasValue)
             {
                 query = query.Where(x => x.CustomerId == customerId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(numero))
+            {
+                query = query.Where(x => x.Numero.Contains(numero));
             }
 
             if (dateFrom.HasValue)

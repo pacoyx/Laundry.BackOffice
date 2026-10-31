@@ -13,7 +13,7 @@ public class RolePermissionSeeder : IApplicationSeeder
             PermissionCodes.ReceptionGastos, PermissionCodes.ReceptionMaestros,
             PermissionCodes.ReceptionPedidosWeb,
             PermissionCodes.Customers, PermissionCodes.Invoices,
-            PermissionCodes.CorporateOperations
+            PermissionCodes.CorporateOperations, PermissionCodes.GuiaRemision
         },
         [RoleNames.RecepcionBasico] = new[]
         {
@@ -32,7 +32,8 @@ public class RolePermissionSeeder : IApplicationSeeder
         {
             PermissionCodes.Dashboard, PermissionCodes.Customers, PermissionCodes.Invoices,
             PermissionCodes.Purchases, PermissionCodes.Expenses, PermissionCodes.Employees,
-            PermissionCodes.Payroll, PermissionCodes.Reports, PermissionCodes.CorporateOperations
+            PermissionCodes.Payroll, PermissionCodes.Reports, PermissionCodes.CorporateOperations,
+            PermissionCodes.GuiaRemision
         },
         [RoleNames.OperacionesCorporativas] = new[]
         {

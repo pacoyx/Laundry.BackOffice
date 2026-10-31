@@ -57,6 +57,7 @@ public static class ServicesDiExtensions
         services.AddScoped<ISalesRegisterReportService, SalesRegisterReportService>();
         services.AddScoped<IValuationReportService, ValuationReportService>();
         services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+        services.AddScoped<IGuiaRemisionPdfService, GuiaRemisionPdfService>();
         services.AddScoped<ICompanyProfileService, CompanyProfileService>();
         services.AddScoped<IPurchaseRegisterReportService, PurchaseRegisterReportService>();
 
@@ -128,5 +129,7 @@ public static class ServicesDiExtensions
 
         services.AddScoped<IApplicationSeeder, ZoneSeeder>();
         services.AddScoped<IApplicationSeeder, SampleWebOrdersDataSeeder>();
+
+        services.AddScoped<IApplicationSeeder, GuiaRemisionNumbersDocumentSeeder>();
     }
 }

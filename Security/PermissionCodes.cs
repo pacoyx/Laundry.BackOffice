@@ -20,12 +20,13 @@ public static class PermissionCodes
     public const string Settings = "settings.access";
     public const string CorporateOperations = "corporate-operations.access";
     public const string PickupMobile = "pickup_mobile.access";
+    public const string GuiaRemision = "guia-remision.access";
 
     public static readonly string[] All =
     {
         Dashboard, Reception, ReceptionEmision, ReceptionRetiro, ReceptionConsultas,
         ReceptionCaja, ReceptionGastos, ReceptionMaestros, ReceptionPedidosWeb, Customers, Invoices, Purchases,
         Expenses, Employees, Payroll, Suppliers, Reports, Settings,
-        CorporateOperations, PickupMobile
+        CorporateOperations, PickupMobile, GuiaRemision
     };
 }
