@@ -3459,6 +3459,80 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("ServiceAccessFasts");
                 });
 
+            modelBuilder.Entity("SharedDocument", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("BlobUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("UploadedByUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UploadedByUserId");
+
+                    b.ToTable("SharedDocuments", (string)null);
+                });
+
+            modelBuilder.Entity("SharedDocumentRecipient", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("SharedDocumentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("SharedDocumentId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("SharedDocumentRecipients", (string)null);
+                });
+
             modelBuilder.Entity("SneakerBrand", b =>
                 {
                     b.Property<int>("Id")
@@ -5302,6 +5376,36 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("ScheduledEmailNotification");
                 });
 
+            modelBuilder.Entity("SharedDocument", b =>
+                {
+                    b.HasOne("User", "UploadedByUser")
+                        .WithMany()
+                        .HasForeignKey("UploadedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UploadedByUser");
+                });
+
+            modelBuilder.Entity("SharedDocumentRecipient", b =>
+                {
+                    b.HasOne("SharedDocument", "SharedDocument")
+                        .WithMany("Recipients")
+                        .HasForeignKey("SharedDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SharedDocument");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SneakerDetail", b =>
                 {
                     b.HasOne("SneakerBrand", "Brand")
@@ -5717,6 +5821,11 @@ namespace _24dex_backend_comercial.Migrations
                 {
                     b.Navigation("Executions");
 
+                    b.Navigation("Recipients");
+                });
+
+            modelBuilder.Entity("SharedDocument", b =>
+                {
                     b.Navigation("Recipients");
                 });
 

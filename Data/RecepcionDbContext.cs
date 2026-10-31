@@ -108,6 +108,8 @@ public class RecepcionDbContext : DbContext
     public DbSet<CustomerPriceListDetail> CustomerPriceListDetails { get; set; }
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<GuiaRemision> GuiasRemision { get; set; }
+    public DbSet<SharedDocument> SharedDocuments { get; set; }
+    public DbSet<SharedDocumentRecipient> SharedDocumentRecipients { get; set; }
     public DbSet<PickupGuideAttachment> PickupGuideAttachments { get; set; }
     public DbSet<PickupGuideRevision> PickupGuideRevisions { get; set; }
     public DbSet<PickupGuideDetailRevision> PickupGuideDetailRevisions { get; set; }
@@ -220,6 +222,8 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CustomerUserTokenConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleConfiguration());
         modelBuilder.ApplyConfiguration(new GuiaRemisionConfiguration());
+        modelBuilder.ApplyConfiguration(new SharedDocumentConfiguration());
+        modelBuilder.ApplyConfiguration(new SharedDocumentRecipientConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());

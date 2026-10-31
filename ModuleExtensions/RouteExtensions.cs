@@ -93,5 +93,6 @@ public static class RouteExtensions
         app.MapManagementDashboard();
         app.MapWebOrders();
         app.MapGuiasRemision();
+        app.MapSharedDocuments();
     }
 }
