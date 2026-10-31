@@ -25,7 +25,8 @@ public class PermissionSeeder : IApplicationSeeder
         (PermissionCodes.CorporateOperations, "Acceso al modulo de Operaciones Corporativas"),
         (PermissionCodes.PickupMobile, "Acceso al modulo movil de recojos"),
         (PermissionCodes.GuiaRemision, "Acceso a Guias de Remision en Facturacion"),
-        (PermissionCodes.SharedDocuments, "Acceso a subir y gestionar Documentos Compartidos")
+        (PermissionCodes.SharedDocuments, "Acceso a subir y gestionar Documentos Compartidos"),
+        (PermissionCodes.FixedAssets, "Acceso al modulo de Activo Fijo")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

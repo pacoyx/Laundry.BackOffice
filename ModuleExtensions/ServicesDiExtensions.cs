@@ -131,5 +131,6 @@ public static class ServicesDiExtensions
         services.AddScoped<IApplicationSeeder, SampleWebOrdersDataSeeder>();
 
         services.AddScoped<IApplicationSeeder, GuiaRemisionNumbersDocumentSeeder>();
+        services.AddScoped<IApplicationSeeder, FixedAssetCategorySeeder>();
     }
 }

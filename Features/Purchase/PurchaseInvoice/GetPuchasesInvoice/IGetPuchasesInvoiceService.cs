@@ -5,6 +5,7 @@ public interface IGetPuchasesInvoiceService
         int? supplierId,
         DateTime? dateFrom,
         DateTime? dateTo,
-        string? status);
+        string? status,
+        string? invoiceNumber = null);
 }
 

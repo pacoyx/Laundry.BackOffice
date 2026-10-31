@@ -9,9 +9,10 @@ public static class GetPuchasesInvoiceEndpoint
             [FromQuery] DateTime? dateFrom,
             [FromQuery] DateTime? dateTo,
             [FromQuery] string? status,
+            [FromQuery] string? invoiceNumber,
             IGetPuchasesInvoiceService service) =>
         {
-            var invoices = await service.GetPurchasesInvoiceAsync(supplierId, dateFrom, dateTo, status);
+            var invoices = await service.GetPurchasesInvoiceAsync(supplierId, dateFrom, dateTo, status, invoiceNumber);
             var response = new ApiResponse<IEnumerable<GetPurchaseInvoiceResponseDto>>
             {
                 Success = true,

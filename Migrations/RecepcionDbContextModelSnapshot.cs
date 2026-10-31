@@ -1937,6 +1937,248 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("ExpenseCategories", (string)null);
                 });
 
+            modelBuilder.Entity("FixedAsset", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("AcquisitionCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("AcquisitionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("DisposalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisposalReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("PurchaseInvoiceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ResponsibleUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsefulLifeYearsOverride")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("PurchaseInvoiceId");
+
+                    b.HasIndex("ResponsibleUserId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("FixedAssets", (string)null);
+                });
+
+            modelBuilder.Entity("FixedAssetCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("DefaultDepreciationRatePercent")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("DefaultUsefulLifeYears")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("FixedAssetCategories", (string)null);
+                });
+
+            modelBuilder.Entity("FixedAssetMaintenance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<long>("FixedAssetId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("NextMaintenanceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Observations")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FixedAssetId");
+
+                    b.ToTable("FixedAssetMaintenances", (string)null);
+                });
+
+            modelBuilder.Entity("FixedAssetMaintenanceAttachment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("FixedAssetMaintenanceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FixedAssetMaintenanceId");
+
+                    b.ToTable("FixedAssetMaintenanceAttachments", (string)null);
+                });
+
+            modelBuilder.Entity("FixedAssetReassignment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("FixedAssetId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("NewBranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NewResponsibleUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PreviousBranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PreviousResponsibleUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FixedAssetId");
+
+                    b.HasIndex("NewBranchId");
+
+                    b.HasIndex("NewResponsibleUserId");
+
+                    b.HasIndex("PreviousBranchId");
+
+                    b.HasIndex("PreviousResponsibleUserId");
+
+                    b.ToTable("FixedAssetReassignments", (string)null);
+                });
+
             modelBuilder.Entity("GuiaRemision", b =>
                 {
                     b.Property<long>("Id")
@@ -4958,6 +5200,108 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Expense");
                 });
 
+            modelBuilder.Entity("FixedAsset", b =>
+                {
+                    b.HasOne("BranchSales", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FixedAssetCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PurchaseInvoice", "PurchaseInvoice")
+                        .WithMany()
+                        .HasForeignKey("PurchaseInvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("User", "ResponsibleUser")
+                        .WithMany()
+                        .HasForeignKey("ResponsibleUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("PurchaseInvoice");
+
+                    b.Navigation("ResponsibleUser");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("FixedAssetMaintenance", b =>
+                {
+                    b.HasOne("FixedAsset", "FixedAsset")
+                        .WithMany("Maintenances")
+                        .HasForeignKey("FixedAssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FixedAsset");
+                });
+
+            modelBuilder.Entity("FixedAssetMaintenanceAttachment", b =>
+                {
+                    b.HasOne("FixedAssetMaintenance", "FixedAssetMaintenance")
+                        .WithMany("Attachments")
+                        .HasForeignKey("FixedAssetMaintenanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FixedAssetMaintenance");
+                });
+
+            modelBuilder.Entity("FixedAssetReassignment", b =>
+                {
+                    b.HasOne("FixedAsset", "FixedAsset")
+                        .WithMany("Reassignments")
+                        .HasForeignKey("FixedAssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BranchSales", "NewBranch")
+                        .WithMany()
+                        .HasForeignKey("NewBranchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("User", "NewResponsibleUser")
+                        .WithMany()
+                        .HasForeignKey("NewResponsibleUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BranchSales", "PreviousBranch")
+                        .WithMany()
+                        .HasForeignKey("PreviousBranchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("User", "PreviousResponsibleUser")
+                        .WithMany()
+                        .HasForeignKey("PreviousResponsibleUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("FixedAsset");
+
+                    b.Navigation("NewBranch");
+
+                    b.Navigation("NewResponsibleUser");
+
+                    b.Navigation("PreviousBranch");
+
+                    b.Navigation("PreviousResponsibleUser");
+                });
+
             modelBuilder.Entity("GuiaRemision", b =>
                 {
                     b.HasOne("Invoice", "Invoice")
@@ -5756,6 +6100,18 @@ namespace _24dex_backend_comercial.Migrations
                 });
 
             modelBuilder.Entity("Expense", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("FixedAsset", b =>
+                {
+                    b.Navigation("Maintenances");
+
+                    b.Navigation("Reassignments");
+                });
+
+            modelBuilder.Entity("FixedAssetMaintenance", b =>
                 {
                     b.Navigation("Attachments");
                 });

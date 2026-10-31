@@ -75,7 +75,8 @@ public class GetPuchasesInvoiceService : IGetPuchasesInvoiceService
         int? supplierId,
         DateTime? dateFrom,
         DateTime? dateTo,
-        string? status)
+        string? status,
+        string? invoiceNumber = null)
     {
         var query = _context.PurchaseInvoices
             .AsNoTracking()
@@ -100,6 +101,11 @@ public class GetPuchasesInvoiceService : IGetPuchasesInvoiceService
         if (!string.IsNullOrWhiteSpace(status))
         {
             query = query.Where(x => x.Status == status);
+        }
+
+        if (!string.IsNullOrWhiteSpace(invoiceNumber))
+        {
+            query = query.Where(x => x.InvoiceNumber.Contains(invoiceNumber));
         }
 
         var purchaseInvoices = await query

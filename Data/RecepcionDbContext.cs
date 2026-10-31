@@ -110,6 +110,11 @@ public class RecepcionDbContext : DbContext
     public DbSet<GuiaRemision> GuiasRemision { get; set; }
     public DbSet<SharedDocument> SharedDocuments { get; set; }
     public DbSet<SharedDocumentRecipient> SharedDocumentRecipients { get; set; }
+    public DbSet<FixedAssetCategory> FixedAssetCategories { get; set; }
+    public DbSet<FixedAsset> FixedAssets { get; set; }
+    public DbSet<FixedAssetMaintenance> FixedAssetMaintenances { get; set; }
+    public DbSet<FixedAssetMaintenanceAttachment> FixedAssetMaintenanceAttachments { get; set; }
+    public DbSet<FixedAssetReassignment> FixedAssetReassignments { get; set; }
     public DbSet<PickupGuideAttachment> PickupGuideAttachments { get; set; }
     public DbSet<PickupGuideRevision> PickupGuideRevisions { get; set; }
     public DbSet<PickupGuideDetailRevision> PickupGuideDetailRevisions { get; set; }
@@ -224,6 +229,11 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new GuiaRemisionConfiguration());
         modelBuilder.ApplyConfiguration(new SharedDocumentConfiguration());
         modelBuilder.ApplyConfiguration(new SharedDocumentRecipientConfiguration());
+        modelBuilder.ApplyConfiguration(new FixedAssetCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new FixedAssetConfiguration());
+        modelBuilder.ApplyConfiguration(new FixedAssetMaintenanceConfiguration());
+        modelBuilder.ApplyConfiguration(new FixedAssetMaintenanceAttachmentConfiguration());
+        modelBuilder.ApplyConfiguration(new FixedAssetReassignmentConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());
