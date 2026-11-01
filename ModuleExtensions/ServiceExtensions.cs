@@ -69,6 +69,22 @@ public static class ServiceExtensions
             services.AddScoped<ISmsService, LoggingSmsService>();
         }
 
+        services.Configure<ElectronicInvoicingSettings>(configuration.GetSection("ElectronicInvoicing"));
+
+        // Switch de encendido/apagado: mientras ElectronicInvoicing:Provider este vacio, la
+        // facturacion electronica queda apagada y el flujo de CreateInvoiceEndpoint no cambia
+        // (ver hook ahi). Para activarla de verdad, poner ElectronicInvoicing:Provider = "NubeFact"
+        // y completar la seccion NubeFact.
+        var electronicInvoicingProvider = configuration["ElectronicInvoicing:Provider"];
+        if (string.Equals(electronicInvoicingProvider, "NubeFact", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<IElectronicInvoicingService, NubeFactElectronicInvoicingService>();
+        }
+        else
+        {
+            services.AddScoped<IElectronicInvoicingService, LoggingElectronicInvoicingService>();
+        }
+
         var fileStorageProvider = configuration["FileStorage:Provider"];
         if (string.Equals(fileStorageProvider, "AzureBlob", StringComparison.OrdinalIgnoreCase))
         {

@@ -26,7 +26,8 @@ public class PermissionSeeder : IApplicationSeeder
         (PermissionCodes.PickupMobile, "Acceso al modulo movil de recojos"),
         (PermissionCodes.GuiaRemision, "Acceso a Guias de Remision en Facturacion"),
         (PermissionCodes.SharedDocuments, "Acceso a subir y gestionar Documentos Compartidos"),
-        (PermissionCodes.FixedAssets, "Acceso al modulo de Activo Fijo")
+        (PermissionCodes.FixedAssets, "Acceso al modulo de Activo Fijo"),
+        (PermissionCodes.ElectronicInvoicing, "Acceso a la facturacion electronica (NubeFact)")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

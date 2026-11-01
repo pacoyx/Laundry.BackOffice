@@ -76,6 +76,44 @@ docker build -t 24dex-backend-comercial .
 docker run -p 8080:80 24dex-backend-comercial
 ```
 
+## Facturación electrónica (NubeFact) — switch on/off
+
+La integración con [NubeFact](https://www.nubefact.com/integracion) (proveedor de facturación electrónica / SUNAT) está lista en el código pero **apagada por defecto**, controlada por un switch en configuración. Mientras está apagada, el flujo de creación de facturas (`POST /api/invoices`) no cambia en absoluto: ni se llama a NubeFact, ni se encola ningún job en Hangfire, ni se escribe ninguna fila en `ElectronicInvoiceSubmissions`.
+
+### Dónde está el switch
+
+```json
+"ElectronicInvoicing": {
+  "Provider": "",
+  "NubeFact": {
+    "BaseUrl": "",
+    "Token": ""
+  }
+}
+```
+
+- `Provider` vacío (o cualquier valor distinto de `"NubeFact"`) = **apagado**. Es el valor por defecto en `appsettings.json` y también en `appsettings.Development.json`.
+- `Provider = "NubeFact"` = **encendido**. A partir de ahí, cada factura nueva se envía en background (Hangfire) a NubeFact.
+
+### Cómo encenderlo para probar (cuenta demo)
+
+`appsettings.Development.json` ya trae precargada la cuenta demo pública que da NubeFact en su documentación (no son credenciales reales de producción). Para activarlo en local:
+
+1. Cambia `ElectronicInvoicing:Provider` a `"NubeFact"` en `appsettings.Development.json`.
+2. Reinicia la API y crea una factura normalmente (Factura o Boleta; otros tipos de comprobante no están soportados).
+3. Verifica el envío:
+   - Dashboard de Hangfire: `/hangfire` (debe verse el job `SubmitInvoiceAsync` ejecutado).
+   - `GET /api/invoices/{id}/electronic-submission` (requiere el permiso `electronic-invoicing.access`) — devuelve si NubeFact aceptó el comprobante, la URL del documento y la respuesta de SUNAT.
+   - Tabla `ElectronicInvoiceSubmissions` en la base de datos (guarda cada intento, exitoso o no, incluyendo la respuesta cruda en `RawResponseJson`).
+
+### Cómo apagarlo
+
+Vuelve `ElectronicInvoicing:Provider` a `""` (o quita la clave). No hace falta tocar nada más: el hook en `CreateInvoiceEndpoint` deja de encolar el job y el sistema queda exactamente como antes de la integración.
+
+### Para activarlo en producción con una cuenta real
+
+Completar `ElectronicInvoicing:NubeFact:BaseUrl` y `Token` con los datos de la cuenta contratada y poner `Provider = "NubeFact"` en la configuración del entorno correspondiente (no en `appsettings.json` del repo). Un fallo en el envío a NubeFact nunca reintenta automáticamente (para no duplicar el envío a SUNAT) — queda registrado en `ElectronicInvoiceSubmissions` con el error para revisión manual.
+
 ## Documentación adicional
 
 - [Roles y permisos (RBAC)](./docs/roles-permisos.md) — catálogo de permisos, matriz rol → permisos, cómo restringir el acceso de un usuario a submenús específicos, y el horario de acceso por usuario (independiente de roles).

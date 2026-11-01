@@ -115,6 +115,7 @@ public class RecepcionDbContext : DbContext
     public DbSet<FixedAssetMaintenance> FixedAssetMaintenances { get; set; }
     public DbSet<FixedAssetMaintenanceAttachment> FixedAssetMaintenanceAttachments { get; set; }
     public DbSet<FixedAssetReassignment> FixedAssetReassignments { get; set; }
+    public DbSet<ElectronicInvoiceSubmission> ElectronicInvoiceSubmissions { get; set; }
     public DbSet<PickupGuideAttachment> PickupGuideAttachments { get; set; }
     public DbSet<PickupGuideRevision> PickupGuideRevisions { get; set; }
     public DbSet<PickupGuideDetailRevision> PickupGuideDetailRevisions { get; set; }
@@ -234,6 +235,7 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FixedAssetMaintenanceConfiguration());
         modelBuilder.ApplyConfiguration(new FixedAssetMaintenanceAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new FixedAssetReassignmentConfiguration());
+        modelBuilder.ApplyConfiguration(new ElectronicInvoiceSubmissionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideRevisionConfiguration());
         modelBuilder.ApplyConfiguration(new PickupGuideDetailRevisionConfiguration());

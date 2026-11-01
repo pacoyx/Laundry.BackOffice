@@ -1,4 +1,6 @@
 using FluentValidation;
+using Hangfire;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -10,7 +12,9 @@ public static class CreateInvoiceEndpoint
             CreateInvoiceRequest request,
             IValidator<CreateInvoiceRequest> validator,
             RecepcionDbContext db,
-            IOptions<InvoiceSettings> invoiceSettings) =>
+            IOptions<InvoiceSettings> invoiceSettings,
+            IOptions<ElectronicInvoicingSettings> electronicInvoicingSettings,
+            IBackgroundJobClient backgroundJobClient) =>
         {
             var validation = await validator.ValidateAsync(request);
             if (!validation.IsValid)
@@ -70,7 +74,22 @@ public static class CreateInvoiceEndpoint
             };
 
             await db.Invoices.AddAsync(invoice);
-            await db.SaveChangesAsync();
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
+            {
+                // El check de arriba (AnyAsync) no evita la carrera entre dos requests casi
+                // simultaneos con la misma Serie+Numero; el indice unico la ataja aca.
+                return Results.BadRequest(new[] { "Ya existe una factura registrada con esa serie y número. Verifica e intenta de nuevo." });
+            }
+
+            if (string.Equals(electronicInvoicingSettings.Value.Provider, "NubeFact", StringComparison.OrdinalIgnoreCase))
+            {
+                backgroundJobClient.Enqueue<IElectronicInvoicingService>(x => x.SubmitInvoiceAsync(invoice.Id, CancellationToken.None));
+            }
 
             var response = new ApiResponse<CreateInvoiceResponse>
             {

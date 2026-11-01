@@ -14,5 +14,6 @@ public static class InvoiceEndpoints
         group.MapUpdateInvoiceReminderSuppression();
         group.MapPreviewImportInvoiceXml();
         group.MapConfirmImportInvoiceXml();
+        group.MapGetElectronicInvoiceSubmission();
     }
 }
