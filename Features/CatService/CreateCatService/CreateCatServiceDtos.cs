@@ -4,3 +4,10 @@ public record CreateCatServiceDto(
      string Description,
      string Icon
 );
+
+public record CatServiceResponseDto(
+     int Id,
+     string Name,
+     string Description,
+     string Icon
+);
