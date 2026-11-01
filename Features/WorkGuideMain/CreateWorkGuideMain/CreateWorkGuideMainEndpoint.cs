@@ -151,25 +151,40 @@ public static class CreateWorkGuideMainEndpoint
             await db.SaveChangesAsync();
             
             
-            //envia a la cola de impresion
-            var branch = await db.BranchSales.SingleOrDefaultAsync(x => x.Id == wgmCreateDto.BranchStoreId);
-            if (branch == null)
+            // Envia a la cola de impresion. Si la sucursal no tiene una impresora por defecto
+            // configurada (o fue borrada de la tabla Printers), esto NO debe impedir que la guia
+            // quede registrada: se deja log (visible en Seq) y se continua sin encolar impresion.
+            try
             {
-                return Results.Problem("No tiene impresora configurada por defecto esta sucursal", "CreateWorkGuideMainEndpoint");
+                var branch = await db.BranchSales.SingleOrDefaultAsync(x => x.Id == wgmCreateDto.BranchStoreId);
+                if (branch == null)
+                {
+                    logger.LogWarning($"No se encontró la sucursal {wgmCreateDto.BranchStoreId} al intentar encolar la impresión de la guía {workGuideMain.Id}", "CreateWorkGuideMainEndpoint");
+                }
+                else if (!await db.Printers.AnyAsync(p => p.Id == branch.DefaultPrinterId))
+                {
+                    logger.LogWarning($"La sucursal {branch.Id} no tiene una impresora por defecto configurada (DefaultPrinterId={branch.DefaultPrinterId}); la guía {workGuideMain.Id} se registró sin encolar impresión", "CreateWorkGuideMainEndpoint");
+                }
+                else
+                {
+                    var printQueue = new PrintQueue()
+                    {
+                        WorkGuideId = workGuideMain.Id,
+                        PrinterId = branch.DefaultPrinterId,
+                        Status = PrintStatus.Pending,
+                        CreatedAt = DateTime.UtcNow,
+                        DocumentType = numbersDocument.TypeDoc,
+                        PrintCopy = wgmCreateDto.PrintCopy,
+                    };
+                    db.PrintQueues.Add(printQueue);
+                    await db.SaveChangesAsync();
+                    await printNotifier.NotifyAsync(branch.DefaultPrinterId, printQueue.Id);
+                }
             }
-
-            var printQueue = new PrintQueue()
+            catch (Exception ex)
             {
-                WorkGuideId = workGuideMain.Id,
-                PrinterId = branch.DefaultPrinterId,
-                Status = PrintStatus.Pending,
-                CreatedAt = DateTime.UtcNow,
-                DocumentType = numbersDocument.TypeDoc,
-                PrintCopy = wgmCreateDto.PrintCopy,
-            };
-            db.PrintQueues.Add(printQueue);
-            await db.SaveChangesAsync();
-            await printNotifier.NotifyAsync(branch.DefaultPrinterId, printQueue.Id);
+                logger.LogWarning($"No se pudo encolar la impresión de la guía {workGuideMain.Id}: {ex.Message}", "CreateWorkGuideMainEndpoint");
+            }
 
             // Actualiza el historial de prendas frecuentes del cliente. No debe romper el flujo de registro/impresion ya realizado.
             await UpsertGarmentHistoryAsync(db, logger, workGuideMain.CustomerId, workGuideMain.WorkGuideDetails);

@@ -64,6 +64,19 @@ public static class ReprintWorkGuideMainEndpoint
                     return Results.BadRequest(docErrResponse);
                 }
 
+                if (!await db.Printers.AnyAsync(p => p.Id == branch.DefaultPrinterId))
+                {
+                    logger.LogWarning($"La sucursal {branch.Id} no tiene una impresora por defecto configurada (DefaultPrinterId={branch.DefaultPrinterId})", "ReprintWorkGuideMainEndpoint");
+                    var printerErrResponse = new ApiResponse<string>
+                    {
+                        Data = "",
+                        Message = "No tiene impresora configurada por defecto esta sucursal",
+                        Success = false,
+                        StatusCode = 400
+                    };
+                    return Results.BadRequest(printerErrResponse);
+                }
+
                 printQueue = new PrintQueue
                 {
                     WorkGuideId = workGuide.Id,
