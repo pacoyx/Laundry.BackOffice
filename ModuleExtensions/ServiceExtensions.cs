@@ -172,7 +172,10 @@ public static class ServiceExtensions
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
             .UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection")));
-        services.AddHangfireServer();
+        // Sin esto, Hangfire usa su default (ProcessorCount * 5), que en el droplet de
+        // produccion (2 vCPU) termina en un pool de workers mas grande de lo que la CPU
+        // disponible puede atender bien en paralelo si varios jobs coincidieran a la vez.
+        services.AddHangfireServer(options => options.WorkerCount = 10);
 
         services.AddCors(options =>
         {
