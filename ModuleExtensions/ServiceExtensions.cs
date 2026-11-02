@@ -70,18 +70,23 @@ public static class ServiceExtensions
         }
 
         services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
+        services.Configure<BrevoSettings>(configuration.GetSection("Brevo"));
 
         // Switch de encendido/apagado: SMTP (puertos 25/465/587) esta bloqueado a nivel de
         // plataforma en todos los droplets de DigitalOcean (confirmado por su propia
         // documentacion), asi que SmtpEmailService no puede funcionar ahi bajo ninguna
-        // configuracion de cuenta. Con Email:Provider = "SendGrid" se envia por la API HTTPS
-        // (puerto 443, nunca bloqueado) con un remitente unico global. Si queda vacio, se
-        // mantiene el comportamiento actual (SmtpEmailService + cuentas por Operacion en
-        // EmailAccounts).
+        // configuracion de cuenta. Con Email:Provider = "SendGrid" o "Brevo" se envia por la
+        // API HTTPS (puerto 443, nunca bloqueado) con un remitente unico global. Si queda
+        // vacio, se mantiene el comportamiento actual (SmtpEmailService + cuentas por
+        // Operacion en EmailAccounts).
         var emailProvider = configuration["Email:Provider"];
         if (string.Equals(emailProvider, "SendGrid", StringComparison.OrdinalIgnoreCase))
         {
             services.AddHttpClient<IEmailService, SendGridEmailService>();
+        }
+        else if (string.Equals(emailProvider, "Brevo", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<IEmailService, BrevoEmailService>();
         }
         else
         {
