@@ -51,8 +51,15 @@ public class AzureBlobStorageService : IFileStorageService
         await EnsureContainerAsync(cancellationToken);
 
         var blobClient = _containerClient.GetBlobClient(filePath);
-        var download = await blobClient.DownloadStreamingAsync(cancellationToken: cancellationToken);
-        return download.Value.Content;
+
+        // OpenReadAsync (en vez de DownloadStreamingAsync) devuelve un stream que SI soporta
+        // Seek, descargando el contenido por partes a medida que se lee. Los endpoints que
+        // sirven este stream usan Results.File(..., enableRangeProcessing: true), y ese soporte
+        // de rangos de ASP.NET Core necesita poder hacer seek sobre el stream -con
+        // DownloadStreamingAsync (stream de solo avance) las peticiones Range de algunos
+        // navegadores moviles (ej. Safari/iOS) se quedaban colgadas en vez de fallar o servir
+        // el archivo completo.
+        return await blobClient.OpenReadAsync(position: 0, cancellationToken: cancellationToken);
     }
 
     private async Task EnsureContainerAsync(CancellationToken cancellationToken)

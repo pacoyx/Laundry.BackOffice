@@ -88,7 +88,12 @@ public static class ServiceExtensions
         var fileStorageProvider = configuration["FileStorage:Provider"];
         if (string.Equals(fileStorageProvider, "AzureBlob", StringComparison.OrdinalIgnoreCase))
         {
-            services.AddScoped<IFileStorageService, AzureBlobStorageService>();
+            // Singleton a proposito: BlobServiceClient/BlobContainerClient del SDK de Azure
+            // estan pensados para reutilizarse durante toda la vida de la app. Con Scoped se
+            // creaba una instancia nueva por request, lo que hacia que el flag _containerEnsured
+            // nunca sirviera y cada descarga/subida hiciera una llamada extra a Azure solo para
+            // revalidar que el contenedor existe, duplicando la latencia de red hacia Azure.
+            services.AddSingleton<IFileStorageService, AzureBlobStorageService>();
         }
         else
         {
