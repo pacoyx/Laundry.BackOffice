@@ -13,6 +13,7 @@ public class GetEmployeeService : IGetEmployeeService
     {
         var employee = await _context.Employees
             .AsNoTracking()
+            .AsSplitQuery()
             .Include(x => x.Area)
             .Include(x => x.Position)
             .Include(x => x.EmergencyContacts)
