@@ -55,14 +55,20 @@ public static class ServiceExtensions
         services.Configure<PickupMobileSettings>(configuration.GetSection("PickupMobile"));
         services.Configure<WebOrdersSettings>(configuration.GetSection("WebOrders"));
         services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
+        services.Configure<BrevoSmsSettings>(configuration.GetSection("BrevoSms"));
 
-        // Switch de encendido/apagado: mientras no se contrate Twilio, Sms:Provider queda vacio
-        // o en "Logging" y el OTP solo se escribe en el log. Para activarlo de verdad, poner
-        // Sms:Provider = "Twilio" y completar la seccion Twilio con los datos de la cuenta.
+        // Switch de encendido/apagado: mientras no se contrate Twilio ni Brevo SMS, Sms:Provider
+        // queda vacio o en "Logging" y el OTP solo se escribe en el log. Para activarlo de verdad,
+        // poner Sms:Provider = "Twilio" (completar Twilio) o "Brevo" (completar BrevoSms). A
+        // diferencia del correo, el SMS de Brevo tiene costo por mensaje, no es gratuito.
         var smsProvider = configuration["Sms:Provider"];
         if (string.Equals(smsProvider, "Twilio", StringComparison.OrdinalIgnoreCase))
         {
             services.AddHttpClient<ISmsService, TwilioSmsService>();
+        }
+        else if (string.Equals(smsProvider, "Brevo", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<ISmsService, BrevoSmsService>();
         }
         else
         {
