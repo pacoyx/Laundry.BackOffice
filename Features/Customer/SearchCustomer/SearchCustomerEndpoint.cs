@@ -91,6 +91,7 @@ public static class SearchCustomerEndpoint
 
             var totalRecords = await query.CountAsync();
             var customers = await query
+            .OrderBy(x => x.FirtsName).ThenBy(x => x.LastName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Select(x => new ResponseSearchCustomerDtoDetailpaginator(
