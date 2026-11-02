@@ -69,6 +69,25 @@ public static class ServiceExtensions
             services.AddScoped<ISmsService, LoggingSmsService>();
         }
 
+        services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
+
+        // Switch de encendido/apagado: SMTP (puertos 25/465/587) esta bloqueado a nivel de
+        // plataforma en todos los droplets de DigitalOcean (confirmado por su propia
+        // documentacion), asi que SmtpEmailService no puede funcionar ahi bajo ninguna
+        // configuracion de cuenta. Con Email:Provider = "SendGrid" se envia por la API HTTPS
+        // (puerto 443, nunca bloqueado) con un remitente unico global. Si queda vacio, se
+        // mantiene el comportamiento actual (SmtpEmailService + cuentas por Operacion en
+        // EmailAccounts).
+        var emailProvider = configuration["Email:Provider"];
+        if (string.Equals(emailProvider, "SendGrid", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<IEmailService, SendGridEmailService>();
+        }
+        else
+        {
+            services.AddScoped<IEmailService, SmtpEmailService>();
+        }
+
         services.Configure<ElectronicInvoicingSettings>(configuration.GetSection("ElectronicInvoicing"));
 
         // Switch de encendido/apagado: mientras ElectronicInvoicing:Provider este vacio, la

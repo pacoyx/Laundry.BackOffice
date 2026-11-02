@@ -104,7 +104,6 @@ public static class ServicesDiExtensions
         services.AddScoped<IExpenseReportService, ExpenseReportService>();
 
         services.AddScoped<IImageCompressor, SkiaImageCompressor>();
-        services.AddScoped<IEmailService, SmtpEmailService>();
         services.AddSingleton<ISymmetricEncryptionService, AesSymmetricEncryptionService>();
         services.AddScoped<IPickupGuideReceiptPdfService, PickupGuideReceiptPdfService>();
 
