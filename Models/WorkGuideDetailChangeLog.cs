@@ -22,6 +22,12 @@ public class WorkGuideDetailChangeLog
     [Column(TypeName = "decimal(18,2)")]
     public decimal? NewQuantity { get; set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? OldPrice { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? NewPrice { get; set; }
+
     public string? Observation { get; set; }
 
     public int UserId { get; set; }

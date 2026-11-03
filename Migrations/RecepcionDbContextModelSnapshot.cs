@@ -4561,12 +4561,18 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("NewPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal?>("NewQuantity")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Observation")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal?>("OldPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("OldQuantity")
                         .HasColumnType("decimal(18,2)");
