@@ -34,7 +34,7 @@ public class RolePermissionSeeder : IApplicationSeeder
             PermissionCodes.Purchases, PermissionCodes.Expenses, PermissionCodes.Employees,
             PermissionCodes.Payroll, PermissionCodes.Reports, PermissionCodes.CorporateOperations,
             PermissionCodes.GuiaRemision, PermissionCodes.SharedDocuments, PermissionCodes.FixedAssets,
-            PermissionCodes.ElectronicInvoicing
+            PermissionCodes.ElectronicInvoicing, PermissionCodes.DriverTracking
         },
         [RoleNames.OperacionesCorporativas] = new[]
         {

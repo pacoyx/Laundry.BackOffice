@@ -43,6 +43,8 @@ public static class PickupMobileEndpoints
         group.MapGetWebOrderByDocumentPickupMobile();
         group.MapCreateWebOrderPickupPhoto();
         group.MapCompletePickupMobileWebOrder();
+
+        group.MapSaveDriverLocation();
     }
 
     internal static PickupMobileAttachmentDto ToAttachmentDto(PickupGuideAttachment attachment) => new(

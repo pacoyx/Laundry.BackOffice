@@ -1,4 +1,5 @@
 using _24dex_backend_comercial.Features.PrinterHub;
+using _24dex_backend_comercial.Features.DriverTracking;
 using Hangfire;
 using HealthChecks.UI.Client;
 using FluentValidation.AspNetCore;
@@ -64,6 +65,12 @@ app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 app.MapHub<PrintHub>("/printhub");
+app.MapHub<DriverTrackingHub>("/driverTrackingHub");
+
+RecurringJob.AddOrUpdate<IDriverLocationCleanupService>(
+    "driver-location-cleanup",
+    service => service.CleanupOldLocationsAsync(CancellationToken.None),
+    Cron.Daily);
 
 // secutity headers
 // app.RemoveInsecureHeaders();

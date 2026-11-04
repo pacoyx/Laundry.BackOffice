@@ -4,6 +4,7 @@ using System.Text;
 using _24dex_backend_comercial;
 using Hangfire;
 using _24dex_backend_comercial.Features.PrinterHub;
+using _24dex_backend_comercial.Features.DriverTracking;
 using Dls.Erp.Transversal.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,7 @@ public static class ServiceExtensions
         services.Configure<WebOrdersSettings>(configuration.GetSection("WebOrders"));
         services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
         services.Configure<BrevoSmsSettings>(configuration.GetSection("BrevoSms"));
+        services.Configure<DriverTrackingSettings>(configuration.GetSection("DriverTracking"));
 
         // Switch de encendido/apagado: mientras no se contrate Twilio ni Brevo SMS, Sms:Provider
         // queda vacio o en "Logging" y el OTP solo se escribe en el log. Para activarlo de verdad,
@@ -244,14 +246,15 @@ public static class ServiceExtensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
             };
 
-            // El navegador no puede enviar un header Authorization al navegar directo a una URL.
-            // Para /hangfire (y solo esa ruta) se acepta el JWT como query string "access_token",
-            // igual que hace SignalR para WebSockets. No afecta la autenticacion del resto de la API.
+            // El navegador no puede enviar un header Authorization al navegar directo a una URL,
+            // ni al abrir un WebSocket de SignalR. Para esas rutas (y solo esas) se acepta el JWT
+            // como query string "access_token". No afecta la autenticacion del resto de la API.
+            var queryStringTokenPaths = new PathString[] { "/hangfire", "/driverTrackingHub" };
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>
                 {
-                    if (context.Request.Path.StartsWithSegments("/hangfire") &&
+                    if (queryStringTokenPaths.Any(context.Request.Path.StartsWithSegments) &&
                         context.Request.Query.TryGetValue("access_token", out var token))
                     {
                         context.Token = token;

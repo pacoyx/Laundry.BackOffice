@@ -24,12 +24,14 @@ public static class PermissionCodes
     public const string SharedDocuments = "shared-documents.access";
     public const string FixedAssets = "fixed-assets.access";
     public const string ElectronicInvoicing = "electronic-invoicing.access";
+    public const string DriverTracking = "driver-tracking.access";
 
     public static readonly string[] All =
     {
         Dashboard, Reception, ReceptionEmision, ReceptionRetiro, ReceptionConsultas,
         ReceptionCaja, ReceptionGastos, ReceptionMaestros, ReceptionPedidosWeb, Customers, Invoices, Purchases,
         Expenses, Employees, Payroll, Suppliers, Reports, Settings,
-        CorporateOperations, PickupMobile, GuiaRemision, SharedDocuments, FixedAssets, ElectronicInvoicing
+        CorporateOperations, PickupMobile, GuiaRemision, SharedDocuments, FixedAssets, ElectronicInvoicing,
+        DriverTracking
     };
 }

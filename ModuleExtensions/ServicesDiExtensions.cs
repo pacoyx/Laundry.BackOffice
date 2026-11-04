@@ -1,5 +1,6 @@
 using _24dex_backend_comercial.Features.PrinterHub;
 using _24dex_backend_comercial.Features.WorkGuideMain.CreateWorkGuideMain;
+using _24dex_backend_comercial.Features.DriverTracking;
 
 public static class ServicesDiExtensions
 {
@@ -52,6 +53,8 @@ public static class ServicesDiExtensions
         services.AddScoped<ICancelPurchaseInvoiceService, CancelPurchaseInvoiceService>();
         
         services.AddScoped<IPrintNotifier, SignalRPrintNotifier>();
+        services.AddScoped<IDriverLocationBroadcaster, DriverLocationBroadcaster>();
+        services.AddScoped<IDriverLocationCleanupService, DriverLocationCleanupService>();
         services.AddSingleton<PrinterRegistry>();
 
         services.AddScoped<ISalesRegisterReportService, SalesRegisterReportService>();

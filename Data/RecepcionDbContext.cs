@@ -112,6 +112,7 @@ public class RecepcionDbContext : DbContext
     public DbSet<SharedDocumentRecipient> SharedDocumentRecipients { get; set; }
     public DbSet<FixedAssetCategory> FixedAssetCategories { get; set; }
     public DbSet<FixedAsset> FixedAssets { get; set; }
+    public DbSet<DriverLocation> DriverLocations { get; set; }
     public DbSet<FixedAssetMaintenance> FixedAssetMaintenances { get; set; }
     public DbSet<FixedAssetMaintenanceAttachment> FixedAssetMaintenanceAttachments { get; set; }
     public DbSet<FixedAssetReassignment> FixedAssetReassignments { get; set; }
@@ -247,6 +248,7 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ScheduledEmailExecutionConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceReminderLogConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceReminderLogDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new DriverLocationConfiguration());
 
         modelBuilder.ApplyConfiguration(new ZoneConfiguration());
         modelBuilder.ApplyConfiguration(new DistrictConfiguration());

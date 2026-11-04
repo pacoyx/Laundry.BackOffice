@@ -1,4 +1,5 @@
 using _24dex_backend_comercial.Features.PrinterHub;
+using _24dex_backend_comercial.Features.DriverTracking;
 using Microsoft.AspNetCore.Builder;
 
 public static class RouteExtensions
@@ -88,6 +89,7 @@ public static class RouteExtensions
         app.MapCustomerPortal();
         app.MapCustomerUsersAdmin();
         app.MapPickupMobile();
+        app.MapDriverTracking();
         app.MapScheduledEmailNotifications();
         app.MapInvoiceReminders();
         app.MapManagementDashboard();
