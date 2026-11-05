@@ -18,9 +18,12 @@ public static class GetPortalCustomersEndpoint
                 })
                 .ToListAsync();
 
+            // El portal web es para clientes Empresa (facturan con RUC via su perfil de facturacion);
+            // los clientes Individual nunca tienen acceso a el, asi que no deben aparecer en este reporte.
             var customers = await db.Customers
                 .AsNoTracking()
                 .Include(x => x.BillingProfile)
+                .Where(x => x.CustomerType == CustomerType.Company)
                 .ToListAsync();
 
             var report = customers
