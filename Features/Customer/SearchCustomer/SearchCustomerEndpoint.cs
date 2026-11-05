@@ -102,7 +102,9 @@ public static class SearchCustomerEndpoint
                 x.Phone ?? string.Empty,
                 x.Email ?? string.Empty,
                 x.DocPersonal ?? string.Empty,
-                x.Status ?? string.Empty
+                x.Status ?? string.Empty,
+                x.CustomerType,
+                x.InternalCode
             )).ToListAsync();
 
             var responsePaginator = new ResponseSearchCustomerDtoPaginator(
