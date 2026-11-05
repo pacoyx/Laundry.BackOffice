@@ -14,7 +14,12 @@ public static class GetPickupMobileServiceItemsEndpoint
                 .Include(x => x.Details).ThenInclude(d => d.ServiceItem)
                 .FirstOrDefaultAsync(x => x.CustomerId == customerId && x.IsActive);
 
+            // La tarifa siempre trae una fila por cada servicio del catalogo (ver
+            // DialogFormTarifaComponent en el frontend: completa UnitPrice=0 para los que no
+            // se definio precio), asi que sin este filtro el combo terminaba mostrando el
+            // catalogo entero en vez de solo lo contratado para este cliente.
             var items = priceList?.Details
+                .Where(d => d.UnitPrice > 0)
                 .Select(d => new PickupMobileServiceItemLookupDto(d.ServiceItemId, d.ServiceItem.Name, d.UnitPrice))
                 .OrderBy(x => x.Name)
                 .ToList() ?? new List<PickupMobileServiceItemLookupDto>();
