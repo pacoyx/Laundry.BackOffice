@@ -53,7 +53,7 @@ public static class GetPrintJobEndpoint
                     printJob.PrinterId,
                     workGuide.User != null ? workGuide.User.UserName : string.Empty,
                     workGuide.TipoRecepcion =="D",
-                    true,
+                    printJob.PrintCopy > 0,
                     workGuide.WorkGuideDetails.Select(d => new PrintJobDetailResponse(
                         d.ProductId,
                         d.Product != null ? d.Product.Name : string.Empty,
