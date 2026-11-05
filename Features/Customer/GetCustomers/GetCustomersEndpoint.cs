@@ -4,10 +4,15 @@ public static class GetCustomersEndpoint
 {
     public static void MapGetCustomers(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/{pageNumber}/{pageSize}", async (int pageNumber, int pageSize, RecepcionDbContext context) =>
+        app.MapGet("/{pageNumber}/{pageSize}", async (int pageNumber, int pageSize, CustomerType? customerType, RecepcionDbContext context) =>
         {
             // Aplicar un filtro (por ejemplo, solo clientes activos)
             var query = context.Customers.AsNoTracking();
+
+            if (customerType.HasValue)
+            {
+                query = query.Where(c => c.CustomerType == customerType.Value);
+            }
 
              // Obtener el total de filas después de aplicar el filtro
             var totalRows = await query.CountAsync();

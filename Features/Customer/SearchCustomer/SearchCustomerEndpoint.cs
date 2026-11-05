@@ -74,7 +74,7 @@ public static class SearchCustomerEndpoint
 
     public static void MapSearchCustomerPaginator(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/search/Paginator/{pageNumber}/{pageSize}", async (RecepcionDbContext context, string name, int pageNumber, int pageSize) =>
+        app.MapGet("/search/Paginator/{pageNumber}/{pageSize}", async (RecepcionDbContext context, string name, int pageNumber, int pageSize, CustomerType? customerType) =>
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -88,6 +88,11 @@ public static class SearchCustomerEndpoint
 
             var query = context.Customers.AsNoTracking()
             .Where(x => (x.FirtsName != null && x.FirtsName.Contains(name)) || (x.LastName != null && x.LastName.Contains(name)));
+
+            if (customerType.HasValue)
+            {
+                query = query.Where(x => x.CustomerType == customerType.Value);
+            }
 
             var totalRecords = await query.CountAsync();
             var customers = await query
