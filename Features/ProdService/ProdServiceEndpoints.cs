@@ -14,7 +14,12 @@ public static class ProdServiceEndpoints{
         group.MapGetProdServiceSearchByDescription();
         group.MapGetIdServicePeso();
         group.MapGetServicesAccessFast();
-    
+        group.MapGetServiceAccessFastAdminList();
+        group.MapCreateServiceAccessFast();
+        group.MapUpdateServiceAccessFast();
+        group.MapDeleteServiceAccessFast();
+        group.MapReorderServiceAccessFast();
+
 
 
         return group;
