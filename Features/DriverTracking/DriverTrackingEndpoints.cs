@@ -12,5 +12,7 @@ public static class DriverTrackingEndpoints
             .RequirePermission(PermissionCodes.DriverTracking);
 
         group.MapGetDriverLocations();
+        group.MapGetDriverTrackingDrivers();
+        group.MapGetDriverRoute();
     }
 }
