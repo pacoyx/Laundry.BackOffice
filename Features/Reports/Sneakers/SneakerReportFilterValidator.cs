@@ -15,6 +15,9 @@ public class SneakerReportFilterValidator : AbstractValidator<SneakerReportFilte
         RuleFor(x => x.BrandId).GreaterThan(0).When(x => x.BrandId.HasValue)
             .WithMessage("La marca indicada no es válida.");
 
+        RuleFor(x => x.CustomerId).GreaterThan(0).When(x => x.CustomerId.HasValue)
+            .WithMessage("El cliente indicado no es válido.");
+
         RuleFor(x => x.TicketStatus).MaximumLength(1);
     }
 }

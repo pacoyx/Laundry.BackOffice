@@ -8,18 +8,30 @@ public class SneakerReportFilter
 
     public int? BrandId { get; set; }
 
+    public int? CustomerId { get; set; }
+
     public string? TicketStatus { get; set; }
 
     public bool? PendingDelivery { get; set; }
 }
 
-public record SneakerReportRowResponse(
-    string WorkGuideNumber,
-    string CustomerName,
+// Una fila por zapatilla, usada para el detalle que se ve al expandir un grupo.
+public record SneakerReportItemResponse(
+    long SneakerDetailId,
     string? Brand,
     string? PrimaryColor,
     bool HasLaces,
-    bool HasInsoles,
+    bool HasInsoles
+);
+
+// Una fila por guia (agrupa todas sus zapatillas). Es lo que renderiza la tabla principal.
+public record SneakerReportGroupResponse(
+    int WorkGuideId,
+    string WorkGuideNumber,
+    DateTime WorkGuideDate,
+    string CustomerName,
+    int SneakerCount,
     string DeliveryStatus,
-    int PhotoCount
+    int PhotoCount,
+    List<SneakerReportItemResponse> Items
 );

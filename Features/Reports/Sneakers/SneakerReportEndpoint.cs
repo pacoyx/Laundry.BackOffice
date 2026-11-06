@@ -11,6 +11,7 @@ public static class SneakerReportEndpoint
             [FromQuery] DateTime? dateTo,
             [FromQuery] int? branchId,
             [FromQuery] int? brandId,
+            [FromQuery] int? customerId,
             [FromQuery] string? ticketStatus,
             [FromQuery] bool? pendingDelivery,
             IValidator<SneakerReportFilter> validator,
@@ -22,6 +23,7 @@ public static class SneakerReportEndpoint
                 DateTo = dateTo,
                 BranchId = branchId,
                 BrandId = brandId,
+                CustomerId = customerId,
                 TicketStatus = ticketStatus,
                 PendingDelivery = pendingDelivery
             };
@@ -44,6 +46,9 @@ public static class SneakerReportEndpoint
             if (filter.BrandId.HasValue)
                 query = query.Where(s => s.SneakerBrandId == filter.BrandId.Value);
 
+            if (filter.CustomerId.HasValue)
+                query = query.Where(s => s.WorkGuideDetail.WorkGuideMain!.CustomerId == filter.CustomerId.Value);
+
             if (!string.IsNullOrEmpty(filter.TicketStatus))
                 query = query.Where(s => s.WorkGuideDetail.EstadoTrabajo == filter.TicketStatus);
 
@@ -51,10 +56,15 @@ public static class SneakerReportEndpoint
                 query = query.Where(s => s.WorkGuideDetail.EstadoSituacion == "P");
 
             var rows = await query
+                .OrderByDescending(s => s.WorkGuideDetail.WorkGuideMain!.FechaOperacion)
+                .ThenByDescending(s => s.Id)
                 .Select(s => new
                 {
+                    WorkGuideId = s.WorkGuideDetail.WorkGuideMain!.Id,
                     WorkGuideNumber = s.WorkGuideDetail.WorkGuideMain!.SerieGuia + "-" + s.WorkGuideDetail.WorkGuideMain.NumeroGuia,
+                    WorkGuideDate = s.WorkGuideDetail.WorkGuideMain.FechaOperacion,
                     CustomerName = (s.WorkGuideDetail.WorkGuideMain.Customer!.FirtsName + " " + (s.WorkGuideDetail.WorkGuideMain.Customer.LastName ?? "")).Trim(),
+                    SneakerDetailId = s.Id,
                     Brand = s.Brand != null ? s.Brand.Name : null,
                     s.PrimaryColor,
                     s.HasLaces,
@@ -64,18 +74,30 @@ public static class SneakerReportEndpoint
                 })
                 .ToListAsync();
 
-            var response = rows.Select(r => new SneakerReportRowResponse(
-                r.WorkGuideNumber,
-                r.CustomerName,
-                r.Brand,
-                r.PrimaryColor,
-                r.HasLaces,
-                r.HasInsoles,
-                MapDeliveryStatus(r.DeliveryStatusCode),
-                r.PhotoCount
-            )).ToList();
+            // Se agrupa en memoria (no en SQL) porque GroupBy conserva el orden de primera
+            // aparicion de cada clave, que ya viene ordenado desc por fecha desde la consulta
+            // de arriba -asi no hay que volver a ordenar los grupos.
+            var response = rows
+                .GroupBy(r => new { r.WorkGuideId, r.WorkGuideNumber, r.WorkGuideDate, r.CustomerName, r.PhotoCount })
+                .Select(g => new SneakerReportGroupResponse(
+                    g.Key.WorkGuideId,
+                    g.Key.WorkGuideNumber,
+                    g.Key.WorkGuideDate,
+                    g.Key.CustomerName,
+                    g.Count(),
+                    g.All(x => x.DeliveryStatusCode == "E") ? "Delivered" : "Pending",
+                    g.Key.PhotoCount,
+                    g.Select(x => new SneakerReportItemResponse(
+                        x.SneakerDetailId,
+                        x.Brand,
+                        x.PrimaryColor,
+                        x.HasLaces,
+                        x.HasInsoles
+                    )).ToList()
+                ))
+                .ToList();
 
-            return Results.Ok(new ApiResponse<List<SneakerReportRowResponse>>
+            return Results.Ok(new ApiResponse<List<SneakerReportGroupResponse>>
             {
                 Success = true,
                 Message = "Reporte de zapatillas.",
@@ -84,12 +106,4 @@ public static class SneakerReportEndpoint
             });
         });
     }
-
-    private static string MapDeliveryStatus(string code) => code switch
-    {
-        "P" => "Pending",
-        "E" => "Delivered",
-        "D" => "Returned",
-        _ => "Unknown"
-    };
 }
