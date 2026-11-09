@@ -7,7 +7,8 @@ public class CustomerPermissionSeeder : IApplicationSeeder
         (CustomerPermissionCodes.GuidesView, "Ver guias de recojo de la empresa"),
         (CustomerPermissionCodes.InvoicesView, "Ver facturas de la empresa"),
         (CustomerPermissionCodes.ReportsView, "Ver reportes de la empresa"),
-        (CustomerPermissionCodes.UsersManage, "Administrar usuarios del portal de la empresa")
+        (CustomerPermissionCodes.UsersManage, "Administrar usuarios del portal de la empresa"),
+        (CustomerPermissionCodes.GarmentsManage, "Registrar y gestionar tickets de ingreso de prendas de la empresa")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

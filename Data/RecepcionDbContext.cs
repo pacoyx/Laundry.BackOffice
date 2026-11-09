@@ -128,6 +128,11 @@ public class RecepcionDbContext : DbContext
     public DbSet<CustomerRolePermission> CustomerRolePermissions { get; set; }
     public DbSet<CustomerUserToken> CustomerUserTokens { get; set; }
 
+    public DbSet<CompanyWorker> CompanyWorkers { get; set; }
+    public DbSet<GarmentIntakeTicket> GarmentIntakeTickets { get; set; }
+    public DbSet<GarmentIntakeTicketDetail> GarmentIntakeTicketDetails { get; set; }
+    public DbSet<GarmentIntakeTicketPhoto> GarmentIntakeTicketPhotos { get; set; }
+
     public DbSet<ScheduledEmailNotification> ScheduledEmailNotifications { get; set; }
     public DbSet<ScheduledEmailRecipient> ScheduledEmailRecipients { get; set; }
     public DbSet<ScheduledEmailExecution> ScheduledEmailExecutions { get; set; }
@@ -227,6 +232,10 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CustomerPermissionConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerRolePermissionConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerUserTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanyWorkerConfiguration());
+        modelBuilder.ApplyConfiguration(new GarmentIntakeTicketConfiguration());
+        modelBuilder.ApplyConfiguration(new GarmentIntakeTicketDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new GarmentIntakeTicketPhotoConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleConfiguration());
         modelBuilder.ApplyConfiguration(new GuiaRemisionConfiguration());
         modelBuilder.ApplyConfiguration(new SharedDocumentConfiguration());

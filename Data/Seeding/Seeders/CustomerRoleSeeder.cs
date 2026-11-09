@@ -7,7 +7,8 @@ public class CustomerRoleSeeder : IApplicationSeeder
         (CustomerRoleNames.AdministradorEmpresa, "Administra usuarios y tiene acceso total al portal de la empresa"),
         (CustomerRoleNames.Facturacion, "Consulta facturas y reportes de la empresa"),
         (CustomerRoleNames.Operaciones, "Consulta guias de recojo de la empresa"),
-        (CustomerRoleNames.Consulta, "Consulta guias, facturas y reportes de la empresa")
+        (CustomerRoleNames.Consulta, "Consulta guias, facturas y reportes de la empresa"),
+        (CustomerRoleNames.Roperia, "Registra el ingreso de prendas de los trabajadores de la empresa para su recojo")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

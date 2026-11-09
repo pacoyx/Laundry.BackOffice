@@ -16,6 +16,10 @@ public class CustomerRolePermissionSeeder : IApplicationSeeder
         [CustomerRoleNames.Consulta] = new[]
         {
             CustomerPermissionCodes.GuidesView, CustomerPermissionCodes.InvoicesView, CustomerPermissionCodes.ReportsView
+        },
+        [CustomerRoleNames.Roperia] = new[]
+        {
+            CustomerPermissionCodes.GarmentsManage, CustomerPermissionCodes.GuidesView
         }
     };
 

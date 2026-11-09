@@ -759,6 +759,55 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("CompanyBankAccounts", (string)null);
                 });
 
+            modelBuilder.Entity("CompanyWorker", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Area")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("CompanyWorkers", (string)null);
+                });
+
             modelBuilder.Entity("Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -2263,6 +2312,158 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("PreviousResponsibleUserId");
 
                     b.ToTable("FixedAssetReassignments", (string)null);
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("CreatedByCustomerUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PickedUpAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("PickupGuideId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("TicketNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime?>("VoidedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("VoidedByCustomerUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("VoidedReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByCustomerUserId");
+
+                    b.HasIndex("PickupGuideId");
+
+                    b.HasIndex("TicketNumber")
+                        .IsUnique();
+
+                    b.HasIndex("VoidedByCustomerUserId");
+
+                    b.HasIndex("CustomerId", "Status");
+
+                    b.ToTable("GarmentIntakeTickets", (string)null);
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicketDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Observations")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceItemId");
+
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("GarmentIntakeTicketDetails", (string)null);
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicketPhoto", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CreatedByCustomerUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedByCustomerUserId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("GarmentIntakeTicketPhotos", (string)null);
                 });
 
             modelBuilder.Entity("GuiaRemision", b =>
@@ -5011,6 +5212,17 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("CompanyWorker", b =>
+                {
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("Customer", b =>
                 {
                     b.HasOne("District", "District")
@@ -5414,6 +5626,85 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("PreviousBranch");
 
                     b.Navigation("PreviousResponsibleUser");
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicket", b =>
+                {
+                    b.HasOne("CustomerUser", "CreatedByCustomerUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByCustomerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PickupGuide", "PickupGuide")
+                        .WithMany()
+                        .HasForeignKey("PickupGuideId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CustomerUser", "VoidedByCustomerUser")
+                        .WithMany()
+                        .HasForeignKey("VoidedByCustomerUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedByCustomerUser");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("PickupGuide");
+
+                    b.Navigation("VoidedByCustomerUser");
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicketDetail", b =>
+                {
+                    b.HasOne("DexterCompany.Models.ProdService", "ServiceItem")
+                        .WithMany()
+                        .HasForeignKey("ServiceItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GarmentIntakeTicket", "Ticket")
+                        .WithMany("Details")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CompanyWorker", "Worker")
+                        .WithMany()
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ServiceItem");
+
+                    b.Navigation("Ticket");
+
+                    b.Navigation("Worker");
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicketPhoto", b =>
+                {
+                    b.HasOne("CustomerUser", "CreatedByCustomerUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedByCustomerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GarmentIntakeTicket", "Ticket")
+                        .WithMany("Photos")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedByCustomerUser");
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("GuiaRemision", b =>
@@ -6228,6 +6519,13 @@ namespace _24dex_backend_comercial.Migrations
             modelBuilder.Entity("FixedAssetMaintenance", b =>
                 {
                     b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("GarmentIntakeTicket", b =>
+                {
+                    b.Navigation("Details");
+
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("Invoice", b =>
