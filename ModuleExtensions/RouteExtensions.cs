@@ -42,6 +42,7 @@ public static class RouteExtensions
         app.MapPrinter();
         app.MapBrachSalesUser();
         app.MapPrintingAdmin();
+        app.MapPrinting();
         app.MapDiscoverPrinters();
         app.MapGetPrintJob();
         app.MapCompletePrintJob();
