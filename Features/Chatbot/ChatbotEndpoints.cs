@@ -4,6 +4,7 @@ public static class ChatbotEndpoints
     {
         var group = app.MapGroup("/api/chatbot").WithTags("Chatbot");
 
+        group.MapGetChatbotStatus();
         group.MapSendChatbotMessage();
     }
 }
