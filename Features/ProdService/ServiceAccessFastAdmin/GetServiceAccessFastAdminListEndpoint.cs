@@ -6,8 +6,12 @@ public static class GetServiceAccessFastAdminListEndpoint
     {
         app.MapGet("/access-fast", async (RecepcionDbContext db) =>
         {
+            // Ordenar ANTES de proyectar al record ServiceAccessFastAdminDto: EF Core no puede
+            // traducir un OrderBy sobre una propiedad de un objeto ya construido por el Join
+            // (tira InvalidOperationException en runtime, no en compilacion).
             var items = await db.ServiceAccessFasts
                 .AsNoTracking()
+                .OrderBy(saf => saf.Order)
                 .Join(db.ProdServices, saf => saf.ProdServiceID, ps => ps.Id, (saf, ps) => new ServiceAccessFastAdminDto(
                     saf.Id,
                     saf.ProdServiceID,
@@ -17,7 +21,6 @@ public static class GetServiceAccessFastAdminListEndpoint
                     saf.Status,
                     saf.Order
                 ))
-                .OrderBy(x => x.Order)
                 .ToListAsync();
 
             return Results.Ok(new ApiResponse<List<ServiceAccessFastAdminDto>>
