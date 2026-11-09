@@ -1,0 +1,1 @@
+public record CreateGarmentIntakeTicketRequest(List<GarmentIntakeTicketDetailRequest> Details);

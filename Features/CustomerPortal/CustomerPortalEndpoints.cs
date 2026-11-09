@@ -36,5 +36,19 @@ public static class CustomerPortalEndpoints
         portalGroup.MapGetMonthlySummary();
         portalGroup.MapGetHistory();
         portalGroup.MapGetByService();
+
+        portalGroup.MapGetCompanyWorkers();
+        portalGroup.MapCreateCompanyWorker();
+        portalGroup.MapUpdateCompanyWorker();
+        portalGroup.MapDeactivateCompanyWorker();
+
+        portalGroup.MapGetGarmentTicketServiceItems();
+        portalGroup.MapCreateGarmentTicket();
+        portalGroup.MapGetGarmentTickets();
+        portalGroup.MapGetGarmentTicket();
+        portalGroup.MapVoidGarmentTicket();
+        portalGroup.MapGetGarmentTicketsPendingSummary();
+        portalGroup.MapCreateGarmentTicketPhoto();
+        portalGroup.MapDownloadGarmentTicketPhoto();
     }
 }
