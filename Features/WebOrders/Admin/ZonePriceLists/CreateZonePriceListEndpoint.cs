@@ -64,7 +64,8 @@ public static class CreateZonePriceListEndpoint
                 Details = request.Details.Select(d => new ZonePriceListDetail
                 {
                     ServiceItemId = d.ServiceItemId,
-                    UnitPrice = d.UnitPrice
+                    UnitPrice = d.UnitPrice,
+                    EstimatedTurnaroundHours = d.EstimatedTurnaroundHours
                 }).ToList()
             };
 

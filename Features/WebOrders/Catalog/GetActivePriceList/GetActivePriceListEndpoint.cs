@@ -31,7 +31,7 @@ public static class GetActiveZonePriceListEndpoint
                 district.ZoneId,
                 district.Zone.Name,
                 priceList.Details
-                    .Select(d => new ZonePriceListItemResponse(d.ServiceItemId, d.ServiceItem.Name, d.ServiceItem.Description, d.UnitPrice))
+                    .Select(d => new ZonePriceListItemResponse(d.ServiceItemId, d.ServiceItem.Name, d.ServiceItem.Description, d.UnitPrice, d.EstimatedTurnaroundHours))
                     .ToList());
 
             return Results.Ok(new ApiResponse<ActiveZonePriceListResponse>

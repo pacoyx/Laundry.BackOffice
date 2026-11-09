@@ -10,7 +10,7 @@ public static class ZonePriceListsAdminMapper
         priceList.EffectiveTo,
         priceList.IsActive,
         priceList.Details.Select(d => new ZonePriceListDetailAdminResponse(
-            d.Id, d.ServiceItemId, d.ServiceItem.Name, d.UnitPrice
+            d.Id, d.ServiceItemId, d.ServiceItem.Name, d.UnitPrice, d.EstimatedTurnaroundHours
         )).ToList()
     );
 

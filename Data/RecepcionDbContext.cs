@@ -133,6 +133,9 @@ public class RecepcionDbContext : DbContext
     public DbSet<GarmentIntakeTicketDetail> GarmentIntakeTicketDetails { get; set; }
     public DbSet<GarmentIntakeTicketPhoto> GarmentIntakeTicketPhotos { get; set; }
 
+    public DbSet<ChatConversation> ChatConversations { get; set; }
+    public DbSet<ChatMessage> ChatMessages { get; set; }
+
     public DbSet<ScheduledEmailNotification> ScheduledEmailNotifications { get; set; }
     public DbSet<ScheduledEmailRecipient> ScheduledEmailRecipients { get; set; }
     public DbSet<ScheduledEmailExecution> ScheduledEmailExecutions { get; set; }
@@ -236,6 +239,8 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new GarmentIntakeTicketConfiguration());
         modelBuilder.ApplyConfiguration(new GarmentIntakeTicketDetailConfiguration());
         modelBuilder.ApplyConfiguration(new GarmentIntakeTicketPhotoConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatConversationConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleConfiguration());
         modelBuilder.ApplyConfiguration(new GuiaRemisionConfiguration());
         modelBuilder.ApplyConfiguration(new SharedDocumentConfiguration());

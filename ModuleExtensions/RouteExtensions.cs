@@ -97,5 +97,6 @@ public static class RouteExtensions
         app.MapGuiasRemision();
         app.MapSharedDocuments();
         app.MapFixedAssets();
+        app.MapChatbot();
     }
 }

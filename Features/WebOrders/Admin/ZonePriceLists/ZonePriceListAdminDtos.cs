@@ -1,6 +1,11 @@
-public record ZonePriceListDetailRequest(int ServiceItemId, decimal UnitPrice);
+public record ZonePriceListDetailRequest(int ServiceItemId, decimal UnitPrice, int? EstimatedTurnaroundHours);
 
-public record ZonePriceListDetailAdminResponse(long Id, int ServiceItemId, string ServiceItemName, decimal UnitPrice);
+public record ZonePriceListDetailAdminResponse(
+    long Id,
+    int ServiceItemId,
+    string ServiceItemName,
+    decimal UnitPrice,
+    int? EstimatedTurnaroundHours);
 
 public record ZonePriceListAdminResponse(
     long Id,

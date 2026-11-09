@@ -1,4 +1,4 @@
-public record ZonePriceListItemResponse(int ServiceItemId, string Name, string Description, decimal UnitPrice);
+public record ZonePriceListItemResponse(int ServiceItemId, string Name, string Description, decimal UnitPrice, int? EstimatedTurnaroundHours);
 
 public record ActiveZonePriceListResponse(
     long ZonePriceListId,

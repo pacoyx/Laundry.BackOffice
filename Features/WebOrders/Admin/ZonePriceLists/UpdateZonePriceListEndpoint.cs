@@ -53,7 +53,8 @@ public static class UpdateZonePriceListEndpoint
             priceList.Details = request.Details.Select(d => new ZonePriceListDetail
             {
                 ServiceItemId = d.ServiceItemId,
-                UnitPrice = d.UnitPrice
+                UnitPrice = d.UnitPrice,
+                EstimatedTurnaroundHours = d.EstimatedTurnaroundHours
             }).ToList();
 
             await db.SaveChangesAsync();

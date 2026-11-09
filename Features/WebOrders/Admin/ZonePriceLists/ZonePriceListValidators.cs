@@ -22,6 +22,7 @@ public class CreateZonePriceListValidator : AbstractValidator<CreateZonePriceLis
         {
             detail.RuleFor(d => d.ServiceItemId).GreaterThan(0);
             detail.RuleFor(d => d.UnitPrice).GreaterThanOrEqualTo(0);
+            detail.RuleFor(d => d.EstimatedTurnaroundHours).GreaterThan(0).When(d => d.EstimatedTurnaroundHours.HasValue);
         });
     }
 }
@@ -48,6 +49,7 @@ public class UpdateZonePriceListValidator : AbstractValidator<UpdateZonePriceLis
         {
             detail.RuleFor(d => d.ServiceItemId).GreaterThan(0);
             detail.RuleFor(d => d.UnitPrice).GreaterThanOrEqualTo(0);
+            detail.RuleFor(d => d.EstimatedTurnaroundHours).GreaterThan(0).When(d => d.EstimatedTurnaroundHours.HasValue);
         });
     }
 }

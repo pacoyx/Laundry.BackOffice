@@ -13,6 +13,7 @@ public static class WebOrdersEndpoints
         group.MapGetActiveZonePriceList();
 
         group.MapCreateWebOrder();
+        group.MapTrackWebOrder();
 
         var meGroup = app.MapGroup("/api/web-orders/me")
             .WithTags("WebOrders")

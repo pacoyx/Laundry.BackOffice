@@ -48,6 +48,7 @@ app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAccessSchedule();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {

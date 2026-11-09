@@ -414,6 +414,63 @@ namespace _24dex_backend_comercial.Migrations
                     b.ToTable("CategoryProds");
                 });
 
+            modelBuilder.Entity("ChatConversation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Channel")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExternalReference")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("LastMessageAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Channel", "ExternalReference");
+
+                    b.ToTable("ChatConversations", (string)null);
+                });
+
+            modelBuilder.Entity("ChatMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ConversationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId", "CreatedAt");
+
+                    b.ToTable("ChatMessages", (string)null);
+                });
+
             modelBuilder.Entity("ClothingItem", b =>
                 {
                     b.Property<int>("Id")
@@ -5090,6 +5147,9 @@ namespace _24dex_backend_comercial.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<int?>("EstimatedTurnaroundHours")
+                        .HasColumnType("int");
+
                     b.Property<int>("ServiceItemId")
                         .HasColumnType("int");
 
@@ -5165,6 +5225,17 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("CashBoxMain");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ChatMessage", b =>
+                {
+                    b.HasOne("ChatConversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
                 });
 
             modelBuilder.Entity("ClothingObservations", b =>
@@ -6468,6 +6539,11 @@ namespace _24dex_backend_comercial.Migrations
             modelBuilder.Entity("CategoryProd", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ChatConversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("CollectionGuide", b =>

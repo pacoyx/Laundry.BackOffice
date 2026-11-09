@@ -1,12 +1,14 @@
 
 
 using System.Text;
+using System.Threading.RateLimiting;
 using _24dex_backend_comercial;
 using Hangfire;
 using _24dex_backend_comercial.Features.PrinterHub;
 using _24dex_backend_comercial.Features.DriverTracking;
 using Dls.Erp.Transversal.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -58,6 +60,7 @@ public static class ServiceExtensions
         services.Configure<TwilioSettings>(configuration.GetSection("Twilio"));
         services.Configure<BrevoSmsSettings>(configuration.GetSection("BrevoSms"));
         services.Configure<DriverTrackingSettings>(configuration.GetSection("DriverTracking"));
+        services.Configure<ChatbotSettings>(configuration.GetSection("Chatbot"));
 
         // Switch de encendido/apagado: mientras no se contrate Twilio ni Brevo SMS, Sms:Provider
         // queda vacio o en "Logging" y el OTP solo se escribe en el log. Para activarlo de verdad,
@@ -115,6 +118,51 @@ public static class ServiceExtensions
         else
         {
             services.AddScoped<IElectronicInvoicingService, LoggingElectronicInvoicingService>();
+        }
+
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            // Particionado por IP: evita que alguien intente adivinar combinaciones de
+            // numero de pedido + telefono a fuerza bruta en /api/web-orders/track.
+            options.AddPolicy("web-order-track", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+
+            // Cada mensaje del chatbot cuesta tokens reales de la API del LLM: el limite por IP
+            // evita que un abuso (o un bug en el widget) dispare un gasto inesperado.
+            options.AddPolicy("chatbot-messages", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 20,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
+        });
+
+        // Switch de encendido/apagado: Chatbot:Enabled es el interruptor maestro (independiente
+        // del provider), pensado para poder apagar el bot sin tener que borrar la ApiKey. Mientras
+        // este en false o Provider no sea reconocido, el chat responde con un fallback estatico.
+        var chatbotEnabled = configuration.GetValue<bool>("Chatbot:Enabled");
+        var chatbotProvider = configuration["Chatbot:Provider"];
+        if (chatbotEnabled && string.Equals(chatbotProvider, "Anthropic", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddHttpClient<ILlmClient, AnthropicLlmClient>();
+        }
+        else
+        {
+            services.AddScoped<ILlmClient, DisabledLlmClient>();
         }
 
         var fileStorageProvider = configuration["FileStorage:Provider"];

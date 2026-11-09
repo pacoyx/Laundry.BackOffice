@@ -13,4 +13,6 @@ public class ZonePriceListDetail
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal UnitPrice { get; set; }
+
+    public int? EstimatedTurnaroundHours { get; set; }
 }
