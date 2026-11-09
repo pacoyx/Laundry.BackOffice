@@ -66,6 +66,25 @@ public static class CreatePickupGuideEndpoint
                 return Results.BadRequest(new[] { "El cliente no tiene una tarifa activa. No se puede registrar la guía." });
             }
 
+            var garmentTickets = new List<GarmentIntakeTicket>();
+            if (request.GarmentIntakeTicketIds is { Count: > 0 })
+            {
+                garmentTickets = await db.GarmentIntakeTickets
+                    .Where(x => request.GarmentIntakeTicketIds.Contains(x.Id))
+                    .ToListAsync();
+
+                var missingOrInvalid = request.GarmentIntakeTicketIds
+                    .Except(garmentTickets
+                        .Where(t => t.CustomerId == request.CustomerId && t.Status == GarmentIntakeTicketStatus.Pending)
+                        .Select(t => t.Id))
+                    .ToList();
+
+                if (missingOrInvalid.Count > 0)
+                {
+                    return Results.BadRequest(new[] { $"Los siguientes tickets no existen, no pertenecen al cliente o ya no están pendientes: {string.Join(", ", missingOrInvalid)}." });
+                }
+            }
+
             var details = new List<PickupGuideDetail>();
             foreach (var detailRequest in request.Details)
             {
@@ -126,6 +145,16 @@ public static class CreatePickupGuideEndpoint
             // La guía usa su propio Id auto-generado como correlativo, garantizando
             // numeración unica e independiente de WorkGuide/Invoice/Receipt.
             guide.GuideNumber = $"GR-{guide.Id:D6}";
+
+            // Los tickets de roperia jalados a esta guía quedan inmutables: nunca más
+            // vuelven a aparecer como pendientes ni admiten edición/anulación.
+            foreach (var ticket in garmentTickets)
+            {
+                ticket.Status = GarmentIntakeTicketStatus.PickedUp;
+                ticket.PickupGuideId = guide.Id;
+                ticket.PickedUpAt = fechaOperacion;
+            }
+
             await db.SaveChangesAsync();
 
             await db.Entry(guide).Collection(x => x.Details).Query()

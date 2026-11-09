@@ -6,5 +6,6 @@ public record CreatePickupGuideRequest(
     string? PhysicalGuideNumber,
     long? EmployeeId,
     int? VehicleId,
-    List<PickupGuideDetailRequest> Details
+    List<PickupGuideDetailRequest> Details,
+    List<int>? GarmentIntakeTicketIds = null
 );

@@ -37,6 +37,9 @@ public static class PickupMobileEndpoints
         group.MapDeletePickupMobileAttachment();
         group.MapDownloadPickupMobileAttachment();
 
+        group.MapGetPickupMobilePendingGarmentTickets();
+        group.MapGetPickupMobileGarmentTicketsAggregate();
+
         // Pedidos del canal web (landing), asignados a este chofer para recojo a domicilio.
         // No crean ni usan PickupGuide: la guia operativa es un WorkGuideMain generado desde Recepcion.
         group.MapGetMyWebOrdersPickupMobile();
