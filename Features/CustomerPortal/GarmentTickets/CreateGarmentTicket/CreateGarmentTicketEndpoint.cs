@@ -55,6 +55,13 @@ public static class CreateGarmentTicketEndpoint
                     return Results.BadRequest(new[] { $"El servicio '{detailRequest.ServiceItemId}' no está tarifado para esta empresa." });
                 }
 
+                // El ticket solo registra cantidad de prendas: los servicios tarifados por peso no
+                // tienen forma de capturar el peso aqui y la guia de recojo lo exige al crearse.
+                if (priceDetail.ServiceItem.IsPeso == "S")
+                {
+                    return Results.BadRequest(new[] { $"El servicio '{priceDetail.ServiceItem.Name}' se cobra por peso y no puede registrarse en un ticket de roperia." });
+                }
+
                 details.Add(new GarmentIntakeTicketDetail
                 {
                     WorkerId = detailRequest.WorkerId,

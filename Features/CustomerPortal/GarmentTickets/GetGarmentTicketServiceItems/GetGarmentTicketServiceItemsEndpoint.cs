@@ -18,8 +18,10 @@ public static class GetGarmentTicketServiceItemsEndpoint
                 .Include(x => x.Details).ThenInclude(d => d.ServiceItem)
                 .FirstOrDefaultAsync(x => x.CustomerId == customerId.Value && x.IsActive);
 
+            // Los servicios tarifados por peso quedan fuera: el ticket de roperia solo registra
+            // cantidad de prendas, y la guia de recojo exige el peso para esos servicios al crearse.
             var items = priceList?.Details
-                .Where(d => d.UnitPrice > 0)
+                .Where(d => d.UnitPrice > 0 && d.ServiceItem.IsPeso != "S")
                 .Select(d => new GarmentTicketServiceItemLookupDto(d.ServiceItemId, d.ServiceItem.Name))
                 .OrderBy(x => x.Name)
                 .ToList() ?? new List<GarmentTicketServiceItemLookupDto>();
