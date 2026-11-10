@@ -149,6 +149,19 @@ public static class ServiceExtensions
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         QueueLimit = 0
                     }));
+
+            // Formularios publicos de contacto (ej. proveedores): limite bajo por IP para
+            // evitar que un bot use el formulario para spamear el buzon del negocio.
+            options.AddPolicy("public-contact", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 0
+                    }));
         });
 
         // Switch de encendido/apagado: Chatbot:Enabled es el interruptor maestro (independiente

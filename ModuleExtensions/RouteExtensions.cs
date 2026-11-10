@@ -99,5 +99,6 @@ public static class RouteExtensions
         app.MapSharedDocuments();
         app.MapFixedAssets();
         app.MapChatbot();
+        app.MapPublicContact();
     }
 }
