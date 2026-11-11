@@ -35,7 +35,10 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
+        # Version fijada a la misma de Microsoft.EntityFrameworkCore.Tools del csproj (9.0.8).
+        # Sin --version, instala la ultima publicada en NuGet (ahora 10.x, requiere runtime
+        # .NET 10 que el runner no tiene instalado) y revienta con FileNotFoundException.
+        run: dotnet tool install --global dotnet-ef --version 9.0.8
 
       - name: Restaurar dependencias
         run: dotnet restore 24dex-backend-comercial.csproj
