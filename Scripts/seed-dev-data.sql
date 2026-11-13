@@ -13,7 +13,8 @@
   re-ejecutarlo sin importar en qué quedaron los contadores de identidad de una corrida anterior.
 
   Uso (el -f 65001 evita que se corrompan los acentos/ñ al insertar):
-    sqlcmd -S "(localdb)\mssqllocaldb" -d Db24Dexter_Dev -C -f 65001 -i Scripts\seed-dev-data.sql
+    (el -I activa QUOTED_IDENTIFIER; sin el, los DELETE fallan con "Msg 1934" por los indices filtrados)
+    sqlcmd -S "(localdb)\mssqllocaldb" -d Db24Dexter_Dev -C -I -f 65001 -i Scripts\seed-dev-data.sql
 
   Usuarios creados (para loguear via POST /api/login):
     admin    / Admin123!
