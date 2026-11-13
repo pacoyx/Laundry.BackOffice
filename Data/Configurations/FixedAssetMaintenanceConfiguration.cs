@@ -10,6 +10,9 @@ public class FixedAssetMaintenanceConfiguration : IEntityTypeConfiguration<Fixed
 
         builder.Property(x => x.Description).IsRequired().HasMaxLength(300);
         builder.Property(x => x.Observations).HasMaxLength(500);
+        builder.Property(x => x.ServiceProvider).HasMaxLength(150);
+        builder.Property(x => x.OutOfServiceReason).HasMaxLength(300);
+        builder.Property(x => x.ClosingNotes).HasMaxLength(500);
 
         builder.HasMany(x => x.Attachments)
             .WithOne(x => x.FixedAssetMaintenance)

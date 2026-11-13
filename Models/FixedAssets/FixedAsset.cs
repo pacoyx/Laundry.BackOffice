@@ -41,6 +41,13 @@ public class FixedAsset
     [MaxLength(500)]
     public string? Notes { get; set; }
 
+    // Foto del activo: ruta dentro del storage (Azure Blob en produccion). Una sola foto por activo;
+    // al subir una nueva se reemplaza y se borra la anterior.
+    [MaxLength(500)]
+    public string? PhotoPath { get; set; }
+
+    public DateTime? PhotoUpdatedAt { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public FixedAssetCategory Category { get; set; } = null!;

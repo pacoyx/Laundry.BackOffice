@@ -17,10 +17,20 @@ public static class CreateFixedAssetMaintenanceEndpoint
                 return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
             }
 
-            var assetExists = await db.FixedAssets.AnyAsync(x => x.Id == id);
-            if (!assetExists)
+            var asset = await db.FixedAssets.FirstOrDefaultAsync(x => x.Id == id);
+            if (asset is null)
             {
                 return Results.NotFound("Activo fijo no encontrado.");
+            }
+
+            if (asset.Status is FixedAssetStatus.Disposed or FixedAssetStatus.Sold)
+            {
+                return Results.BadRequest(new[] { "No se puede registrar mantenimiento a un activo dado de baja o vendido." });
+            }
+
+            if (request.PutAssetOutOfService && asset.Status == FixedAssetStatus.InMaintenance)
+            {
+                return Results.BadRequest(new[] { "El activo ya se encuentra en mantenimiento. Finaliza el mantenimiento en curso antes de iniciar otro." });
             }
 
             var maintenance = new FixedAssetMaintenance
@@ -32,8 +42,18 @@ public static class CreateFixedAssetMaintenanceEndpoint
                 Cost = request.Cost,
                 Observations = request.Observations,
                 NextMaintenanceDate = request.NextMaintenanceDate,
+                ServiceProvider = string.IsNullOrWhiteSpace(request.ServiceProvider) ? null : request.ServiceProvider.Trim(),
                 CreatedAt = DateTime.UtcNow
             };
+
+            if (request.PutAssetOutOfService)
+            {
+                maintenance.PutsAssetOutOfService = true;
+                maintenance.OutOfServiceReason = request.OutOfServiceReason!.Trim();
+                maintenance.EstimatedEndDate = request.EstimatedEndDate;
+                maintenance.PreviousStatus = asset.Status;
+                asset.Status = FixedAssetStatus.InMaintenance;
+            }
 
             await db.FixedAssetMaintenances.AddAsync(maintenance);
             await db.SaveChangesAsync();
@@ -41,7 +61,9 @@ public static class CreateFixedAssetMaintenanceEndpoint
             var response = new ApiResponse<FixedAssetMaintenanceResponse>
             {
                 Success = true,
-                Message = "Mantenimiento registrado correctamente.",
+                Message = request.PutAssetOutOfService
+                    ? "Mantenimiento registrado. El activo quedó En Mantenimiento."
+                    : "Mantenimiento registrado correctamente.",
                 StatusCode = StatusCodes.Status201Created,
                 Data = FixedAssetsEndpoints.ToMaintenanceResponse(maintenance)
             };

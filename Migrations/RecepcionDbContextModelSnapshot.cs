@@ -2177,6 +2177,13 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("PhotoPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("PhotoUpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("PurchaseInvoiceId")
                         .HasColumnType("int");
 
@@ -2245,6 +2252,13 @@ namespace _24dex_backend_comercial.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("ActualEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ClosingNotes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
 
@@ -2259,6 +2273,9 @@ namespace _24dex_backend_comercial.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<DateTime?>("EstimatedEndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<long>("FixedAssetId")
                         .HasColumnType("bigint");
 
@@ -2268,6 +2285,20 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<string>("Observations")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("OutOfServiceReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<int?>("PreviousStatus")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("PutsAssetOutOfService")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ServiceProvider")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");

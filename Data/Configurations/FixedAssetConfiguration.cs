@@ -15,6 +15,7 @@ public class FixedAssetConfiguration : IEntityTypeConfiguration<FixedAsset>
         builder.Property(x => x.Description).HasMaxLength(500);
         builder.Property(x => x.DisposalReason).HasMaxLength(300);
         builder.Property(x => x.Notes).HasMaxLength(500);
+        builder.Property(x => x.PhotoPath).HasMaxLength(500);
 
         builder.HasOne(x => x.Category)
             .WithMany()

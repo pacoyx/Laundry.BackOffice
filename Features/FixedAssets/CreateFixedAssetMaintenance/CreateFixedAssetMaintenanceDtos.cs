@@ -4,4 +4,8 @@ public record CreateFixedAssetMaintenanceRequest(
     string Description,
     decimal Cost,
     string? Observations,
-    DateTime? NextMaintenanceDate);
+    DateTime? NextMaintenanceDate,
+    string? ServiceProvider = null,
+    bool PutAssetOutOfService = false,
+    string? OutOfServiceReason = null,
+    DateTime? EstimatedEndDate = null);

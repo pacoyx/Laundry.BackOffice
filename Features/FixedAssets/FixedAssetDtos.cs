@@ -17,7 +17,9 @@ public record FixedAssetListItemResponse(
     FixedAssetStatus Status,
     DateTime AcquisitionDate,
     decimal AcquisitionCost,
-    decimal BookValue);
+    decimal BookValue,
+    bool HasPhoto,
+    DateTime? PhotoUpdatedAt);
 
 public record FixedAssetDetailResponse(
     long Id,
@@ -43,7 +45,13 @@ public record FixedAssetDetailResponse(
     string? Notes,
     decimal BookValue,
     List<FixedAssetMaintenanceResponse> Maintenances,
-    List<FixedAssetReassignmentResponse> Reassignments);
+    List<FixedAssetReassignmentResponse> Reassignments,
+    bool HasPhoto,
+    DateTime? PhotoUpdatedAt);
+
+public record FixedAssetPhotoResponse(
+    long FixedAssetId,
+    DateTime PhotoUpdatedAt);
 
 public record FixedAssetMaintenanceAttachmentResponse(
     long Id,
@@ -60,7 +68,13 @@ public record FixedAssetMaintenanceResponse(
     decimal Cost,
     string? Observations,
     DateTime? NextMaintenanceDate,
-    List<FixedAssetMaintenanceAttachmentResponse> Attachments);
+    List<FixedAssetMaintenanceAttachmentResponse> Attachments,
+    string? ServiceProvider,
+    bool PutsAssetOutOfService,
+    string? OutOfServiceReason,
+    DateTime? EstimatedEndDate,
+    DateTime? ActualEndDate,
+    string? ClosingNotes);
 
 public record FixedAssetReassignmentResponse(
     long Id,

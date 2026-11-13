@@ -18,8 +18,11 @@ public static class FixedAssetsEndpoints
         group.MapReassignFixedAsset();
         group.MapDisposeFixedAsset();
         group.MapCreateFixedAssetMaintenance();
+        group.MapFinishFixedAssetMaintenance();
         group.MapCreateFixedAssetMaintenanceAttachment();
         group.MapDownloadFixedAssetMaintenanceAttachment();
+        group.MapFixedAssetPhoto();
+        group.MapFixedAssetReports();
     }
 
     internal static FixedAssetListItemResponse ToListItemResponse(FixedAsset asset) => new(
@@ -35,7 +38,9 @@ public static class FixedAssetsEndpoints
         asset.Status,
         asset.AcquisitionDate,
         asset.AcquisitionCost,
-        FixedAssetDepreciationCalculator.GetBookValue(asset)
+        FixedAssetDepreciationCalculator.GetBookValue(asset),
+        asset.PhotoPath != null,
+        asset.PhotoUpdatedAt
     );
 
     internal static FixedAssetDetailResponse ToDetailResponse(FixedAsset asset) => new(
@@ -68,7 +73,9 @@ public static class FixedAssetsEndpoints
         asset.Reassignments
             .OrderByDescending(r => r.Date)
             .Select(ToReassignmentResponse)
-            .ToList()
+            .ToList(),
+        asset.PhotoPath != null,
+        asset.PhotoUpdatedAt
     );
 
     internal static FixedAssetMaintenanceResponse ToMaintenanceResponse(FixedAssetMaintenance maintenance) => new(
@@ -81,7 +88,13 @@ public static class FixedAssetsEndpoints
         maintenance.NextMaintenanceDate,
         maintenance.Attachments.Select(a => new FixedAssetMaintenanceAttachmentResponse(
             a.Id, a.OriginalFileName, a.ContentType, a.FileSize, a.CreatedAt
-        )).ToList()
+        )).ToList(),
+        maintenance.ServiceProvider,
+        maintenance.PutsAssetOutOfService,
+        maintenance.OutOfServiceReason,
+        maintenance.EstimatedEndDate,
+        maintenance.ActualEndDate,
+        maintenance.ClosingNotes
     );
 
     internal static FixedAssetReassignmentResponse ToReassignmentResponse(FixedAssetReassignment reassignment) => new(
