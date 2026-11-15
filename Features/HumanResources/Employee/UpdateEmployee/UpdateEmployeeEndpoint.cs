@@ -1,9 +1,17 @@
+using FluentValidation;
+
 public static class UpdateEmployeeEndpoint
 {
     public static RouteGroupBuilder MapUpdateEmployee(this RouteGroupBuilder group)
     {
-        group.MapPut("/{id:long}", async (long id, IUpdateEmployeeService service, UpdateEmployeeRequestDto request) =>
+        group.MapPut("/{id:long}", async (long id, IUpdateEmployeeService service, UpdateEmployeeRequestDto request, IValidator<UpdateEmployeeRequestDto> validator) =>
         {
+            var validation = await validator.ValidateAsync(request);
+            if (!validation.IsValid)
+            {
+                return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+            }
+
             var result = await service.UpdateEmployeeAsync(id, request);
             if (result == null)
             {
@@ -24,6 +32,7 @@ public static class UpdateEmployeeEndpoint
             });
         })
         .WithName("UpdateEmployee")
+        .ProducesProblem(StatusCodes.Status400BadRequest)
         .Produces<ApiResponse<EmployeeResponseDto>>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .RequireAuthorization();
