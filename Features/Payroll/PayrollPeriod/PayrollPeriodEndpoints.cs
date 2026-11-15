@@ -6,6 +6,7 @@ public static class PayrollPeriodEndpoints
 
         group.MapCreatePayrollPeriod();
         group.MapGetPayrollPeriods();
+        group.MapDeletePayrollPeriod();
 
         return group;
     }
