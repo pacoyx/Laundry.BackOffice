@@ -18,6 +18,7 @@ public record InventoryMovementDraft
     public int? AreaId { get; init; }
     public string? Reason { get; init; }
     public int? PurchaseInvoiceId { get; init; }
+    public long? SaleId { get; init; }
     public int? CreatedByUserId { get; init; }
     public List<InventoryDraftLine> Lines { get; init; } = new();
 }
@@ -63,6 +64,7 @@ public class InventoryPostingService : IInventoryPostingService
             movement.AreaId = draft.AreaId;
             movement.Reason = draft.Reason?.Trim();
             movement.PurchaseInvoiceId = draft.PurchaseInvoiceId;
+            movement.SaleId = draft.SaleId;
 
             var balances = new Dictionary<(int, int), ProductStock>();
             var productNames = await ProductNamesAsync(draft.Lines.Select(l => l.ProductId), cancellationToken);
@@ -118,6 +120,7 @@ public class InventoryPostingService : IInventoryPostingService
             reversal.TargetWarehouseId = original.TargetWarehouseId;
             reversal.AreaId = original.AreaId;
             reversal.PurchaseInvoiceId = original.PurchaseInvoiceId;
+            reversal.SaleId = original.SaleId;
             reversal.ReversedMovementId = original.Id;
             reversal.Reason = string.IsNullOrWhiteSpace(reason) ? $"Anulación de {original.Number}" : reason.Trim();
 

@@ -2700,6 +2700,9 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<long?>("ReversedMovementId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("SaleId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -2719,6 +2722,8 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("MovementDate");
 
                     b.HasIndex("PurchaseInvoiceId");
+
+                    b.HasIndex("SaleId");
 
                     b.HasIndex("TargetWarehouseId");
 
@@ -4142,6 +4147,159 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions", (string)null);
+                });
+
+            modelBuilder.Entity("Sale", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("AmountReceived")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("BranchSalesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CancelReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CancelledByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CashBoxDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CashBoxMainId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Change")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("Igv")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("InventoryMovementId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("PaymentDescription")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchSalesId");
+
+                    b.HasIndex("CashBoxMainId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.HasIndex("SaleDate");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("Sales", (string)null);
+                });
+
+            modelBuilder.Entity("SaleDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<long>("SaleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SaleId");
+
+                    b.ToTable("SaleDetails", (string)null);
                 });
 
             modelBuilder.Entity("ScheduledEmailExecution", b =>
@@ -6624,6 +6782,52 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Sale", b =>
+                {
+                    b.HasOne("BranchSales", "BranchSales")
+                        .WithMany()
+                        .HasForeignKey("BranchSalesId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BranchSales");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("SaleDetail", b =>
+                {
+                    b.HasOne("Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Sale", "Sale")
+                        .WithMany("Details")
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Sale");
+                });
+
             modelBuilder.Entity("ScheduledEmailExecution", b =>
                 {
                     b.HasOne("ScheduledEmailNotification", "ScheduledEmailNotification")
@@ -7130,6 +7334,11 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Sale", b =>
+                {
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("ScheduledEmailNotification", b =>

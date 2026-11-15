@@ -26,6 +26,7 @@ public static class PermissionCodes
     public const string ElectronicInvoicing = "electronic-invoicing.access";
     public const string DriverTracking = "driver-tracking.access";
     public const string Inventory = "inventory.access";
+    public const string Sales = "sales.access";
 
     public static readonly string[] All =
     {
@@ -33,6 +34,6 @@ public static class PermissionCodes
         ReceptionCaja, ReceptionGastos, ReceptionMaestros, ReceptionPedidosWeb, Customers, Invoices, Purchases,
         Expenses, Employees, Payroll, Suppliers, Reports, Settings,
         CorporateOperations, PickupMobile, GuiaRemision, SharedDocuments, FixedAssets, ElectronicInvoicing,
-        DriverTracking, Inventory
+        DriverTracking, Inventory, Sales
     };
 }

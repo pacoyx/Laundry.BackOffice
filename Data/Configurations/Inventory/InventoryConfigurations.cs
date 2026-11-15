@@ -60,6 +60,7 @@ public class InventoryMovementConfiguration : IEntityTypeConfiguration<Inventory
         builder.HasIndex(x => x.MovementDate);
         builder.HasIndex(x => new { x.WarehouseId, x.MovementDate });
         builder.HasIndex(x => x.PurchaseInvoiceId);
+        builder.HasIndex(x => x.SaleId);
 
         builder.HasOne(x => x.Warehouse)
             .WithMany()

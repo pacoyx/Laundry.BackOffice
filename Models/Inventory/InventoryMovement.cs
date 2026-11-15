@@ -51,6 +51,9 @@ public class InventoryMovement
     /// <summary>Compra que originó el movimiento (PurchaseIn).</summary>
     public int? PurchaseInvoiceId { get; set; }
 
+    /// <summary>Venta que originó el movimiento (SaleOut y su anulación).</summary>
+    public long? SaleId { get; set; }
+
     /// <summary>En un Reversal: el movimiento que anula.</summary>
     public long? ReversedMovementId { get; set; }
 

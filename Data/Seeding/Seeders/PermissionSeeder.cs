@@ -29,7 +29,8 @@ public class PermissionSeeder : IApplicationSeeder
         (PermissionCodes.FixedAssets, "Acceso al modulo de Activo Fijo"),
         (PermissionCodes.ElectronicInvoicing, "Acceso a la facturacion electronica (NubeFact)"),
         (PermissionCodes.DriverTracking, "Acceso al mapa de ubicacion de choferes en tiempo real"),
-        (PermissionCodes.Inventory, "Acceso al modulo de Inventarios (almacenes, movimientos, kardex)")
+        (PermissionCodes.Inventory, "Acceso al modulo de Inventarios (almacenes, movimientos, kardex)"),
+        (PermissionCodes.Sales, "Acceso al modulo de Ventas (punto de venta, notas de venta)")
     };
 
     public async Task SeedAsync(RecepcionDbContext context, CancellationToken cancellationToken = default)

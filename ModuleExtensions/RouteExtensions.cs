@@ -71,6 +71,7 @@ public static class RouteExtensions
         app.MapPayrollPeriod();
         app.MapPayroll();
         app.MapInventory();
+        app.MapSales();
         app.MapHrDashboard();
         app.MapHrReports();
 

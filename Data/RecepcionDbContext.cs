@@ -61,6 +61,10 @@ public class RecepcionDbContext : DbContext
     public DbSet<ProductStock> ProductStocks { get; set; }
     public DbSet<InventoryMovement> InventoryMovements { get; set; }
     public DbSet<InventoryMovementLine> InventoryMovementLines { get; set; }
+
+    // Ventas
+    public DbSet<Sale> Sales { get; set; }
+    public DbSet<SaleDetail> SaleDetails { get; set; }
     
     
     public DbSet<Printer> Printers { get; set; }
@@ -230,6 +234,8 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ProductStockConfiguration());
         modelBuilder.ApplyConfiguration(new InventoryMovementConfiguration());
         modelBuilder.ApplyConfiguration(new InventoryMovementLineConfiguration());
+        modelBuilder.ApplyConfiguration(new SaleConfiguration());
+        modelBuilder.ApplyConfiguration(new SaleDetailConfiguration());
         modelBuilder.Entity<Product>()
             .HasIndex(x => x.Code)
             .IsUnique()
