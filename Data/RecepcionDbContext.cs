@@ -87,10 +87,12 @@ public class RecepcionDbContext : DbContext
     public DbSet<EmployeeExtraHour> EmployeeExtraHours { get; set; }
 
     public DbSet<EmployeeLoan> EmployeeLoans { get; set; }
+    public DbSet<EmployeeLoanInstallment> EmployeeLoanInstallments { get; set; }
 
     public DbSet<PayrollPeriod> PayrollPeriods { get; set; }
     public DbSet<Payroll> Payrolls { get; set; }
     public DbSet<PayrollDetail> PayrollDetails { get; set; }
+    public DbSet<PayrollDiscount> PayrollDiscounts { get; set; }
 
     public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
     public DbSet<Expense> Expenses { get; set; }
@@ -211,9 +213,11 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new AttendanceIncidentConfiguration());
         modelBuilder.ApplyConfiguration(new EmployeeExtraHourConfiguration());
         modelBuilder.ApplyConfiguration(new EmployeeLoanConfiguration());
+        modelBuilder.ApplyConfiguration(new EmployeeLoanInstallmentConfiguration());
         modelBuilder.ApplyConfiguration(new PayrollPeriodConfiguration());
         modelBuilder.ApplyConfiguration(new PayrollConfiguration());
         modelBuilder.ApplyConfiguration(new PayrollDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new PayrollDiscountConfiguration());
 
         modelBuilder.ApplyConfiguration(new ExpenseCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ExpenseConfiguration());

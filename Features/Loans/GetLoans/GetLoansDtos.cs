@@ -8,5 +8,8 @@ public record LoanListItemDto
     public decimal Amount { get; set; }
     public decimal Balance { get; set; }
     public string? Observation { get; set; }
+    public int InstallmentCount { get; set; }
+    public int PaidInstallments { get; set; }
     public bool IsClosed { get; set; }
+    public List<LoanInstallmentDto> Installments { get; set; } = new();
 }

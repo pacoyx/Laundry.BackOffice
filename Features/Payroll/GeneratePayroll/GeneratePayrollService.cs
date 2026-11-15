@@ -64,32 +64,88 @@ public class GeneratePayrollService : IGeneratePayrollService
                 .SumAsync(x => (decimal?)x.Hours) ?? 0;
             var lateArrivalDiscount = decimal.Round(lateArrivalHours * hourlyRate, 2);
 
-            var openLoans = await _context.EmployeeLoans
-                .Where(x => x.EmployeeId == employee.Id && !x.IsClosed && x.Balance > 0)
-                .ToListAsync();
-
-            var loanDiscount = openLoans.Where(x => x.LoanType == LoanType.Loan).Sum(x => x.Balance);
-            var advanceDiscount = openLoans.Where(x => x.LoanType == LoanType.SalaryAdvance).Sum(x => x.Balance);
-
-            foreach (var loan in openLoans)
-            {
-                loan.Balance = 0;
-                loan.IsClosed = true;
-            }
-
-            var grossAmount = baseAmount + extraHoursAmount;
-            var totalDiscounts = absenceDiscount + lateArrivalDiscount + loanDiscount + advanceDiscount;
-            var netAmount = grossAmount - totalDiscounts;
-
             var payroll = new Payroll
             {
                 PayrollPeriodId = period.Id,
                 EmployeeId = employee.Id,
-                GrossAmount = grossAmount,
-                Discounts = totalDiscounts,
-                NetAmount = netAmount,
                 GeneratedAt = DateTime.UtcNow
             };
+
+            // Préstamos/adelantos vigentes otorgados hasta el fin del periodo: se descuenta UNA cuota
+            // pendiente por préstamo en cada planilla (quincenal o mensual).
+            var periodEnd = period.EndDate.ToDateTime(TimeOnly.MaxValue);
+            var openLoans = await _context.EmployeeLoans
+                .Include(x => x.Installments)
+                .Where(x => x.EmployeeId == employee.Id && !x.IsClosed && x.Balance > 0 && x.LoanDate <= periodEnd)
+                .OrderBy(x => x.LoanDate)
+                .ToListAsync();
+
+            var loanLines = new List<PayrollDetail>();
+            var loanDiscount = 0m;
+            var advanceDiscount = 0m;
+
+            foreach (var loan in openLoans)
+            {
+                var installment = loan.Installments
+                    .Where(i => !i.IsPaid)
+                    .OrderBy(i => i.InstallmentNumber)
+                    .FirstOrDefault();
+
+                if (installment == null)
+                {
+                    // Saldo sin cuota pendiente (datos anteriores al manejo de cuotas): se agenda el saldo como cuota.
+                    installment = new EmployeeLoanInstallment
+                    {
+                        InstallmentNumber = loan.Installments.Count == 0 ? 1 : loan.Installments.Max(i => i.InstallmentNumber) + 1,
+                        Amount = loan.Balance
+                    };
+                    loan.Installments.Add(installment);
+                    loan.InstallmentCount = loan.Installments.Count;
+                }
+
+                var amount = Math.Min(installment.Amount, loan.Balance);
+
+                installment.IsPaid = true;
+                installment.PaidAt = DateTime.UtcNow;
+                installment.Payroll = payroll;
+
+                loan.Balance -= amount;
+                if (loan.Balance <= 0)
+                {
+                    loan.Balance = 0;
+                    loan.IsClosed = true;
+                }
+
+                var isAdvance = loan.LoanType == LoanType.SalaryAdvance;
+                if (isAdvance) advanceDiscount += amount; else loanDiscount += amount;
+
+                var label = isAdvance ? "Adelanto" : "Préstamo";
+                loanLines.Add(new PayrollDetail
+                {
+                    ConceptType = isAdvance ? PayrollConceptType.AdvanceDiscount : PayrollConceptType.LoanDiscount,
+                    Description = $"{label} del {loan.LoanDate:dd/MM/yyyy} - cuota {installment.InstallmentNumber}/{loan.InstallmentCount}",
+                    Amount = -amount
+                });
+            }
+
+            // Otros descuentos registrados para el trabajador en este periodo (antes de generar o de una
+            // generación anterior que se eliminó): se aplican como líneas propias.
+            var otherDiscountLines = (await _context.PayrollDiscounts
+                    .AsNoTracking()
+                    .Where(x => x.PayrollPeriodId == period.Id && x.EmployeeId == employee.Id)
+                    .OrderBy(x => x.Id)
+                    .ToListAsync())
+                .Select(PayrollDiscountCalculator.ToDetail)
+                .ToList();
+            var otherDiscounts = -otherDiscountLines.Sum(x => x.Amount);
+
+            var grossAmount = baseAmount + extraHoursAmount;
+            var totalDiscounts = absenceDiscount + lateArrivalDiscount + loanDiscount + advanceDiscount + otherDiscounts;
+            var netAmount = grossAmount - totalDiscounts;
+
+            payroll.GrossAmount = grossAmount;
+            payroll.Discounts = totalDiscounts;
+            payroll.NetAmount = netAmount;
 
             var details = new List<PayrollDetail>
             {
@@ -111,15 +167,8 @@ public class GeneratePayrollService : IGeneratePayrollService
                 details.Add(new PayrollDetail { ConceptType = PayrollConceptType.LateArrivalDiscount, Description = $"Descuento por tardanzas ({lateArrivalHours}h)", Amount = -lateArrivalDiscount });
             }
 
-            if (loanDiscount > 0)
-            {
-                details.Add(new PayrollDetail { ConceptType = PayrollConceptType.LoanDiscount, Description = "Descuento por préstamos", Amount = -loanDiscount });
-            }
-
-            if (advanceDiscount > 0)
-            {
-                details.Add(new PayrollDetail { ConceptType = PayrollConceptType.AdvanceDiscount, Description = "Descuento por adelantos", Amount = -advanceDiscount });
-            }
+            details.AddRange(loanLines);
+            details.AddRange(otherDiscountLines);
 
             payroll.PayrollDetails = details;
 

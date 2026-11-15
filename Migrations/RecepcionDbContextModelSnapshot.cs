@@ -1915,6 +1915,9 @@ namespace _24dex_backend_comercial.Migrations
                     b.Property<long>("EmployeeId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("InstallmentCount")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsClosed")
                         .HasColumnType("bit");
 
@@ -1933,6 +1936,43 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("EmployeeId", "LoanType", "IsClosed");
 
                     b.ToTable("EmployeeLoans", (string)null);
+                });
+
+            modelBuilder.Entity("EmployeeLoanInstallment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("EmployeeLoanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("InstallmentNumber")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("PayrollId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PayrollId");
+
+                    b.HasIndex("EmployeeLoanId", "InstallmentNumber")
+                        .IsUnique();
+
+                    b.ToTable("EmployeeLoanInstallments", (string)null);
                 });
 
             modelBuilder.Entity("EmployeeSalaryHistory", b =>
@@ -3213,6 +3253,50 @@ namespace _24dex_backend_comercial.Migrations
                     b.HasIndex("PayrollId");
 
                     b.ToTable("PayrollDetails", (string)null);
+                });
+
+            modelBuilder.Entity("PayrollDiscount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("EmployeeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("PayrollPeriodId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PayrollPeriodId", "EmployeeId");
+
+                    b.ToTable("PayrollDiscounts", (string)null);
                 });
 
             modelBuilder.Entity("PayrollPeriod", b =>
@@ -5587,6 +5671,24 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("EmployeeLoanInstallment", b =>
+                {
+                    b.HasOne("EmployeeLoan", "EmployeeLoan")
+                        .WithMany("Installments")
+                        .HasForeignKey("EmployeeLoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Payroll", "Payroll")
+                        .WithMany()
+                        .HasForeignKey("PayrollId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("EmployeeLoan");
+
+                    b.Navigation("Payroll");
+                });
+
             modelBuilder.Entity("EmployeeSalaryHistory", b =>
                 {
                     b.HasOne("Employee", "Employee")
@@ -5981,6 +6083,25 @@ namespace _24dex_backend_comercial.Migrations
                         .IsRequired();
 
                     b.Navigation("Payroll");
+                });
+
+            modelBuilder.Entity("PayrollDiscount", b =>
+                {
+                    b.HasOne("Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PayrollPeriod", "PayrollPeriod")
+                        .WithMany()
+                        .HasForeignKey("PayrollPeriodId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("PayrollPeriod");
                 });
 
             modelBuilder.Entity("PickupGuide", b =>
@@ -6609,6 +6730,11 @@ namespace _24dex_backend_comercial.Migrations
                     b.Navigation("BankAccounts");
 
                     b.Navigation("EmergencyContacts");
+                });
+
+            modelBuilder.Entity("EmployeeLoan", b =>
+                {
+                    b.Navigation("Installments");
                 });
 
             modelBuilder.Entity("Expense", b =>

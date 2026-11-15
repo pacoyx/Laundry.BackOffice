@@ -1,9 +1,17 @@
+using FluentValidation;
+
 public static class RegisterSalaryAdvanceEndpoint
 {
     public static RouteGroupBuilder MapRegisterSalaryAdvance(this RouteGroupBuilder group)
     {
-        group.MapPost("/{employeeId:long}/salary-advances", async (long employeeId, IRegisterLoanService service, RegisterLoanRequestDto request) =>
+        group.MapPost("/{employeeId:long}/salary-advances", async (long employeeId, IRegisterLoanService service, RegisterLoanRequestDto request, IValidator<RegisterLoanRequestDto> validator) =>
         {
+            var validation = await validator.ValidateAsync(request);
+            if (!validation.IsValid)
+            {
+                return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+            }
+
             var result = await service.RegisterLoanAsync(employeeId, LoanType.SalaryAdvance, request);
             if (result == null)
             {

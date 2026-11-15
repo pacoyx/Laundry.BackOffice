@@ -100,6 +100,9 @@ public static class ServicesDiExtensions
         services.AddScoped<IGetPayrollPeriodsService, GetPayrollPeriodsService>();
         services.AddScoped<IGeneratePayrollService, GeneratePayrollService>();
         services.AddScoped<IGetPayrollService, GetPayrollService>();
+        services.AddScoped<IDeletePayrollService, DeletePayrollService>();
+        services.AddScoped<IPayrollDiscountService, PayrollDiscountService>();
+        services.AddScoped<IPayrollExportService, PayrollExportService>();
 
         services.AddScoped<IGetPayrollReportService, GetPayrollReportService>();
         services.AddScoped<IGetLoanReportService, GetLoanReportService>();

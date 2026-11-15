@@ -6,5 +6,6 @@ public enum PayrollConceptType
     LoanDiscount = 4,
     AdvanceDiscount = 5,
     AbsenceDiscount = 6,
-    LateArrivalDiscount = 7
+    LateArrivalDiscount = 7,
+    OtherDiscount = 8
 }

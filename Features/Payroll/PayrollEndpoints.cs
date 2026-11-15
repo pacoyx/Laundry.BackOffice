@@ -6,5 +6,8 @@ public static class PayrollEndpoints
 
         group.MapGeneratePayroll();
         group.MapGetPayroll();
+        group.MapDeletePayroll();
+        group.MapPayrollDiscounts();
+        group.MapPayrollExport();
     }
 }
