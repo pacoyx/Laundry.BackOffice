@@ -8,9 +8,11 @@ public static class CreateItemPhotoEndpoint
             int id,
             IFormFile file,
             RecepcionDbContext db,
-            IFileStorageService storage) =>
+            IFileStorageService storage,
+            IImageCompressor compressor,
+            ILoggerFactory loggerFactory) =>
         {
-            return await ExecuteAsync(id, file, db, storage, WorkGuideEvidenceStage.Revision, null);
+            return await ExecuteAsync(id, file, db, storage, compressor, loggerFactory, WorkGuideEvidenceStage.Revision, null);
         })
         .DisableAntiforgery()
         .WithName("CreateItemPhoto")
@@ -25,6 +27,8 @@ public static class CreateItemPhotoEndpoint
         IFormFile file,
         RecepcionDbContext db,
         IFileStorageService storage,
+        IImageCompressor compressor,
+        ILoggerFactory loggerFactory,
         WorkGuideEvidenceStage stage,
         long? employeeId)
     {
@@ -35,8 +39,21 @@ public static class CreateItemPhotoEndpoint
         if (file.Length == 0)
             return Results.BadRequest(new[] { "El archivo está vacío." });
 
-        await using var stream = file.OpenReadStream();
-        var uploadResult = await storage.UploadAsync("Inspections", "Photos", workGuideMainId, file.FileName, file.ContentType, stream);
+        // Se lee una sola vez en memoria (las fotos ya llegan comprimidas desde el navegador) para subir
+        // el original y generar la miniatura sin volver a leer el archivo.
+        byte[] content;
+        await using (var input = file.OpenReadStream())
+        using (var buffer = new MemoryStream())
+        {
+            await input.CopyToAsync(buffer);
+            content = buffer.ToArray();
+        }
+
+        StorageFileResult uploadResult;
+        using (var originalStream = new MemoryStream(content))
+        {
+            uploadResult = await storage.UploadAsync("Inspections", "Photos", workGuideMainId, file.FileName, file.ContentType, originalStream);
+        }
 
         var photo = new ItemPhoto
         {
@@ -50,6 +67,19 @@ public static class CreateItemPhotoEndpoint
             EmployeeId = employeeId,
             CreatedAt = DateTime.UtcNow
         };
+
+        // La miniatura es una optimización: si falla, la foto se guarda igual y la miniatura se
+        // generará la primera vez que se pida (ver DownloadItemPhotoEndpoint).
+        try
+        {
+            var thumbnail = await ItemPhotoThumbnails.CreateAndStoreAsync(photo, content, compressor, storage);
+            photo.ThumbnailUrl = thumbnail?.Path;
+        }
+        catch (Exception ex)
+        {
+            loggerFactory.CreateLogger("ItemPhotoThumbnails")
+                .LogWarning(ex, "No se pudo generar la miniatura de la foto de la guía {WorkGuideMainId}", workGuideMainId);
+        }
 
         await db.ItemPhotos.AddAsync(photo);
         await db.SaveChangesAsync();

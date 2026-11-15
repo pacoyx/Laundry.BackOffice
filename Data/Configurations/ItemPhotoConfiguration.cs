@@ -11,6 +11,7 @@ public class ItemPhotoConfiguration : IEntityTypeConfiguration<ItemPhoto>
         builder.Property(x => x.FileName).IsRequired().HasMaxLength(260);
         builder.Property(x => x.OriginalFileName).HasMaxLength(260);
         builder.Property(x => x.BlobUrl).IsRequired().HasMaxLength(1000);
+        builder.Property(x => x.ThumbnailUrl).HasMaxLength(1000);
         builder.Property(x => x.ContentType).IsRequired().HasMaxLength(100);
         builder.Property(x => x.Stage).HasDefaultValue(WorkGuideEvidenceStage.Revision);
 

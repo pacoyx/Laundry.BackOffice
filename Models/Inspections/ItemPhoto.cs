@@ -11,6 +11,12 @@ public class ItemPhoto
 
     public string BlobUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Ruta de la miniatura (~320 px, JPEG) usada en listados. Null en fotos antiguas: se genera la primera
+    /// vez que se pide la miniatura.
+    /// </summary>
+    public string? ThumbnailUrl { get; set; }
+
     public string ContentType { get; set; } = string.Empty;
 
     public long FileSize { get; set; }

@@ -10,7 +10,9 @@ public static class CreateWebOrderPickupPhotoEndpoint
             IFormFile file,
             ClaimsPrincipal principal,
             RecepcionDbContext db,
-            IFileStorageService storage) =>
+            IFileStorageService storage,
+            IImageCompressor compressor,
+            ILoggerFactory loggerFactory) =>
         {
             var employeeId = principal.GetEmployeeId();
             if (employeeId is null)
@@ -25,7 +27,7 @@ public static class CreateWebOrderPickupPhotoEndpoint
             }
 
             return await CreateItemPhotoEndpoint.ExecuteAsync(
-                webOrder.WorkGuideMainId.Value, file, db, storage, WorkGuideEvidenceStage.Recojo, employeeId.Value);
+                webOrder.WorkGuideMainId.Value, file, db, storage, compressor, loggerFactory, WorkGuideEvidenceStage.Recojo, employeeId.Value);
         })
         .DisableAntiforgery()
         .WithName("CreateWebOrderPickupPhoto")

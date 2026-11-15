@@ -3020,6 +3020,10 @@ namespace _24dex_backend_comercial.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(2);
 
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<int>("WorkGuideMainId")
                         .HasColumnType("int");
 
