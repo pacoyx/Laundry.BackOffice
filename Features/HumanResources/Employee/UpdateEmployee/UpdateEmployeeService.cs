@@ -21,12 +21,15 @@ public class UpdateEmployeeService : IUpdateEmployeeService
             return null;
         }
 
-        if (employee.BaseSalary != request.BaseSalary)
+        // Ad honorem: no recibe pago, el sueldo base siempre es 0.
+        var baseSalary = request.ContractType == EmployeeContractType.AdHonorem ? 0m : request.BaseSalary;
+
+        if (employee.BaseSalary != baseSalary)
         {
             _context.EmployeeSalaryHistories.Add(new EmployeeSalaryHistory
             {
                 EmployeeId = employee.Id,
-                Salary = request.BaseSalary,
+                Salary = baseSalary,
                 EffectiveDate = DateTime.UtcNow
             });
         }
@@ -38,7 +41,7 @@ public class UpdateEmployeeService : IUpdateEmployeeService
         employee.AreaId = request.AreaId;
         employee.PositionId = request.PositionId;
         employee.ContractType = request.ContractType;
-        employee.BaseSalary = request.BaseSalary;
+        employee.BaseSalary = baseSalary;
 
         await _context.SaveChangesAsync();
 

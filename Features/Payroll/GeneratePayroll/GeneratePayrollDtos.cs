@@ -22,6 +22,9 @@ public record GeneratePayrollResponseDto
     public long PayrollPeriodId { get; set; }
     public int GeneratedCount { get; set; }
     public int SkippedCount { get; set; }
+
+    /// <summary>Trabajadores ad honorem omitidos (no se les genera planilla).</summary>
+    public int AdHonoremSkippedCount { get; set; }
     public decimal TotalNetAmount { get; set; }
     public List<PayrollSummaryDto> Payrolls { get; set; } = new();
 }

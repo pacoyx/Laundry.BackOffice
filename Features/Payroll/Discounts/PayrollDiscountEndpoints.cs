@@ -68,6 +68,7 @@ public static class PayrollDiscountEndpoints
         PayrollDiscountStatus.EmployeeNotFound => NotFound("Trabajador no encontrado."),
         PayrollDiscountStatus.DiscountNotFound => NotFound("Descuento no encontrado."),
         PayrollDiscountStatus.PeriodClosed => Results.BadRequest(new[] { "El periodo está cerrado; no se pueden modificar sus descuentos." }),
+        PayrollDiscountStatus.EmployeeAdHonorem => Results.BadRequest(new[] { "El trabajador es ad honorem: no tiene planilla, no se le pueden registrar descuentos." }),
         PayrollDiscountStatus.NegativeNet => Results.BadRequest(new[] { result.Message ?? "El descuento deja el neto a pagar en negativo." }),
         _ => Results.Ok(new ApiResponse<PayrollDiscountChangeResponseDto>
         {

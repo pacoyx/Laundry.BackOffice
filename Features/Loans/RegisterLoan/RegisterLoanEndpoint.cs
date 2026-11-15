@@ -13,7 +13,12 @@ public static class RegisterLoanEndpoint
             }
 
             var result = await service.RegisterLoanAsync(employeeId, LoanType.Loan, request);
-            if (result == null)
+            if (result.Status == RegisterLoanStatus.EmployeeAdHonorem)
+            {
+                return Results.BadRequest(new[] { "El trabajador es ad honorem: no se le pueden registrar préstamos ni adelantos porque no tiene planilla." });
+            }
+
+            if (result.Status == RegisterLoanStatus.EmployeeNotFound)
             {
                 return Results.NotFound(new ApiResponse<EmployeeLoanResponseDto>
                 {
@@ -26,7 +31,7 @@ public static class RegisterLoanEndpoint
             return Results.Ok(new ApiResponse<EmployeeLoanResponseDto>
             {
                 Success = true,
-                Data = result,
+                Data = result.Data,
                 StatusCode = StatusCodes.Status201Created,
                 Message = "Préstamo registrado correctamente"
             });

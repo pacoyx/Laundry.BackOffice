@@ -35,7 +35,8 @@ public enum PayrollDiscountStatus
     PeriodClosed,
     EmployeeNotFound,
     DiscountNotFound,
-    NegativeNet
+    NegativeNet,
+    EmployeeAdHonorem
 }
 
 public record PayrollDiscountResult(PayrollDiscountStatus Status, PayrollDiscountChangeResponseDto? Data = null, string? Message = null);

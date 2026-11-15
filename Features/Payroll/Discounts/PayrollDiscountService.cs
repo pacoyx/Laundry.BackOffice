@@ -47,6 +47,7 @@ public class PayrollDiscountService : IPayrollDiscountService
 
         var employee = await _context.Employees.FirstOrDefaultAsync(x => x.Id == request.EmployeeId);
         if (employee == null) return new PayrollDiscountResult(PayrollDiscountStatus.EmployeeNotFound);
+        if (employee.ContractType == EmployeeContractType.AdHonorem) return new PayrollDiscountResult(PayrollDiscountStatus.EmployeeAdHonorem);
 
         var discount = new PayrollDiscount
         {

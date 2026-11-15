@@ -25,7 +25,8 @@ public class CreateEmployeeService : ICreateEmployeeService
             AreaId = request.AreaId,
             PositionId = request.PositionId,
             ContractType = request.ContractType,
-            BaseSalary = request.BaseSalary
+            // Ad honorem: no recibe pago, el sueldo base siempre es 0.
+            BaseSalary = request.ContractType == EmployeeContractType.AdHonorem ? 0m : request.BaseSalary
         };
 
         if (request.EmergencyContacts != null && request.EmergencyContacts.Count > 0)

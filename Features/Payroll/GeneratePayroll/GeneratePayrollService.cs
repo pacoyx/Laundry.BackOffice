@@ -25,12 +25,16 @@ public class GeneratePayrollService : IGeneratePayrollService
             .Select(x => x.EmployeeId)
             .ToListAsync();
 
-        var employees = await _context.Employees
+        var eligibleEmployees = await _context.Employees
             .Where(x => x.IsActive
                 && x.HireDate <= period.EndDate.ToDateTime(TimeOnly.MinValue)
                 && (x.TerminationDate == null || x.TerminationDate >= period.StartDate.ToDateTime(TimeOnly.MinValue))
                 && !alreadyGeneratedEmployeeIds.Contains(x.Id))
             .ToListAsync();
+
+        // Los trabajadores ad honorem no reciben pago: no se les genera planilla.
+        var adHonoremCount = eligibleEmployees.Count(x => x.ContractType == EmployeeContractType.AdHonorem);
+        var employees = eligibleEmployees.Where(x => x.ContractType != EmployeeContractType.AdHonorem).ToList();
 
         var periodDays = period.EndDate.DayNumber - period.StartDate.DayNumber + 1;
         var summaries = new List<PayrollSummaryDto>();
@@ -204,6 +208,7 @@ public class GeneratePayrollService : IGeneratePayrollService
             PayrollPeriodId = period.Id,
             GeneratedCount = summaries.Count,
             SkippedCount = alreadyGeneratedEmployeeIds.Count,
+            AdHonoremSkippedCount = adHonoremCount,
             TotalNetAmount = summaries.Sum(x => x.NetAmount),
             Payrolls = summaries
         };

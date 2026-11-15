@@ -9,12 +9,21 @@ public class RegisterLoanService : IRegisterLoanService
         _context = context;
     }
 
-    public async Task<EmployeeLoanResponseDto?> RegisterLoanAsync(long employeeId, LoanType loanType, RegisterLoanRequestDto request)
+    public async Task<RegisterLoanResult> RegisterLoanAsync(long employeeId, LoanType loanType, RegisterLoanRequestDto request)
     {
-        var employeeExists = await _context.Employees.AnyAsync(x => x.Id == employeeId);
-        if (!employeeExists)
+        var contractType = await _context.Employees
+            .Where(x => x.Id == employeeId)
+            .Select(x => (EmployeeContractType?)x.ContractType)
+            .FirstOrDefaultAsync();
+        if (contractType == null)
         {
-            return null;
+            return new RegisterLoanResult(RegisterLoanStatus.EmployeeNotFound);
+        }
+
+        // Los trabajadores ad honorem no tienen planilla de la cual descontar.
+        if (contractType == EmployeeContractType.AdHonorem)
+        {
+            return new RegisterLoanResult(RegisterLoanStatus.EmployeeAdHonorem);
         }
 
         // Los adelantos de sueldo se descuentan completos en la siguiente planilla.
@@ -36,6 +45,6 @@ public class RegisterLoanService : IRegisterLoanService
         _context.EmployeeLoans.Add(loan);
         await _context.SaveChangesAsync();
 
-        return LoanInstallmentPlanner.ToResponse(loan);
+        return new RegisterLoanResult(RegisterLoanStatus.Ok, LoanInstallmentPlanner.ToResponse(loan));
     }
 }
