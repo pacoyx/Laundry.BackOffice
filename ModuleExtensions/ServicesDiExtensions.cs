@@ -101,6 +101,8 @@ public static class ServicesDiExtensions
         services.AddScoped<IGeneratePayrollService, GeneratePayrollService>();
         services.AddScoped<IGetPayrollService, GetPayrollService>();
         services.AddScoped<IDeletePayrollService, DeletePayrollService>();
+        services.AddScoped<IInventoryPostingService, InventoryPostingService>();
+        services.AddScoped<IInventoryQueryService, InventoryQueryService>();
         services.AddScoped<IPayrollDiscountService, PayrollDiscountService>();
         services.AddScoped<IPayrollExportService, PayrollExportService>();
 
@@ -137,5 +139,6 @@ public static class ServicesDiExtensions
 
         services.AddScoped<IApplicationSeeder, GuiaRemisionNumbersDocumentSeeder>();
         services.AddScoped<IApplicationSeeder, FixedAssetCategorySeeder>();
+        services.AddScoped<IApplicationSeeder, WarehouseSeeder>();
     }
 }

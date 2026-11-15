@@ -5,7 +5,7 @@ public static class UpdateProductEndpoint
         app.MapPut("/", async (UpdateProductRequestDto request, IUpdateProductService updateProductService) =>
         {
             var result = await updateProductService.UpdateProductAsync(request);
-            if (result != "OK")
+            if (result == UpdateProductService.NotFoundResult)
             {
                 return Results.NotFound(new ApiResponse<string>
                 {
@@ -14,7 +14,19 @@ public static class UpdateProductEndpoint
                     Message = result,
                     Data = string.Empty
                 });
-            }            
+            }
+
+            if (result != "OK")
+            {
+                // Regla de negocio (código duplicado, producto con existencias, etc.).
+                return Results.BadRequest(new ApiResponse<string>
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = result,
+                    Data = string.Empty
+                });
+            }
 
             var response = new ApiResponse<string>
             {

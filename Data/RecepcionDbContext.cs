@@ -55,6 +55,12 @@ public class RecepcionDbContext : DbContext
     public DbSet<PurchaseInvoiceDetails> PurchaseInvoiceDetails { get; set; } 
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<PurchaseInvoicePayment> PurchaseInvoicePayments { get; set; }
+
+    // Inventarios
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<ProductStock> ProductStocks { get; set; }
+    public DbSet<InventoryMovement> InventoryMovements { get; set; }
+    public DbSet<InventoryMovementLine> InventoryMovementLines { get; set; }
     
     
     public DbSet<Printer> Printers { get; set; }
@@ -218,6 +224,21 @@ public class RecepcionDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PayrollConfiguration());
         modelBuilder.ApplyConfiguration(new PayrollDetailConfiguration());
         modelBuilder.ApplyConfiguration(new PayrollDiscountConfiguration());
+
+        // Inventarios
+        modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductStockConfiguration());
+        modelBuilder.ApplyConfiguration(new InventoryMovementConfiguration());
+        modelBuilder.ApplyConfiguration(new InventoryMovementLineConfiguration());
+        modelBuilder.Entity<Product>()
+            .HasIndex(x => x.Code)
+            .IsUnique()
+            .HasFilter("[Code] IS NOT NULL");
+        modelBuilder.Entity<PurchaseInvoice>()
+            .HasOne(x => x.Warehouse)
+            .WithMany()
+            .HasForeignKey(x => x.WarehouseId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.ApplyConfiguration(new ExpenseCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ExpenseConfiguration());

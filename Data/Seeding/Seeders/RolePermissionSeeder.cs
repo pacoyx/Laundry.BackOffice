@@ -22,7 +22,7 @@ public class RolePermissionSeeder : IApplicationSeeder
         },
         [RoleNames.Compras] = new[]
         {
-            PermissionCodes.Dashboard, PermissionCodes.Purchases, PermissionCodes.Suppliers
+            PermissionCodes.Dashboard, PermissionCodes.Purchases, PermissionCodes.Suppliers, PermissionCodes.Inventory
         },
         [RoleNames.Rrhh] = new[]
         {
@@ -34,7 +34,7 @@ public class RolePermissionSeeder : IApplicationSeeder
             PermissionCodes.Purchases, PermissionCodes.Expenses, PermissionCodes.Employees,
             PermissionCodes.Payroll, PermissionCodes.Reports, PermissionCodes.CorporateOperations,
             PermissionCodes.GuiaRemision, PermissionCodes.SharedDocuments, PermissionCodes.FixedAssets,
-            PermissionCodes.ElectronicInvoicing, PermissionCodes.DriverTracking
+            PermissionCodes.ElectronicInvoicing, PermissionCodes.DriverTracking, PermissionCodes.Inventory
         },
         [RoleNames.OperacionesCorporativas] = new[]
         {

@@ -2,9 +2,9 @@ public static class CancelPurchaseInvoiceEndpoint
 {
     public static IEndpointRouteBuilder MapCancelPurchaseInvoice(this IEndpointRouteBuilder routes)
     {
-        routes.MapPost("/{id:int}/cancel", async (int id, ICancelPurchaseInvoiceService service) =>
+        routes.MapPost("/{id:int}/cancel", async (int id, ICancelPurchaseInvoiceService service, System.Security.Claims.ClaimsPrincipal user) =>
         {
-            var result = await service.CancelPurchaseInvoiceAsync(id);
+            var result = await service.CancelPurchaseInvoiceAsync(id, user.GetUserId());
             if (result.NotFound)
             {
                 return Results.NotFound(new ApiResponse<object>

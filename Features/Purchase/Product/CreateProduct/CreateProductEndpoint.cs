@@ -4,15 +4,27 @@ public static class CreateProductEndpoint
     {
         group.MapPost("/", async (CreateProductRequestDto request, ICreateProductService service) =>
         {
-            var result = await service.CreateProductAsync(request);            
-            var response = new ApiResponse<CreateProductResponseDto>
+            try
             {
-                Success = true,
-                Data = result,
-                StatusCode = StatusCodes.Status201Created,
-                Message = "Product created successfully"
-            };
-            return Results.Ok(response);
+                var result = await service.CreateProductAsync(request);
+                var response = new ApiResponse<CreateProductResponseDto>
+                {
+                    Success = true,
+                    Data = result,
+                    StatusCode = StatusCodes.Status201Created,
+                    Message = "Product created successfully"
+                };
+                return Results.Ok(response);
+            }
+            catch (InventoryException ex)
+            {
+                return Results.BadRequest(new ApiResponse<object>
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         })
         .WithName("CreateProduct")
         .Produces<CreateProductResponseDto>(StatusCodes.Status201Created)

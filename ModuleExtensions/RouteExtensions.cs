@@ -70,6 +70,7 @@ public static class RouteExtensions
         app.MapLoan();
         app.MapPayrollPeriod();
         app.MapPayroll();
+        app.MapInventory();
         app.MapHrDashboard();
         app.MapHrReports();
 

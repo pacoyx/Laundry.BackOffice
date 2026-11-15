@@ -16,6 +16,12 @@ public record PurchaseInvoiceRequestDto
     public decimal Igv { get; set; }
     public decimal Total { get; set; }
     public ICollection<PurchaseInvoiceDetailsRequestDto>? PurchaseInvoiceDetails { get; set; }
+
+    /// <summary>
+    /// Almacén donde ingresan los productos. Si se informa, se registra el movimiento de inventario
+    /// "Ingreso por compra" para los productos que controlan stock.
+    /// </summary>
+    public int? WarehouseId { get; set; }
 }
 
 public record PurchaseInvoiceResponseDto

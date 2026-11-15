@@ -38,6 +38,13 @@ public class PurchaseInvoice
     public decimal Balance { get; set; }
     public PurchaseInvoiceStatus PaymentStatus { get; set; } = PurchaseInvoiceStatus.Pending;
 
+    /// <summary>
+    /// Almacén donde ingresan los productos comprados. Null en compras anteriores al módulo de
+    /// inventarios (no generan movimiento).
+    /// </summary>
+    public int? WarehouseId { get; set; }
+    public Warehouse? Warehouse { get; set; }
+
 
     // Navigation properties
     public ICollection<PurchaseInvoiceDetails>? PurchaseInvoiceDetails { get; set; }
