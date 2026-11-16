@@ -95,6 +95,8 @@ public static class ServicesDiExtensions
 
         services.AddScoped<IRegisterLoanService, RegisterLoanService>();
         services.AddScoped<IGetLoansService, GetLoansService>();
+        services.AddScoped<IUpdateLoanService, UpdateLoanService>();
+        services.AddScoped<IDeleteLoanService, DeleteLoanService>();
 
         services.AddScoped<ICreatePayrollPeriodService, CreatePayrollPeriodService>();
         services.AddScoped<IGetPayrollPeriodsService, GetPayrollPeriodsService>();

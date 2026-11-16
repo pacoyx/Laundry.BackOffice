@@ -8,5 +8,7 @@ public static class LoanEndpoints
 
         var loansGroup = app.MapGroup("/api/loans").WithTags("HR - Loans").RequirePermission(PermissionCodes.Payroll);
         loansGroup.MapGetLoans();
+        loansGroup.MapUpdateLoan();
+        loansGroup.MapDeleteLoan();
     }
 }
