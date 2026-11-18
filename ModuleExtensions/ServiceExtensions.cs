@@ -349,7 +349,6 @@ public static class ServiceExtensions
         // builder.Services.AddOpenTelemetry().UseAzureMonitor();
         services.AddHealthCheck(configuration);
         services.AddSignalR();
-        services.AddSingleton<PrinterRegistry>();
 
 
         // Configurar OpenTelemetry
