@@ -2,7 +2,8 @@ public record RegisterPurchasePaymentRequestDto(
     int PaymentMethodId,
     decimal Amount,
     string? OperationNumber,
-    string? Observation
+    string? Observation,
+    DateTime? PaymentDate = null
 );
 
 public record RegisterPurchasePaymentResponseDto(

@@ -34,7 +34,11 @@ public class RegisterPurchasePaymentService : IRegisterPurchasePaymentService
         {
             PurchaseInvoiceId = purchaseInvoice.Id,
             PaymentMethodId = request.PaymentMethodId,
-            PaymentDate = DateTime.UtcNow,
+            PaymentDate = request.PaymentDate is { } paymentDate
+                ? (paymentDate.Kind == DateTimeKind.Unspecified
+                    ? DateTime.SpecifyKind(paymentDate, DateTimeKind.Utc)
+                    : paymentDate.ToUniversalTime())
+                : DateTime.UtcNow,
             Amount = request.Amount,
             OperationNumber = request.OperationNumber,
             Observation = request.Observation
