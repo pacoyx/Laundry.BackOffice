@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 public class GetInvoicesByParamsService : IGetInvoicesByParamsService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<GetInvoicesByParamsService> Logger { get; }
 
-    public GetInvoicesByParamsService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public GetInvoicesByParamsService(RecepcionDbContext context, IAppLogger<GetInvoicesByParamsService> logger)
     {
         _context = context;
         Logger = logger;

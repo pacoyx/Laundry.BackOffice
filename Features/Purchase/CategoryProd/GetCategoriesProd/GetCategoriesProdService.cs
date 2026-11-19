@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 public class GetCategoriesProdService : IGetCategoriesProdService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<GetCategoriesProdService> Logger { get; }
 
-    public GetCategoriesProdService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public GetCategoriesProdService(RecepcionDbContext context, IAppLogger<GetCategoriesProdService> logger)
     {
         _context = context;
         Logger = logger;

@@ -6,9 +6,9 @@ public class CreatePurchaseInvoiceService : ICreatePurchaseInvoiceService
 {
     private readonly RecepcionDbContext _context;
     private readonly IInventoryPostingService _inventoryPosting;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<CreatePurchaseInvoiceService> Logger { get; }
 
-    public CreatePurchaseInvoiceService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger,
+    public CreatePurchaseInvoiceService(RecepcionDbContext context, IAppLogger<CreatePurchaseInvoiceService> logger,
         IInventoryPostingService inventoryPosting)
     {
         _context = context;

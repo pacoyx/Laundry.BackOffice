@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 public class GetSupplierService : IGetSupplierService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<GetSupplierService> Logger { get; }
 
-    public GetSupplierService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public GetSupplierService(RecepcionDbContext context, IAppLogger<GetSupplierService> logger)
     {
         _context = context;
         Logger = logger;

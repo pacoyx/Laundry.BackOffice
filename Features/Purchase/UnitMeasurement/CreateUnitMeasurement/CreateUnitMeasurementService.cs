@@ -1,9 +1,9 @@
 public class CreateUnitMeasurementService : ICreateUnitMeasurementService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<CreateUnitMeasurementService> Logger { get; }
 
-    public CreateUnitMeasurementService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public CreateUnitMeasurementService(RecepcionDbContext context, IAppLogger<CreateUnitMeasurementService> logger)
     {
         _context = context;
         Logger = logger;

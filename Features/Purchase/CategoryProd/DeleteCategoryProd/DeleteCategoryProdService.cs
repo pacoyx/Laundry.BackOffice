@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 public class DeleteCategoryProdService : IDeleteCategoryProdService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<DeleteCategoryProdService> Logger { get; }
 
-    public DeleteCategoryProdService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public DeleteCategoryProdService(RecepcionDbContext context, IAppLogger<DeleteCategoryProdService> logger)
     {
         _context = context;
         Logger = logger;

@@ -216,7 +216,7 @@ public class InventoryPostingService : IInventoryPostingService
 
         var stock = await _context.ProductStocks
             .FromSqlInterpolated($"SELECT * FROM ProductStocks WITH (UPDLOCK, HOLDLOCK) WHERE ProductId = {productId} AND WarehouseId = {warehouseId}")
-            .FirstOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken); // PK (ProductId, WarehouseId): a lo sumo una fila; evita el warning EF 10103
 
         if (stock is null)
         {

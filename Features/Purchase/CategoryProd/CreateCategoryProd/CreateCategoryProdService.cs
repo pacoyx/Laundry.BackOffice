@@ -2,9 +2,9 @@
 public class CreateCategoryProdService : ICreateCategoryProdService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<CreateCategoryProdService> Logger { get; }
 
-    public CreateCategoryProdService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public CreateCategoryProdService(RecepcionDbContext context, IAppLogger<CreateCategoryProdService> logger)
     {
         _context = context;
         Logger = logger;

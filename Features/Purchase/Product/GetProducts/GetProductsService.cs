@@ -4,9 +4,9 @@ public class GetProductsService : IGetProductsService
 {
 
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<GetProductsService> Logger { get; }
 
-    public GetProductsService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public GetProductsService(RecepcionDbContext context, IAppLogger<GetProductsService> logger)
     {
         _context = context;
         Logger = logger;

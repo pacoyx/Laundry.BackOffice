@@ -12,6 +12,7 @@ public static class GetInvoiceEndpoint
                 .Include(x => x.Details)
                 .Include(x => x.Payments)
                     .ThenInclude(p => p.PaymentMethod)
+                .AsSplitQuery() // Details y Payments son dos colecciones: evita el producto cartesiano (warning EF 20504)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (invoice is null)

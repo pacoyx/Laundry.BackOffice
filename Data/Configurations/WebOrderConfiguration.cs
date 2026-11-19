@@ -11,7 +11,8 @@ public class WebOrderConfiguration : IEntityTypeConfiguration<WebOrder>
         builder.Property(x => x.OrderNumber).IsRequired().HasMaxLength(40);
         builder.Property(x => x.DeliveryAddress).IsRequired().HasMaxLength(200);
         builder.Property(x => x.ContactPhone).IsRequired().HasMaxLength(20);
-        builder.Property(x => x.Status).HasDefaultValue(WebOrderStatus.Pendiente);
+        // El enum no tiene valor 0: si llega 0 (sin asignar) se usa el default de BD (Pendiente). Evita el warning EF 20601.
+        builder.Property(x => x.Status).HasDefaultValue(WebOrderStatus.Pendiente).HasSentinel((WebOrderStatus)0);
 
         builder.HasIndex(x => x.OrderNumber).IsUnique();
         builder.HasIndex(x => new { x.CustomerId, x.Status });

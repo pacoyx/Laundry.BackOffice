@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 public class UpdateUnitMeasurementService : IUpdateUnitMeasurementService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<UpdateUnitMeasurementService> Logger { get; }
 
-    public UpdateUnitMeasurementService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public UpdateUnitMeasurementService(RecepcionDbContext context, IAppLogger<UpdateUnitMeasurementService> logger)
     {
         _context = context;
         Logger = logger;

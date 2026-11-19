@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 public class DeleteUnitMeasurementService : IDeleteUnitMeasurementService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<DeleteUnitMeasurementService> Logger { get; }
 
-    public DeleteUnitMeasurementService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public DeleteUnitMeasurementService(RecepcionDbContext context, IAppLogger<DeleteUnitMeasurementService> logger)
     {
         _context = context;
         Logger = logger;

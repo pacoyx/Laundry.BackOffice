@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 public class CreateProductService : ICreateProductService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<CreateProductService> Logger { get; }
 
-    public CreateProductService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public CreateProductService(RecepcionDbContext context, IAppLogger<CreateProductService> logger)
     {
         _context = context;
         Logger = logger;

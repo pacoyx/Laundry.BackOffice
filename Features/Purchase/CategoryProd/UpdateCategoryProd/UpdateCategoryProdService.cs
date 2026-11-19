@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 public class UpdateCategoryProdService : IUpdateCategoryProdService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<UpdateCategoryProdService> Logger { get; }
 
-    public UpdateCategoryProdService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public UpdateCategoryProdService(RecepcionDbContext context, IAppLogger<UpdateCategoryProdService> logger)
     {
         _context = context;
         Logger = logger;

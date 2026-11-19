@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 public class GetUnitMeasurementsService : IGetUnitMeasurementsService
 {
     private readonly RecepcionDbContext _context;
-    public IAppLogger<GetServicesAccessFastService> Logger { get; }
+    public IAppLogger<GetUnitMeasurementsService> Logger { get; }
 
-    public GetUnitMeasurementsService(RecepcionDbContext context, IAppLogger<GetServicesAccessFastService> logger)
+    public GetUnitMeasurementsService(RecepcionDbContext context, IAppLogger<GetUnitMeasurementsService> logger)
     {
         _context = context;
         Logger = logger;
